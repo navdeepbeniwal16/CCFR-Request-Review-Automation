@@ -63,7 +63,7 @@ const LoginContainer = ({ toggleForgotPassword }) => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Group position="apart" mt="md" align="right">
-                    <Anchor align='right' onClick={() => toggleForgotPassword(true)} href="#" size="sm">
+                    <Anchor align='right' onClick={() => toggleForgotPassword(true)} size="sm">
                         Forgot password?
                     </Anchor>
                 </Group>
@@ -118,7 +118,7 @@ const LoginPage = () => {
 
     return (<>
         <Head>
-            <title>Login</title>
+            <title>{showForgotPassword ? "Password Reset" : "Login"} | CCFR Portal</title>
         </Head>
         {showForgotPassword ?
             <ForgotPasswordContainer toggleForgotPassword={setShowForgotPassword} /> :

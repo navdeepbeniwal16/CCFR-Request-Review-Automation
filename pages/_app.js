@@ -1,6 +1,8 @@
 import { AppShell, MantineProvider } from '@mantine/core';
+import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import initAuth from '../lib/initAuth';
+import favicon from '../public/favicon.ico';
 
 initAuth();
 
@@ -33,6 +35,9 @@ function MyApp({ Component, pageProps, ...appProps }) {
                 primaryColor: "ccfr-dark-blue"
             }}
         >
+            <Head>
+                <link rel="shortcut icon" href={favicon.src} type="image/x-icon" />
+            </Head>
             {getContent()}
         </MantineProvider>
     );

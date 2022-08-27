@@ -4,11 +4,13 @@ import {
     withAuthUserSSR,
     AuthAction,
 } from 'next-firebase-auth';
+import Head from 'next/head';
 
 
 const Home = ({ userData }) => {
     return (
         <Container m="md" p="md" fluid style={{ height: "100%", margin: 0 }}>
+            <Head><title>Dashboard | CCFR Portal</title></Head>
             <SimpleGrid cols={2} spacing="xl" style={{ height: "100%" }}>
                 <Skeleton height="100%" radius="md" animate={false} />
                 <Grid gutter="xl">
