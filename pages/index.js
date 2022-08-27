@@ -1,4 +1,4 @@
-import { Grid } from '@mantine/core';
+import { Container, Grid, SimpleGrid, Skeleton } from '@mantine/core';
 import {
     withAuthUser,
     withAuthUserSSR,
@@ -8,13 +8,22 @@ import {
 
 const Home = ({ userData }) => {
     return (
-        <Grid grow gutter="sm">
-            <Grid.Col span={4}>Hello</Grid.Col>
-            <Grid.Col span={4}>Your email is {userData.email}.</Grid.Col>
-            <Grid.Col span={4}>Your id is {userData.id}.</Grid.Col>
-            <Grid.Col span={4}>4</Grid.Col>
-            <Grid.Col span={4}>5</Grid.Col>
-        </Grid>
+        <Container m="md" p="md" fluid style={{ height: "100%", margin: 0 }}>
+            <SimpleGrid cols={2} spacing="xl" style={{ height: "100%" }}>
+                <Skeleton height="100%" radius="md" animate={false} />
+                <Grid gutter="xl">
+                    <Grid.Col>
+                        <Skeleton height="100%" radius="md" animate={false} />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                        <Skeleton height="100%" radius="md" animate={false} />
+                    </Grid.Col>
+                    <Grid.Col span={6}>
+                        <Skeleton height="100%" radius="md" animate={false} />
+                    </Grid.Col>
+                </Grid>
+            </SimpleGrid>
+        </Container>
     );
 }
 
