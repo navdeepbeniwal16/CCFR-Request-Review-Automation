@@ -1,11 +1,14 @@
 import React from 'react'
-import { Center } from '@mantine/core'
+import { Center, useMantineTheme } from '@mantine/core'
 import { DotLoader } from 'react-spinners'
 
-const Loader = () => (
-    <Center style={{ width: '100vw', height: '100vh' }}>
-        <DotLoader />
-    </Center>
-)
+const Loader = () => {
+    const theme = useMantineTheme();
+    return (
+        <Center style={{ width: '100vw', height: '100vh' }}>
+            <DotLoader color={theme.fn.primaryColor()} />
+        </Center>
+    )
+}
 
 export default Loader
