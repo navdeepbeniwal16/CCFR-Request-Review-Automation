@@ -1,45 +1,19 @@
-import { AppShell, Navbar, MantineProvider, Button } from '@mantine/core';
-import { IconUserCircle, IconLogout } from '@tabler/icons'
-import { useRouter } from 'next/router';
+import { AppShell, MantineProvider } from '@mantine/core';
+import Navbar from '../components/Navbar';
 import initAuth from '../lib/initAuth';
-import { logoutUser } from '../lib/user';
-
 
 initAuth();
 
+
 function MyApp({ Component, pageProps, ...appProps }) {
-    const router = useRouter()
 
     const getContent = () => {
-        if ([`/login`].includes(appProps.router.pathname))
+        if (['/login', '/_error'].includes(appProps.router.pathname))
             return <Component {...pageProps} />;
-
         return (
             <AppShell
                 padding="md"
-                navbar={
-                    <Navbar width={{ base: 300 }} height="100%" p="xs">
-                        <Navbar.Section>Title</Navbar.Section>
-                        <Navbar.Section grow>Nav Links</Navbar.Section>
-                        <Navbar.Section>
-                            <Button
-                                leftIcon={<IconUserCircle stroke={1.5} />}
-                                variant="subtle"
-                                fullWidth
-                            >
-                                Profile
-                            </Button>
-                            <Button
-                                onClick={() => logoutUser(() => router.push('/login'))}
-                                leftIcon={<IconLogout stroke={1.5} />}
-                                variant="subtle"
-                                fullWidth
-                            >
-                                Logout
-                            </Button>
-                        </Navbar.Section>
-                    </Navbar>
-                }
+                navbar={<Navbar />}
             >
                 <Component {...pageProps} />
             </AppShell>
@@ -50,6 +24,14 @@ function MyApp({ Component, pageProps, ...appProps }) {
         <MantineProvider
             withGlobalStyles
             withNormalizeCSS
+            theme={{
+                colors: {
+                    "ccfr-dark-blue": ['#e9f2ff', '#c9d6e9', '#a9bad5', '#889fc3', '#6784b1', '#4e6a98', '#3c5277', '#2a3b56', '#172336', '#040c18'], // use 6
+                    "ccfr-light-blue": ['#e3f4ff', '#c0dbf1', '#9bc2e3', '#75aad7', '#5092ca', '#3778b2', '#2a5e8b', '#1c4364', '#0d283e', '#000e1a'], // use 2
+                    "ccfr-green": ['#e6f8f1', '#cee1da', '#b3cbc4', '#96b6ac', '#79a194', '#60887a', '#49695f', '#334b44', '#1b2e29', '#00120e'] // use 3
+                },
+                primaryColor: "ccfr-dark-blue"
+            }}
         >
             {getContent()}
         </MantineProvider>
