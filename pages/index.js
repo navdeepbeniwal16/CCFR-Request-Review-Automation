@@ -5,6 +5,7 @@ import {
     AuthAction,
 } from 'next-firebase-auth';
 import Head from 'next/head';
+import Loader from '../components/Loader';
 
 
 const Home = ({ userData }) => {
@@ -30,7 +31,10 @@ const Home = ({ userData }) => {
 }
 
 export const getServerSideProps = withAuthUserSSR({
-    whenUnauthed: AuthAction.REDIRECT_TO_LOGIN
+    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+    authPageURL: '/login',
+    LoaderComponent: Loader,
 })(async ({ AuthUser }) => {
     return {
         props: {
