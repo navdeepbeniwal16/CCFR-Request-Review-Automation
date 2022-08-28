@@ -122,7 +122,7 @@ export default function CCFRNavbar() {
     const [expanded, setExpanded] = useState(null)
 
     const links = data.map((item) => (
-        <Link href={item.link} key={item.label} passHref>
+        <Link href={item.link} key={item.label} passHref={item.children == null}>
             <NavLink
                 classNames={{ root: classes.navLink }}
                 icon={<item.icon stroke={1.5} />}
@@ -157,7 +157,7 @@ export default function CCFRNavbar() {
         <Navbar height="100%" width={{ sm: 300 }} p="md" className={classes.navbar}>
             <Navbar.Section grow>
                 <Group className={classes.header}>
-                    <Image width={64} height={64} src="/ccfr_logo.png" />
+                    <Image width={64} height={64} src="/ccfr_logo.png" alt='CCFR Logo' />
                     <div>
                         <h3>Colon Cancer <br /> Family Registry</h3>
                         <p>Application Portal</p>
@@ -169,7 +169,6 @@ export default function CCFRNavbar() {
             <Navbar.Section className={classes.footer}>
                 <Link href="/profile" passHref>
                     <NavLink
-                        onClick={(event) => event.preventDefault()}
                         classNames={{ root: classes.navLink }}
                         icon={<IconUserCircle stroke={1.5} />}
                         component='a'

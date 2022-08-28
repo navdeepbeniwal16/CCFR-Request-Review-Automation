@@ -1,6 +1,7 @@
 import {
     withAuthUser,
     AuthAction,
+    withAuthUserSSR,
 } from 'next-firebase-auth';
 import Loader from '../components/Loader';
 import {
@@ -35,12 +36,14 @@ const LoginContainer = ({ toggleForgotPassword }) => {
 
     return (
         <Container size={420} py="5%">
-            <Center mb={10}><Image align="center" src="/ccfr_logo.png" width={128} height={128} /></Center>
+            <Center mb={10}>
+                <Image align="center" src="/ccfr_logo.png" width={128} height={128} alt="CCFR Logo" />
+            </Center>
             <Title align="center">
                 CCFR Portal
             </Title>
             <Text color="dimmed" size="sm" align="center" mt={5}>
-                Don't have an account yet?{' '}
+                Do not have an account yet?
                 <Anchor href="#" size="sm" onClick={(event) => event.preventDefault()}>
                     Create account
                 </Anchor>
@@ -126,6 +129,8 @@ const LoginPage = () => {
         }
     </>)
 }
+
+export const getServerSideProps = withAuthUserSSR()()
 
 export default withAuthUser({
     whenAuthed: AuthAction.REDIRECT_TO_APP,

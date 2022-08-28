@@ -30,20 +30,10 @@ const Home = ({ userData }) => {
     );
 }
 
-export const getServerSideProps = withAuthUserSSR({
+export const getServerSideProps = withAuthUserSSR()();
+
+export default withAuthUser({
     whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-    authPageURL: '/login',
     LoaderComponent: Loader,
-})(async ({ AuthUser }) => {
-    return {
-        props: {
-            userData: {
-                email: AuthUser.email,
-                id: AuthUser.id,
-            }
-        }
-    }
-});
-
-export default withAuthUser()(Home)
+})(Home)
