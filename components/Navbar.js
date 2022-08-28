@@ -1,4 +1,4 @@
-import { createStyles, Navbar, Group, Badge } from '@mantine/core';
+import { createStyles, Navbar, Group, Badge, NavLink } from '@mantine/core';
 import {
     IconHome,
     IconUserCircle,
@@ -10,32 +10,19 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { logoutUser } from '../lib/user';
 
-const useStyles = createStyles((theme, _params, getRef) => {
-    const icon = getRef('icon');
+const useStyles = createStyles((theme) => {
     return {
         navbar: {
-            backgroundColor: theme.fn.variant({ variant: 'filled', color: theme.primaryColor })
-                .background,
-        },
-
-        version: {
-            backgroundColor: theme.fn.lighten(
-                theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background,
-                0.1
-            ),
-            color: theme.white,
-            fontWeight: 700,
+            backgroundColor: theme.fn.primaryColor(),
         },
 
         header: {
             paddingBottom: theme.spacing.md,
             marginBottom: theme.spacing.md * 1.5,
-            borderBottom: `1px solid ${theme.fn.lighten(
-                theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background,
-                0.1
-            )}`,
+            borderBottom: `1px solid ${theme.fn.lighten(theme.fn.primaryColor(), 0.1)}`,
             'div > *': {
                 color: theme.white,
                 margin: 0,
@@ -50,23 +37,40 @@ const useStyles = createStyles((theme, _params, getRef) => {
         footer: {
             paddingTop: theme.spacing.md,
             marginTop: theme.spacing.md,
-            borderTop: `1px solid ${theme.fn.lighten(
-                theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background,
-                0.1
-            )}`,
+            borderTop: `1px solid ${theme.fn.lighten(theme.fn.primaryColor(), 0.1)}`,
         },
 
-        link: {
-            ...theme.fn.focusStyles(),
-            display: 'flex',
-            alignItems: 'center',
+        navLinkBadge: {
+            padding: 0,
+            marginTop: 2,
+            width: 20,
+            height: 20,
+            pointerEvents: 'none',
+            backgroundColor: theme.colors['ccfr-green'][4]
+        },
+
+        navLink: {
+            borderRadius: theme.radius.sm,
+            color: theme.white,
+            fontWeight: 500,
             textDecoration: 'none',
             fontSize: theme.fontSizes.sm,
-            color: theme.white,
             padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
-            borderRadius: theme.radius.sm,
-            fontWeight: 500,
-            cursor: 'pointer',
+            '& svg': {
+                opacity: 0.75,
+            },
+
+            '&[data-active=true], &[data-active=true]:hover': {
+                color: theme.white,
+                backgroundColor: theme.fn.lighten(
+                    theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background,
+                    0.15
+                ),
+
+                '& svg': {
+                    opacity: 0.9,
+                }
+            },
 
             '&:hover': {
                 backgroundColor: theme.fn.lighten(
@@ -75,68 +79,78 @@ const useStyles = createStyles((theme, _params, getRef) => {
                 ),
             },
         },
-
-        linkInner: {
-            display: 'flex',
-            alignItems: 'center',
-            flex: 1,
-        },
-
-        linkIcon: {
-            ref: icon,
-            color: theme.white,
-            opacity: 0.75,
-            marginRight: theme.spacing.sm,
-        },
-
-        linkActive: {
-            '&, &:hover': {
-                backgroundColor: theme.fn.lighten(
-                    theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background,
-                    0.15
-                ),
-                [`& .${icon}`]: {
-                    opacity: 0.9,
-                },
-            },
-        },
-
-        mainLinkBadge: {
-            padding: 0,
-            marginTop: 2,
-            width: 20,
-            height: 20,
-            pointerEvents: 'none',
-            backgroundColor: theme.colors['ccfr-green'][4]
-        },
     };
 });
 
 const data = [
-    { link: '/', label: 'Dashboard', icon: IconHome, notif: 0 },
-    { link: '/applications', label: 'Applications', icon: IconFiles, notif: 3 },
-    { link: '/accounts', label: 'Accounts', icon: IconUsers, notif: 0 },
-    { link: '/messages', label: 'Messages', icon: IconMessages, notif: 2 },
+    {
+        link: '/', label: 'Dashboard', icon: IconHome
+    },
+    {
+        link: '/applications', label: 'Applications', icon: IconFiles, children: [
+            { link: '', label: 'All Applications' },
+            { link: '?type=personal', label: 'My Applications' },
+            { link: '?type=active', label: 'Active Applications', notif: 3 },
+            { link: '?type=approved', label: 'Approved Applications' },
+            { link: '?type=rejected', label: 'Rejected Applications' },
+            { link: '?type=inactve', label: 'Inactive Applications' },
+        ]
+    },
+    {
+        link: '/accounts', label: 'Accounts', icon: IconUsers, children: [
+            { link: '', label: 'All Accounts' },
+            { link: '?type=external', label: 'External Users' },
+            { link: '?type=internal', label: 'Internal Users' },
+            { link: '?type=committee', label: 'Streeing Committee' },
+            { link: '?type=admin', label: 'Admins' },
+            { link: '?type=bwg', label: 'BWG Chair' },
+        ]
+    },
+    {
+        link: '/messages', label: 'Messages', icon: IconMessages, children: [
+            { link: '', label: 'All Messages' },
+            { link: '?status=unread', label: 'Unread Messages', notif: 3 },
+            { link: '?type=user', label: 'User Messages' },
+            { link: '?type=system', label: 'Notifications' },
+        ]
+    },
 ];
 
 export default function CCFRNavbar() {
     const { classes, cx } = useStyles();
     const router = useRouter();
+    const [expanded, setExpanded] = useState(null)
 
     const links = data.map((item) => (
-        <Link href={item.link} key={item.label}>
-            <a className={cx(classes.link, { [classes.linkActive]: item.link === router.asPath })}>
-                <div className={classes.linkInner}>
-                    <item.icon className={classes.linkIcon} stroke={1.5} />
-                    <span>{item.label}</span>
-                </div>
-                {item.notif != 0 && (
-                    <Badge size="sm" variant="filled" className={classes.mainLinkBadge}>
-                        {item.notif}
-                    </Badge>
-                )}
-            </a>
-        </Link >
+        <Link href={item.link} key={item.label} passHref>
+            <NavLink
+                classNames={{ root: classes.navLink }}
+                icon={<item.icon stroke={1.5} />}
+                component='a'
+                label={item.label}
+                active={item.link === router.asPath && !item.children}
+                color="white"
+                opened={expanded === item.label}
+                onChange={(opened) => opened ? setExpanded(item.label) : setExpanded(null)}
+            >
+                {item.children && item.children.map((child) => (
+                    <Link href={item.link + child.link} key={child.label} passHref>
+                        <NavLink
+                            classNames={{ root: classes.navLink }}
+                            component='a'
+                            label={child.label}
+                            color="white"
+                            active={item.link + child.link === router.asPath}
+                            rightSection={child.notif && (
+                                <Badge size="sm" variant="filled" className={classes.navLinkBadge}>
+                                    {child.notif}
+                                </Badge>
+                            )}
+                        />
+                    </Link>
+                ))}
+            </NavLink>
+        </Link>
     ));
 
     return (
@@ -153,20 +167,24 @@ export default function CCFRNavbar() {
             </Navbar.Section>
 
             <Navbar.Section className={classes.footer}>
-                <Link href="/profile">
-                    <a className={cx(classes.link, classes.button)} onClick={(event) => event.preventDefault()}>
-                        <IconUserCircle className={classes.linkIcon} stroke={1.5} />
-                        <span>Edit Profile</span>
-                    </a>
+                <Link href="/profile" passHref>
+                    <NavLink
+                        onClick={(event) => event.preventDefault()}
+                        classNames={{ root: classes.navLink }}
+                        icon={<IconUserCircle stroke={1.5} />}
+                        component='a'
+                        label="Edit Profile"
+                        color="white"
+                    />
                 </Link>
-
-                <a
-                    className={cx(classes.link, classes.button)}
+                <NavLink
                     onClick={() => logoutUser(() => router.push('/login'))}
-                >
-                    <IconLogout className={classes.linkIcon} stroke={1.5} />
-                    <span>Logout</span>
-                </a>
+                    classNames={{ root: classes.navLink }}
+                    icon={<IconLogout stroke={1.5} />}
+                    component='a'
+                    label="Logout"
+                    color="white"
+                />
             </Navbar.Section>
         </Navbar >
     );
