@@ -11,9 +11,9 @@
     "dependencies": {
         "@emotion/react": "^11.10.0",
         "@mantine/core": "^5.2.3",
-        "@mantine/dates": "^5.2.3",
         "@mantine/form": "^5.2.3",
         "@mantine/hooks": "^5.2.3",
+        "@mantine/next": "^5.2.4",
         "@mantine/notifications": "^5.2.3",
         "@tabler/icons": "^1.88.0",
         "dayjs": "^1.11.5",
@@ -23,8 +23,7 @@
         "next-firebase-auth": "^0.14.4",
         "nodemailer": "^6.7.8",
         "react": "18.2.0",
-        "react-dom": "18.2.0",
-        "react-spinners": "^0.13.4"
+        "react-dom": "18.2.0"
     },
     "devDependencies": {
         "eslint": "8.22.0",

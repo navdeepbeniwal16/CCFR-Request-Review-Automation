@@ -2,10 +2,10 @@ import { AppShell, MantineProvider } from '@mantine/core';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import initAuth from '../lib/initAuth';
+import { styleCache } from '../lib/styleCache';
 import favicon from '../public/favicon.ico';
 
 initAuth();
-
 
 function MyApp({ Component, pageProps, ...appProps }) {
 
@@ -26,6 +26,7 @@ function MyApp({ Component, pageProps, ...appProps }) {
         <MantineProvider
             withGlobalStyles
             withNormalizeCSS
+            emotionCache={styleCache}
             theme={{
                 colors: {
                     "ccfr-dark-blue": ['#e9f2ff', '#c9d6e9', '#a9bad5', '#889fc3', '#6784b1', '#4e6a98', '#3c5277', '#2a3b56', '#172336', '#040c18'], // use 6
@@ -36,6 +37,8 @@ function MyApp({ Component, pageProps, ...appProps }) {
             }}
         >
             <Head>
+                <title>CCFR Portal</title>
+                <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
                 <link rel="shortcut icon" href={favicon.src} type="image/x-icon" />
             </Head>
             {getContent()}

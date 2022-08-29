@@ -122,7 +122,7 @@ export default function CCFRNavbar() {
     const [expanded, setExpanded] = useState(null)
 
     const links = data.map((item) => (
-        <Link href={item.link} key={item.label} passHref={item.children == null}>
+        <Link href={item.link} key={item.label} passHref>
             <NavLink
                 classNames={{ root: classes.navLink }}
                 icon={<item.icon stroke={1.5} />}

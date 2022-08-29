@@ -3,7 +3,6 @@ import {
     AuthAction,
     withAuthUserSSR,
 } from 'next-firebase-auth';
-import Loader from '../components/Loader';
 import {
     Container,
     Title,
@@ -118,10 +117,11 @@ const ForgotPasswordContainer = ({ toggleForgotPassword }) => {
 
 const LoginPage = () => {
     const [showForgotPassword, setShowForgotPassword] = useState(false)
+    const title = showForgotPassword ? "Password Reset" : "Login" + " | CCFR Portal"
 
     return (<>
         <Head>
-            <title>{showForgotPassword ? "Password Reset" : "Login"} | CCFR Portal</title>
+            <title>{title}</title>
         </Head>
         {showForgotPassword ?
             <ForgotPasswordContainer toggleForgotPassword={setShowForgotPassword} /> :
@@ -129,12 +129,10 @@ const LoginPage = () => {
         }
     </>)
 }
-
-export const getServerSideProps = withAuthUserSSR()()
+export const getServerSideProps = withAuthUserSSR({
+    whenAuthed: AuthAction.REDIRECT_TO_APP,
+})()
 
 export default withAuthUser({
     whenAuthed: AuthAction.REDIRECT_TO_APP,
-    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-    whenAuthedBeforeRedirect: AuthAction.SHOW_LOADER,
-    LoaderComponent: Loader,
 })(LoginPage)

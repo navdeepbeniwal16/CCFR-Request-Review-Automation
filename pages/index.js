@@ -1,11 +1,10 @@
 import { Container, Grid, SimpleGrid, Skeleton } from '@mantine/core';
 import {
     withAuthUser,
-    withAuthUserSSR,
     AuthAction,
+    withAuthUserTokenSSR,
 } from 'next-firebase-auth';
 import Head from 'next/head';
-import Loader from '../components/Loader';
 
 
 const Home = ({ userData }) => {
@@ -30,10 +29,16 @@ const Home = ({ userData }) => {
     );
 }
 
-export const getServerSideProps = withAuthUserSSR()();
+export const getServerSideProps = withAuthUserTokenSSR({
+    whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ AuthUser, req }) => {
+    return {
+        props: {
+            email: AuthUser.email,
+        },
+    }
+})
 
 export default withAuthUser({
-    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-    LoaderComponent: Loader,
 })(Home)
