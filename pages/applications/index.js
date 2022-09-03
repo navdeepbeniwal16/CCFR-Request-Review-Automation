@@ -1,4 +1,4 @@
-import { Container, Grid, TextInput } from '@mantine/core';
+import { Container, Grid, TextInput, Group, Button } from '@mantine/core';
 import {
     withAuthUser,
     AuthAction,
@@ -7,6 +7,7 @@ import {
 import Head from 'next/head';
 import ApplicationTable from '../../components/ApplicationTable';
 import { IconSearch } from '@tabler/icons';
+import Link from 'next/link';
 
 const ApplicationsPage = ({ title }) => {
     const pageTitle = (title ? title.charAt(0).toUpperCase() + title.slice(1) : "All") + " Applications"
@@ -16,12 +17,18 @@ const ApplicationsPage = ({ title }) => {
             <Head><title>{pageTitle}</title></Head>
             <Grid justify="space-between" align="center">
                 <h1>{pageTitle}</h1>
-                <TextInput
-                    mt="1.25em"
-                    placeholder="Search"
-                    mb="md"
-                    icon={<IconSearch size={14} stroke={1.5} />}
-                />
+                <Group>
+                    <TextInput
+                        icon={<IconSearch size={18} stroke={1.5} />}
+                        size="md"
+                        placeholder="Search for applications"
+                        rightSectionWidth={42}
+                    />
+                    <Link href="/applications/new" passHref>
+                        <Button component='a' size='md'>Create New</Button>
+                    </Link>
+                </Group>
+
             </Grid>
             <ApplicationTable />
         </Container>

@@ -1,4 +1,4 @@
-import { Badge, Table, Button } from '@mantine/core';
+import { Badge, Table, Button, Loader, Center } from '@mantine/core';
 import Link from 'next/link';
 import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -49,7 +49,7 @@ const data = [
         id: Math.random() * 10000,
         title: "Social determinants of colorectal cancer screening, treatment and outcomes in the Colon-CFR.",
         institution: "Monash University",
-        category: "Biospecimen & Data",
+        category: "Biospec & Data",
         investigator: 'Irene Clarke',
         status: 'approved'
     },
@@ -73,7 +73,7 @@ const data = [
         id: Math.random() * 10000,
         title: "Validation of a novel MSI panel.",
         institution: "Royal Melbourne Institute of Technology",
-        category: "Biospecimen & Data",
+        category: "Biospec & Data",
         investigator: 'Jeff Bacher',
         status: 'inactive'
     },
@@ -94,6 +94,11 @@ const statusColor = {
     "inactive": "gray"
 }
 
+const categoryColor = {
+    "Data Only": "orange",
+    "Biospec & Data": "violet"
+}
+
 export default function ApplicationTable() {
     const [applications, setApplications] = useState(data)
 
@@ -106,7 +111,11 @@ export default function ApplicationTable() {
     const rows = applications.map((application) => (
         <tr key={application.title + Math.random()}>
             <td><TextTruncate line={2} text={application.title} /></td>
-            <td>{application.category}</td>
+            <td>
+                <Badge color={categoryColor[application.category]} variant="outline">
+                    {application.category}
+                </Badge>
+            </td>
             <td>{application.investigator}</td>
             <td><TextTruncate line={2} text={application.institution} /></td>
             <td>
@@ -127,7 +136,7 @@ export default function ApplicationTable() {
             dataLength={rows.length}
             next={fetchMoreData}
             hasMore={true}
-            loader={<h4>Loading...</h4>}
+            loader={<Center><Loader variant='dots' size='lg' /></Center>}
             endMessage={<p>End of list</p>}
         >
             <Table verticalSpacing="lg">
