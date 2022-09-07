@@ -1,0 +1,125 @@
+{
+    "Application": [
+        {
+            "DocumentID":"Auto-Generated",
+            "ApplicationID":"",
+            "PIFullName":"",
+            "JobTitle": "",
+            "Institution": "",
+            "Department": "",
+            "EmailAddress":"",
+            "PhoneNumber":"",
+            "Address":"",
+            "City":"",
+            "State":"",
+            "Zip":"",
+            "Country":"",
+            "Institution-2":{
+                "AccessType":"",
+                "Investigator":"",
+                "JobTitle":"",
+                "Institution":"",
+                "Department":""
+            },
+            "ProductCommercialization":"True/False",
+            "DataReceiptDeadline":"epoch time",
+            "BiospecimenRecieptDeadline":"epoch time",
+            "CCFRCollaborators":[
+                {
+                    "CenterNumber":"",
+                    "CCFRSite":"",
+                    "SitePIName":"",
+                    "SitePIDegree":""
+                }
+            ],
+            "StudyDescription": {
+                "Abstract":"",
+                "SpecificAims":"",
+                "BackgroundAndSignificance":"",
+                "PreliminaryData":"",
+                "StudyDesign":"",
+                "SelectionCriteria":""
+            },
+            "DataRequired": [
+                {
+                    "Name":"",
+                    "Type":"",
+                    "NumberOfSamples":""
+                }
+            ],
+            "ProgramManagerReview":{
+                "Name":"",
+                "Status":""
+            },
+            "BiospecimenRequired": [
+                {
+                    "Name":"",
+                    "Type":"",
+                    "Quantity":"",
+                    "NumberOfSamples":""
+                }
+            ],
+            "CreatedAt":"",
+            "CreatedBy":"",
+            "ModifiedAt":"",
+            "ModifiedBy":"",
+            "BiospecimenForm":{
+                "AmountRequired":"",
+                "ProposedTestingMethodology":"",
+                "Clarifications":{
+                    "AdditionalDispatchRequirement":"Yes/No/TBD",
+                    "FluoroscentDyeQuantificationRequired":"Yes/No/TBD",
+                    "LCLDerivedDNAAcceptable":"Yes/No/TBD",
+                    "DepletedDNASampleRequest":"Exclude Sample(s) / Extract at CCFR Site(s) / TBD",
+                    "NeoplasticCellularity":{
+                        "MinNC":"",
+                        "MinVolume":""
+                    },
+                    "BWGGroupConclusions":"",
+                    "ApplicantCommentResponse":""
+                },
+                "BWGStatusReview":""
+            },
+            "SteeringCommitteeReview":{
+                "ReviewStartedDate":"epoch time",
+                "Reviewers":[
+                    {
+                        "Name":"",
+                        "Status":""
+                    }
+                ],
+                "FirstAcceptance":"epoch time",
+                "NumberOfReviewersAccepted":"",
+                "TotalReviewers":"",
+                "Status":""
+            }
+        }
+    ],
+    
+    "ExistingCCFRSiteData": [
+        {
+            "DocumentID":"Auto-Generated",
+            "CenterNumber":"",
+            "SiteName":"",
+            "PIName":"",
+            "PIDegree":""
+        }
+    ],
+
+    "ExistingCCFRBiospecimens": [
+        {
+            "DocumentID":"Auto-Generated",
+            "Name":"",
+            "Condition":""
+        }
+    ],
+
+    "ExistingCCFRData": [
+        {
+            "DocumentID":"Auto-Generated",
+            "Name":"",
+            "Condition":""
+        }
+    ]
+}
+
