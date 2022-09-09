@@ -10,7 +10,7 @@ export default function RouterTransition() {
     const router = useRouter();
 
     useEffect(() => {
-        const handleStart = (url) => url !== router.asPath && startNavigationProgress();
+        const handleStart = (url: string) => url !== router.asPath && startNavigationProgress();
         const handleComplete = () => resetNavigationProgress();
 
         router.events.on('routeChangeStart', handleStart);
@@ -22,7 +22,7 @@ export default function RouterTransition() {
             router.events.off('routeChangeComplete', handleComplete);
             router.events.off('routeChangeError', handleComplete);
         };
-    }, [router.asPath]);
+    }, [router.asPath, router.events]);
 
     return <NavigationProgress />;
 }

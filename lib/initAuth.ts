@@ -14,16 +14,16 @@ const initAuth = () => {
         },
         firebaseAdminInitConfig: {
             credential: {
-                projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-                privateKey: process.env.FIREBASE_PRIVATE_KEY,
+                projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
+                privateKey: process.env.FIREBASE_PRIVATE_KEY || "",
             },
-            databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+            databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "",
         },
         // Use application default credentials (takes precedence over firebaseAdminInitConfig if set)
         // useFirebaseAdminDefaultCredential: true,
         firebaseClientInitConfig: {
-            apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY, // required
+            apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY || "", // required
             authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
             databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
             projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,

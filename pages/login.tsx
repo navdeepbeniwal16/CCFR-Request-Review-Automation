@@ -23,7 +23,11 @@ import { IconAlertCircle, IconArrowLeft } from '@tabler/icons';
 import Head from 'next/head';
 import Image from 'next/image';
 
-const LoginContainer = ({ toggleForgotPassword }) => {
+type AuthContainerProps = {
+    toggleForgotPassword: (x: boolean) => void
+}
+
+const LoginContainer = ({ toggleForgotPassword }: AuthContainerProps) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
@@ -36,14 +40,14 @@ const LoginContainer = ({ toggleForgotPassword }) => {
     return (
         <Container size={420} py="5%">
             <Center mb={10}>
-                <Image align="center" src="/ccfr_logo.png" width={128} height={128} alt="CCFR Logo" />
+                <Image src="/ccfr_logo.png" width={128} height={128} alt="CCFR Logo" />
             </Center>
             <Title align="center">
                 CCFR Portal
             </Title>
             <Text color="dimmed" size="sm" align="center" mt={5}>
                 Do not have an account yet?
-                <Anchor href="#" size="sm" onClick={(event) => event.preventDefault()}>
+                <Anchor href="#" size="sm">
                     Create account
                 </Anchor>
             </Text>
@@ -85,7 +89,7 @@ const LoginContainer = ({ toggleForgotPassword }) => {
     )
 }
 
-const ForgotPasswordContainer = ({ toggleForgotPassword }) => {
+const ForgotPasswordContainer = ({ toggleForgotPassword }: AuthContainerProps) => {
     const [sent, setSent] = useState(false)
 
     return (

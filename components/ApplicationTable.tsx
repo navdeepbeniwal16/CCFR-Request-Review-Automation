@@ -2,33 +2,38 @@ import { Badge, Table, Button, Loader, Center } from '@mantine/core';
 import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TextTruncate from 'react-text-truncate';
-import PropTypes from 'prop-types'
+import { Application } from '../lib/interfaces';
 
-const statusColor = {
-    "approved": "green",
-    "rejected": "red",
-    "active": "blue",
-    "inactive": "gray"
+const statusColor: Map<string, string> = new Map([
+    ["approved", "green"],
+    ["rejected", "red"],
+    ["active", "blue"],
+    ["inactive", "gray"]
+])
+
+const categoryColor: Map<string, string> = new Map([
+    ["Data Only", "orange"],
+    ["Biospec & Data", "violet"]
+])
+
+type ApplicationTableProps = {
+    applications: Application[],
+    fetchMoreData: () => void
 }
 
-const categoryColor = {
-    "Data Only": "orange",
-    "Biospec & Data": "violet"
-}
-
-export default function ApplicationTable({ applications, fetchMoreData }) {
+export default function ApplicationTable({ applications, fetchMoreData }: ApplicationTableProps) {
     const rows = applications.map((application) => (
         <tr key={application.title + Math.random()}>
             <td><TextTruncate line={2} text={application.title} /></td>
             <td>
-                <Badge color={categoryColor[application.category]} variant="outline">
+                <Badge color={categoryColor.get(application.category)} variant="outline">
                     {application.category}
                 </Badge>
             </td>
             <td>{application.investigator}</td>
             <td><TextTruncate line={2} text={application.institution} /></td>
             <td>
-                <Badge color={statusColor[application.status]}>
+                <Badge color={statusColor.get(application.status)}>
                     {application.status}
                 </Badge>
             </td>
@@ -65,16 +70,4 @@ export default function ApplicationTable({ applications, fetchMoreData }) {
             </Table>
         </InfiniteScroll >
     )
-}
-
-ApplicationTable.propTypes = {
-    applications: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string,
-        title: PropTypes.string,
-        institution: PropTypes.string,
-        category: PropTypes.string,
-        investigator: PropTypes.string,
-        status: PropTypes.string,
-    })).isRequired,
-    fetchMoreData: PropTypes.func.isRequired
 }

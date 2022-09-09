@@ -1,4 +1,5 @@
 import { Container, Grid, SimpleGrid, Skeleton } from '@mantine/core';
+import { NextPage } from 'next';
 import {
     withAuthUser,
     AuthAction,
@@ -6,8 +7,11 @@ import {
 } from 'next-firebase-auth';
 import Head from 'next/head';
 
+type HomePageProps = {
+    email: string
+}
 
-const Home = ({ userData }) => {
+const HomePage: NextPage<HomePageProps> = ({ email }) => {
     return (
         <Container m="md" p="md" fluid style={{ height: "100%", margin: 0 }}>
             <Head><title>Dashboard | CCFR Portal</title></Head>
@@ -32,13 +36,15 @@ const Home = ({ userData }) => {
 export const getServerSideProps = withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, req }) => {
+    const _props: HomePageProps = {
+        email: AuthUser.email || ""
+    }
+
     return {
-        props: {
-            email: AuthUser.email,
-        },
+        props: _props,
     }
 })
 
-export default withAuthUser({
+export default withAuthUser<HomePageProps>({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Home)
+})(HomePage)

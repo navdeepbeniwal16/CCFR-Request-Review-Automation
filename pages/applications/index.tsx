@@ -10,8 +10,15 @@ import { IconSearch } from '@tabler/icons';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { GetServerSideProps, GetServerSidePropsResult, NextPage } from 'next';
+import { Application } from '../../lib/interfaces';
 
-const ApplicationsPage = ({ title, applications }) => {
+type ApplicationsPageProps = {
+    title: string | null
+    applications: Application[]
+}
+
+const ApplicationsPage: NextPage<ApplicationsPageProps> = ({ title, applications }) => {
     const router = useRouter()
     const [apps, setApps] = useState(applications)
     const pageTitle = (title ? title.charAt(0).toUpperCase() + title.slice(1) : "All") + " Applications"
@@ -27,8 +34,8 @@ const ApplicationsPage = ({ title, applications }) => {
                         size="md"
                         placeholder="Search for applications"
                         rightSectionWidth={42}
-                        onKeyDown={(e) => (e.key === 'Enter' && e.target.value)
-                            ? router.push('/applications?s=' + e.target.value)
+                        onKeyDown={(e) => (e.key === 'Enter' && (e.target as HTMLInputElement).value)
+                            ? router.push('/applications?s=' + (e.target as HTMLInputElement).value)
                             : null
                         }
                     />
@@ -50,18 +57,22 @@ const ApplicationsPage = ({ title, applications }) => {
     )
 }
 
-export const getServerSideProps = withAuthUserTokenSSR({
+export const getServerSideProps= withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, query }) => {
+    const appType: ApplicationsPageProps['title'] = query.type?.toString() || null
+
+    const _props: ApplicationsPageProps = {
+        title: appType,
+        applications: data,
+    }
+
     return {
-        props: {
-            title: query.type || null,
-            applications: data,
-        },
+        props: _props,
     }
 })
 
-export default withAuthUser({
+export default withAuthUser<ApplicationsPageProps>({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
 })(ApplicationsPage)
 
@@ -72,7 +83,7 @@ const data = [
         institution: "University of Melbourne",
         category: "Data Only",
         investigator: 'Scott Adams',
-        status: 'active'
+        status: 'active',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),

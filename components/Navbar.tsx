@@ -119,7 +119,7 @@ const data = [
 export default function CCFRNavbar() {
     const { classes, cx } = useStyles();
     const router = useRouter();
-    const [expanded, setExpanded] = useState(null)
+    const [expanded, setExpanded] = useState("")
 
     const links = data.map((item) => (
         <Link href={item.link} key={item.label} passHref>
@@ -131,7 +131,7 @@ export default function CCFRNavbar() {
                 active={item.link === router.asPath && !item.children}
                 color="white"
                 opened={expanded === item.label}
-                onChange={(opened) => opened ? setExpanded(item.label) : setExpanded(null)}
+                onChange={(opened) => opened ? setExpanded(item.label) : setExpanded("")}
             >
                 {item.children && item.children.map((child) => (
                     <Link href={item.link + child.link} key={child.label} passHref>

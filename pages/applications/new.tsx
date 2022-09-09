@@ -5,7 +5,7 @@ import {
     withAuthUserTokenSSR,
 } from 'next-firebase-auth';
 
-const ApplicationPage = ({ appId }) => {
+const NewApplicationPage = () => {
     return (
         <h1>New Application</h1>
     )
@@ -22,4 +22,4 @@ export const getServerSideProps = withAuthUserTokenSSR({
 
 export default withAuthUser({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(ApplicationPage)
+})(NewApplicationPage)

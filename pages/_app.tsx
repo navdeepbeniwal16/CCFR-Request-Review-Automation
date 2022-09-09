@@ -1,4 +1,5 @@
 import { AppShell, MantineProvider } from '@mantine/core';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import RouterTransition from '../components/RouterTransition';
@@ -8,7 +9,7 @@ import favicon from '../public/favicon.ico';
 
 initAuth();
 
-function MyApp({ Component, pageProps, ...appProps }) {
+function MyApp({ Component, pageProps, ...appProps }: AppProps) {
 
     const getContent = () => {
         if (['/login', '/_error'].includes(appProps.router.pathname))
