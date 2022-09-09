@@ -89,7 +89,7 @@ const data = [
     {
         link: '/applications', label: 'Applications', icon: IconFiles, children: [
             { link: '', label: 'All Applications' },
-            { link: '?type=personal', label: 'My Applications' },
+            { link: '?type=my', label: 'My Applications' },
             { link: '?type=active', label: 'Active Applications', notif: 3 },
             { link: '?type=approved', label: 'Approved Applications' },
             { link: '?type=rejected', label: 'Rejected Applications' },

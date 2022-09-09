@@ -1,6 +1,7 @@
 import { AppShell, MantineProvider } from '@mantine/core';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
+import RouterTransition from '../components/RouterTransition';
 import initAuth from '../lib/initAuth';
 import { styleCache } from '../lib/styleCache';
 import favicon from '../public/favicon.ico';
@@ -36,6 +37,7 @@ function MyApp({ Component, pageProps, ...appProps }) {
                 primaryColor: "ccfr-dark-blue"
             }}
         >
+            <RouterTransition />
             <Head>
                 <title>CCFR Portal</title>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
