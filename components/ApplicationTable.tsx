@@ -11,29 +11,32 @@ const statusColor: Map<string, string> = new Map([
     ["inactive", "gray"]
 ])
 
-const categoryColor: Map<string, string> = new Map([
-    ["Data Only", "orange"],
-    ["Biospec & Data", "violet"]
-])
-
 type ApplicationTableProps = {
     applications: Application[],
     fetchMoreData: () => void
 }
 
+function getCategory(application: Application): [category: string, categoryColor: string] {
+    if (application.biospecimenRequired && application.dataRequired) {
+        return ["Biospec & Data", "violet"]
+    } else {
+        return ["Data Only", "orange"]
+    }
+}
+
 export default function ApplicationTable({ applications, fetchMoreData }: ApplicationTableProps) {
     const rows = applications.map((application) => (
-        <tr key={application.title + Math.random()}>
+        <tr key={application.title || "" + Math.random()}>
             <td><TextTruncate line={2} text={application.title} /></td>
             <td>
-                <Badge color={categoryColor.get(application.category)} variant="outline">
-                    {application.category}
+                <Badge color={getCategory(application)[1]} variant="outline">
+                    {getCategory(application)[0]}
                 </Badge>
             </td>
-            <td>{application.investigator}</td>
-            <td><TextTruncate line={2} text={application.institution} /></td>
+            <td>{application.institutionPrimary?.investigator}</td>
+            <td><TextTruncate line={2} text={application.institutionPrimary?.institution} /></td>
             <td>
-                <Badge color={statusColor.get(application.status)}>
+                <Badge color={statusColor.get(application.status || "")}>
                     {application.status}
                 </Badge>
             </td>

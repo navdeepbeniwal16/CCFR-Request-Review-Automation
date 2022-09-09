@@ -10,7 +10,7 @@ import { IconSearch } from '@tabler/icons';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps, GetServerSidePropsResult, NextPage } from 'next';
+import { NextPage } from 'next';
 import { Application } from '../../lib/interfaces';
 
 type ApplicationsPageProps = {
@@ -76,85 +76,167 @@ export default withAuthUser<ApplicationsPageProps>({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
 })(ApplicationsPage)
 
-const data = [
+const data: Application[] = [
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Impact of Inflammatory Bowel Disease on CRC Mortality.",
-        institution: "University of Melbourne",
-        category: "Data Only",
-        investigator: 'Scott Adams',
+        institutionPrimary: {
+            investigator: 'Scott Adams',
+            institution: "University of Melbourne",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
         status: 'active',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Family History Characteristics in the Colon CFRs.",
-        institution: "Royal Melbourne Institute of Technology",
-        category: "Data Only",
-        investigator: 'Dennis Ahnen',
-        status: 'approved'
+        institutionPrimary: {
+            investigator: 'Dennis Ahnen',
+            institution: "Royal Melbourne Institute of Technology",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'approved',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Promoting Colon Cancer Screening Among Genetically Defined High-Risk Populations Within the Cooperative Family Registry for Colon Cancer Studies (CFRCCS).",
-        institution: "Monash University",
-        category: "Data Only",
-        investigator: 'Dennis Ahnen',
-        status: 'rejected'
+        institutionPrimary: {
+            investigator: 'Dennis Ahnen',
+            institution: "Monash University",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'rejected',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Colorectal Screening Practices in Members of High Risk Families.",
-        institution: "University of Melbourne",
-        category: "Data Only",
-        investigator: 'John Smith',
-        status: 'active'
+        institutionPrimary: {
+            investigator: 'John Smith',
+            institution: "University of Melbourne",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'active',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Molecular Identification of Lynch Syndrome.",
-        institution: "Royal Melbourne Institute of Technology",
-        category: "Data Only",
-        investigator: 'Mary Jones',
-        status: 'active'
+        institutionPrimary: {
+            investigator: 'Mary Jones',
+            institution: "Royal Melbourne Institute of Technology",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'active',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Social determinants of colorectal cancer screening, treatment and outcomes in the Colon-CFR.",
-        institution: "Monash University",
-        category: "Biospec & Data",
-        investigator: 'Irene Clarke',
-        status: 'approved'
+        institutionPrimary: {
+            investigator: 'Irene Clarke',
+            institution: "Monash University",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        biospecimenRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'approved',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Collaboration with OFBCR on the BRIDGES Project.",
-        institution: "University of Melbourne",
-        category: "Data Only",
-        investigator: 'Yoland Intil',
-        status: 'approved'
+        institutionPrimary: {
+            investigator: 'Yoland Intil',
+            institution: "University of Melbourne",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'approved',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Studies into Gynecological Cancers Associated with the Syndrome: Hereditary Nonpolyposis Colon Cancer.",
-        institution: "Monash University",
-        category: "Data Only",
-        investigator: 'Sam Yard',
-        status: 'active'
+        institutionPrimary: {
+            investigator: 'Sam Yard',
+            institution: "Monash University",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'active',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Validation of a novel MSI panel.",
-        institution: "Royal Melbourne Institute of Technology",
-        category: "Biospec & Data",
-        investigator: 'Jeff Bacher',
-        status: 'inactive'
+        institutionPrimary: {
+            investigator: 'Jeff Bacher',
+            institution: "Royal Melbourne Institute of Technology",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        biospecimenRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'inactive',
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
         title: "Colorectal Cancer Screening in Australia.",
-        institution: "University of Melbourne",
-        category: "Data Only",
-        investigator: 'Dris Oakrim',
-        status: 'rejected'
+        institutionPrimary: {
+            investigator: 'Dris Oakrim',
+            institution: "University of Melbourne",
+        },
+        dataRequired: [{
+            name: "test",
+            type: "test",
+            quantity: 10,
+            numSamples: 1,
+        }],
+        status: 'rejected',
     },
 ];
