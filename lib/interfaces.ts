@@ -23,7 +23,8 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
-    status: string // change to enum?
+    status: "Active" | "Rejected" | "Accepted" // changed to enum
+    stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
 }
 
 interface Address {
@@ -39,7 +40,7 @@ interface Institution {
     jobTitle?: string,
     institution?: string,
     department?: string,
-    accessType?: string, // change to enum?
+    accessType?: "Data" | "Biospecimens" | "Both", // changed to enum
 }
 
 interface Collaborator {
@@ -59,14 +60,14 @@ interface StudyDescription {
 
 interface Request {
     name: string,
-    type: string, // change to enum?
+    type: string, 
     quantity: number,
     numSamples: number,
 }
 
 interface Review {
     name: string,
-    status: string, // change to enum?
+    status: "Approved" | "Rejected" | "In Review", // changed to enum
 }
 
 interface BiospecimenForm {
@@ -87,4 +88,30 @@ interface Clarification {
     },
     BWGGroupConclusions?: string,
     applicantCommentResponse?: string,
+}
+
+// Added supplementary databases as well
+export interface ExistingCCFRSiteData {
+    siteID: string;
+    centerNumber: string;
+    siteName: string;
+    pIName: string;
+    pIDegree: string;
+}
+
+export interface ExistingCCFRBiospecimens {
+    biospecimenData:string,
+    name:string,
+    condition:string
+}
+
+export interface ExistingCCFRData {
+    dataID:string,
+    name:string,
+    condition:string
+}
+
+export interface SteeringCommitteeUIDs {
+    name:string,
+    UID:string
 }
