@@ -1,5 +1,5 @@
 export interface Application {
-    id?: string,
+    id: string,
     title?: string,
     institutionPrimary?: Institution,
     email?: string,
