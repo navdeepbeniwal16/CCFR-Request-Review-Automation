@@ -1,8 +1,8 @@
 export interface Application {
     id: string,
-    title?: string,
-    institutionPrimary?: Institution,
-    email?: string,
+    title: string,
+    institutionPrimary: Institution,
+    email: string,
     phoneNumber?: number,
     address?: Address,
     institutionSecondary?: Institution,
@@ -14,7 +14,7 @@ export interface Application {
     dataRequired?: Request[],
     programManagerReview?: Review,
     biospecimenRequired?: Request[],
-    createdAt?: Date,
+    createdAt: Date,
     biospecimenForm?: BiospecimenForm,
     steeringCommitteeReview?: {
         reviewStartDate?: Date,
