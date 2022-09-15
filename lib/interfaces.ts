@@ -24,7 +24,7 @@ export interface Application {
         totalReviewers?: number,
     },
     status: "Active" | "Rejected" | "Accepted",
-    stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Complete",
+    stage: "Draft" | "PMReview" | "BWGReview" | "SCReview" | "Complete",
 }
 
 interface Address {
