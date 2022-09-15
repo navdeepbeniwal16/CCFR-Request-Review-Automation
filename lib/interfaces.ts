@@ -23,8 +23,8 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
-    status: "Active" | "Rejected" | "Accepted" // changed to enum
-    stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
+    status: "Active" | "Rejected" | "Accepted",
+    stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Complete",
 }
 
 interface Address {
@@ -40,7 +40,7 @@ interface Institution {
     jobTitle?: string,
     institution?: string,
     department?: string,
-    accessType?: "Data" | "Biospecimens" | "Both", // changed to enum
+    accessType?: "Data" | "Biospecimens" | "Both",
 }
 
 interface Collaborator {
@@ -67,7 +67,7 @@ interface Request {
 
 interface Review {
     name: string,
-    status: "Approved" | "Rejected" | "In Review", // changed to enum
+    status: "Approved" | "Rejected" | "In Review",
 }
 
 interface BiospecimenForm {
