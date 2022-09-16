@@ -94,7 +94,9 @@ export interface Clarification {
 export interface HistoryNode {
     title: string,
     description: string,
-    timestamp: Date
+    timestamp: Date,
+    userID: string,
+    stage: Application['stage']
 }
 
 // Added supplementary databases as well
