@@ -93,7 +93,6 @@ const data = [
             { link: '?type=active', label: 'Active Applications', notif: 3 },
             { link: '?type=approved', label: 'Approved Applications' },
             { link: '?type=rejected', label: 'Rejected Applications' },
-            { link: '?type=inactve', label: 'Inactive Applications' },
         ]
     },
     {

@@ -15,10 +15,11 @@ import { Application } from '../../lib/interfaces';
 
 type ApplicationsPageProps = {
     title: string | null
-    applications: Application[]
+    applications: Application[],
+    numSteeringCommittee: number
 }
 
-const ApplicationsPage: NextPage<ApplicationsPageProps> = ({ title, applications }) => {
+const ApplicationsPage: NextPage<ApplicationsPageProps> = ({ title, applications, numSteeringCommittee }) => {
     const router = useRouter()
     const [apps, setApps] = useState(applications)
     const pageTitle = (title ? title.charAt(0).toUpperCase() + title.slice(1) : "All") + " Applications"
@@ -47,6 +48,7 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({ title, applications
             </Grid>
             <ApplicationTable
                 applications={apps}
+                numSteeringCommittee={numSteeringCommittee}
                 fetchMoreData={() => {
                     setTimeout(() => {
                         setApps(apps.concat(data))
@@ -65,6 +67,7 @@ export const getServerSideProps= withAuthUserTokenSSR({
     const _props: ApplicationsPageProps = {
         title: appType,
         applications: data,
+        numSteeringCommittee: 10
     }
 
     return {
@@ -84,13 +87,17 @@ const data: Application[] = [
             investigator: 'Scott Adams',
             institution: "University of Melbourne",
         },
+        email: "scott.adams@unimelb.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'active',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-04-15"))),
+        status: "Active",
+        stage: "PMReview",
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -99,13 +106,17 @@ const data: Application[] = [
             investigator: 'Dennis Ahnen',
             institution: "Royal Melbourne Institute of Technology",
         },
+        email: "dennisa@rmit.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'approved',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-07-16"))),
+        status: "Active",
+        stage: "Draft",
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -114,13 +125,17 @@ const data: Application[] = [
             investigator: 'Dennis Ahnen',
             institution: "Monash University",
         },
+        email: "dahnen@monash.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'rejected',
+        createdAt: JSON.parse(JSON.stringify(new Date("2021-12-19"))),
+        status: "Rejected",
+        stage: "Complete",
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -129,13 +144,17 @@ const data: Application[] = [
             investigator: 'John Smith',
             institution: "University of Melbourne",
         },
+        email: "jsmith@unimelb.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'active',
+        createdAt: JSON.parse(JSON.stringify(new Date("2021-11-10"))),
+        status: "Active",
+        stage: "BWGReview",
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -144,13 +163,21 @@ const data: Application[] = [
             investigator: 'Mary Jones',
             institution: "Royal Melbourne Institute of Technology",
         },
+        email: "mary.jones@rmite.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'active',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-02-01"))),
+        status: "Active",
+        stage: "SCReview",
+        steeringCommitteeReview: {
+            reviewStartDate: JSON.parse(JSON.stringify(new Date("2022-09-09"))),
+            totalReviewers: 4
+        },
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -159,6 +186,7 @@ const data: Application[] = [
             investigator: 'Irene Clarke',
             institution: "Monash University",
         },
+        email: "iclarke@monash.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
@@ -171,7 +199,10 @@ const data: Application[] = [
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'approved',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-06-26"))),
+        status: "Accepted",
+        stage: "Complete",
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -180,13 +211,17 @@ const data: Application[] = [
             investigator: 'Yoland Intil',
             institution: "University of Melbourne",
         },
+        email: "yolandi@unimelb.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'approved',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-04-25"))),
+        status: "Accepted",
+        stage: "Complete",
+        history:[]
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -195,13 +230,17 @@ const data: Application[] = [
             investigator: 'Sam Yard',
             institution: "Monash University",
         },
+        email: "samyard@monash.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'active',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-09-19"))),
+        status: "Active",
+        stage: "PMReview",
+        history: [],
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -210,6 +249,7 @@ const data: Application[] = [
             investigator: 'Jeff Bacher',
             institution: "Royal Melbourne Institute of Technology",
         },
+        email: "jeffb@rmit.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
@@ -222,7 +262,10 @@ const data: Application[] = [
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'inactive',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-05-14"))),
+        status: "Rejected",
+        stage: "Complete",
+        history: []
     },
     {
         id: String(Math.floor(Math.random() * 10000)),
@@ -231,12 +274,16 @@ const data: Application[] = [
             investigator: 'Dris Oakrim',
             institution: "University of Melbourne",
         },
+        email: "doakrim@unimelb.edu.au",
         dataRequired: [{
             name: "test",
             type: "test",
             quantity: 10,
             numSamples: 1,
         }],
-        status: 'rejected',
+        createdAt: JSON.parse(JSON.stringify(new Date("2022-06-16"))),
+        status: "Rejected",
+        stage: "Complete",
+        history: []
     },
 ];
