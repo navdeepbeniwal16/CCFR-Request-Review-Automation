@@ -25,9 +25,10 @@ export interface Application {
     },
     status: "Active" | "Rejected" | "Accepted",
     stage: "Draft" | "PMReview" | "BWGReview" | "SCReview" | "Complete",
+    history: HistoryNode[]
 }
 
-interface Address {
+export interface Address {
     streetNumber?: number,
     streetName?: string,
     state?: string,
@@ -35,7 +36,7 @@ interface Address {
     country?: string,
 }
 
-interface Institution {
+export interface Institution {
     investigator?: string,
     jobTitle?: string,
     institution?: string,
@@ -43,14 +44,14 @@ interface Institution {
     accessType?: "Data" | "Biospecimens" | "Both",
 }
 
-interface Collaborator {
+export interface Collaborator {
     centerNumber?: number,
     ccfrSite?: string,
     sitePIName?: string,
     sitePIDegree?: string,
 }
 
-interface StudyDescription {
+export interface StudyDescription {
     abstract?: string,
     aims?: string,
     backgroundAndSignificance?: string,
@@ -58,26 +59,26 @@ interface StudyDescription {
     selectionCriteria?: string,
 }
 
-interface Request {
+export interface Request {
     name: string,
     type: string, 
     quantity: number,
     numSamples: number,
 }
 
-interface Review {
+export interface Review {
     name: string,
     status: "Approved" | "Rejected" | "In Review",
 }
 
-interface BiospecimenForm {
+export interface BiospecimenForm {
     amountRequired?: number,
     proposedTestingMethodlogy?: string,
     clarifications?: Clarification,
     BWGStatusReview?: string,
 }
 
-interface Clarification {
+export interface Clarification {
     additionalDispatchRequirement?: "Yes" | "No" | "TBD",
     fluoroscentDyeQuantificationRequired?: "Yes" | "No" | "TBD",
     LCLDerivedDNAAcceptable?: "Yes" | "No" | "TBD",
@@ -88,6 +89,12 @@ interface Clarification {
     },
     BWGGroupConclusions?: string,
     applicantCommentResponse?: string,
+}
+
+export interface HistoryNode {
+    title: string,
+    description: string,
+    timestamp: Date
 }
 
 // Added supplementary databases as well
