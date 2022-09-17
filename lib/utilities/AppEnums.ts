@@ -20,7 +20,7 @@ export enum ApplicationStage {
     PMReview = "PMReview",
     BWGReview = "BWGReview", 
     SCReview = "SCReview", 
-    Accepted = "Accepted"
+    Complete = "Complete"
 }
 
 export enum ApplicationReviewStatus {
