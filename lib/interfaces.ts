@@ -1,3 +1,5 @@
+import { ApplicationReviewStatus, ApplicationStage, ApplicationStatus, InstitutionAccessType } from "./utilities/AppEnums";
+
 export interface Application {
     id: string,
     title: string,
@@ -23,9 +25,9 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
-    status: "Active" | "Rejected" | "Accepted",
-    stage: "Draft" | "PMReview" | "BWGReview" | "SCReview" | "Complete",
-    history: HistoryNode[]
+    status: ApplicationStatus,
+    stage: ApplicationStage,
+    history: HistoryNode[],
 }
 
 export interface Address {
@@ -41,7 +43,7 @@ export interface Institution {
     jobTitle?: string,
     institution?: string,
     department?: string,
-    accessType?: "Data" | "Biospecimens" | "Both",
+    accessType?: InstitutionAccessType
 }
 
 export interface Collaborator {
@@ -68,7 +70,7 @@ export interface Request {
 
 export interface Review {
     name: string,
-    status: "Approved" | "Rejected" | "In Review",
+    status: ApplicationReviewStatus,
 }
 
 export interface BiospecimenForm {
@@ -95,11 +97,10 @@ export interface HistoryNode {
     title: string,
     description: string,
     timestamp: Date,
-    userID: string,
+    userID?: string,
     stage: Application['stage']
 }
 
-// Added supplementary databases as well
 export interface ExistingCCFRSiteData {
     siteID: string;
     centerNumber: string;
@@ -109,18 +110,18 @@ export interface ExistingCCFRSiteData {
 }
 
 export interface ExistingCCFRBiospecimens {
-    biospecimenData:string,
-    name:string,
-    condition:string
+    biospecimenData: string,
+    name: string,
+    condition: string,
 }
 
 export interface ExistingCCFRData {
-    dataID:string,
-    name:string,
-    condition:string
+    dataID: string,
+    name: string,
+    condition: string,
 }
 
 export interface SteeringCommitteeUIDs {
-    name:string,
-    UID:string
+    name: string,
+    UID: string,
 }
