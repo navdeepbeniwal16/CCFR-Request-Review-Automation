@@ -1,3 +1,5 @@
+import { ApplicationReviewStatus, ApplicationStage, ApplicationStatus, InstitutionAccessType } from "./utilities/AppEnums";
+
 export interface Application {
     id?: string,
     title?: string,
@@ -23,11 +25,13 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
-    status: "Active" | "Rejected" | "Accepted" // changed to enum
-    stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
+    // status: "Active" | "Rejected" | "Accepted" // changed to enum
+    status: ApplicationStatus
+    // stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
+    stage: ApplicationStage
 }
 
-interface Address {
+export interface Address {
     streetNumber?: number,
     streetName?: string,
     state?: string,
@@ -35,22 +39,24 @@ interface Address {
     country?: string,
 }
 
-interface Institution {
+export interface Institution {
     investigator?: string,
     jobTitle?: string,
     institution?: string,
     department?: string,
-    accessType?: "Data" | "Biospecimens" | "Both", // changed to enum
+    // accessType?: "Data" | "Biospecimens" | "Both"
+    accessType: InstitutionAccessType
+
 }
 
-interface Collaborator {
+export interface Collaborator {
     centerNumber?: number,
     ccfrSite?: string,
     sitePIName?: string,
     sitePIDegree?: string,
 }
 
-interface StudyDescription {
+export interface StudyDescription {
     abstract?: string,
     aims?: string,
     backgroundAndSignificance?: string,
@@ -58,26 +64,27 @@ interface StudyDescription {
     selectionCriteria?: string,
 }
 
-interface Request {
+export interface Request {
     name: string,
     type: string, 
     quantity: number,
     numSamples: number,
 }
 
-interface Review {
+export interface Review {
     name: string,
-    status: "Approved" | "Rejected" | "In Review", // changed to enum
+    // status: "Approved" | "Rejected" | "In Review", // changed to enum
+    status: ApplicationReviewStatus
 }
 
-interface BiospecimenForm {
+export interface BiospecimenForm {
     amountRequired?: number,
     proposedTestingMethodlogy?: string,
     clarifications?: Clarification,
     BWGStatusReview?: string,
 }
 
-interface Clarification {
+export interface Clarification {
     additionalDispatchRequirement?: "Yes" | "No" | "TBD",
     fluoroscentDyeQuantificationRequired?: "Yes" | "No" | "TBD",
     LCLDerivedDNAAcceptable?: "Yes" | "No" | "TBD",
