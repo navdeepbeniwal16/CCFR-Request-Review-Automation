@@ -1,10 +1,10 @@
 import { ApplicationReviewStatus, ApplicationStage, ApplicationStatus, InstitutionAccessType } from "./utilities/AppEnums";
 
 export interface Application {
-    id?: string,
-    title?: string,
-    institutionPrimary?: Institution,
-    email?: string,
+    id: string,
+    title: string,
+    institutionPrimary: Institution,
+    email: string,
     phoneNumber?: number,
     address?: Address,
     institutionSecondary?: Institution,
@@ -16,7 +16,7 @@ export interface Application {
     dataRequired?: Request[],
     programManagerReview?: Review,
     biospecimenRequired?: Request[],
-    createdAt?: Date,
+    createdAt: Date,
     biospecimenForm?: BiospecimenForm,
     steeringCommitteeReview?: {
         reviewStartDate?: Date,
@@ -25,10 +25,9 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
-    // status: "Active" | "Rejected" | "Accepted" // changed to enum
-    status: ApplicationStatus
-    // stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
-    stage: ApplicationStage
+    status: ApplicationStatus,
+    stage: ApplicationStage,
+    history: HistoryNode[],
 }
 
 export interface Address {
@@ -44,9 +43,7 @@ export interface Institution {
     jobTitle?: string,
     institution?: string,
     department?: string,
-    // accessType?: "Data" | "Biospecimens" | "Both"
-    accessType: InstitutionAccessType
-
+    accessType?: InstitutionAccessType
 }
 
 export interface Collaborator {
@@ -73,8 +70,7 @@ export interface Request {
 
 export interface Review {
     name: string,
-    // status: "Approved" | "Rejected" | "In Review", // changed to enum
-    status: ApplicationReviewStatus
+    status: ApplicationReviewStatus,
 }
 
 export interface BiospecimenForm {
@@ -97,7 +93,14 @@ export interface Clarification {
     applicantCommentResponse?: string,
 }
 
-// Added supplementary databases as well
+export interface HistoryNode {
+    title: string,
+    description: string,
+    timestamp: Date,
+    userID?: string,
+    stage: Application['stage']
+}
+
 export interface ExistingCCFRSiteData {
     siteID: string;
     centerNumber: string;
@@ -107,18 +110,18 @@ export interface ExistingCCFRSiteData {
 }
 
 export interface ExistingCCFRBiospecimens {
-    biospecimenData:string,
-    name:string,
-    condition:string
+    biospecimenData: string,
+    name: string,
+    condition: string,
 }
 
 export interface ExistingCCFRData {
-    dataID:string,
-    name:string,
-    condition:string
+    dataID: string,
+    name: string,
+    condition: string,
 }
 
 export interface SteeringCommitteeUIDs {
-    name:string,
-    UID:string
+    name: string,
+    UID: string,
 }
