@@ -44,3 +44,9 @@ or
 ```bash
   npm start
 ```
+As the regitration functionality has not been complicated, please refer to the following user profile to test other functionalities including authentication:
+
+
+| User              | Password             |
+| ----------------- | -------------------- |
+| testuser@test.com | password1            |
