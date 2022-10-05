@@ -16,11 +16,11 @@ The application will facilitate growth in collaboration requests and ease worklo
 - In-built messaging/notification system integrating communications between CCFR team and the researcher.
 
 ## Authors
-- Dimitri Sadikin
+- [Dimitri Sadikin](https://github.com/dimitrisad)
 - Navdeep Beniwal
-- Irgio Basrewan
+- [Irgio Basrewan](https://github.com/irgiob)
 - Michael Hannon
-- Mohammad Saood Abbasi
+- [Mohammad Saood Abbasi](https://github.com/MohammadSaoodAbbasi)
 
 ## Deployment
 Set up instructions
