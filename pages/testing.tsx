@@ -30,7 +30,7 @@ function Demo() {
     return (
         <>
             <Section1 form={form} />
-            <Section2 />
+            <Section2 form ={form}/>
         </>
         // <Box sx={{ maxWidth: 300 }} mx="auto">
         //   <form onSubmit={form.onSubmit((values) => console.log(values))}>
@@ -55,21 +55,22 @@ function Demo() {
     );
 }
 
-function Section2() {
-    const form = useForm({
-        initialValues: {
-            email: '',
-            termsOfService: false,
-        },
 
-        validate: {
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-        },
-    });
+function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+    //   const form = useForm({
+    //     initialValues: {
+    //       email: '',
+    //       termsOfService: false,
+    //     },
+
+    //     validate: {
+    //       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+    //     },
+    //   });
 
     return (
         <Box sx={{ maxWidth: 300 }} mx="auto">
-            <form onSubmit={form.onSubmit((values) => console.log(values))}>
+            <form onSubmit={form.onSubmit((values: FormDetailsProps) => console.log(values))}>
                 <TextInput
                     withAsterisk
                     label="Email"
@@ -90,21 +91,12 @@ function Section2() {
         </Box>
     );
 }
-function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
-    //   const form = useForm({
-    //     initialValues: {
-    //       email: '',
-    //       termsOfService: false,
-    //     },
 
-    //     validate: {
-    //       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-    //     },
-    //   });
-
+function Section2({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+    
     return (
         <Box sx={{ maxWidth: 300 }} mx="auto">
-            <form onSubmit={form.onSubmit((values: FormDetailsProps) => console.log(values))}>
+            <form onSubmit={form.onSubmit((values) => console.log(values))}>
                 <TextInput
                     withAsterisk
                     label="Email"
