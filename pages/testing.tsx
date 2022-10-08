@@ -28,30 +28,15 @@ function Demo() {
     });
 
     return (
-        <>
+        <Box sx={{ maxWidth: 300 }} mx="auto">
+          <form onSubmit={form.onSubmit((values) => console.log(values))}>
+            
             <Section1 form={form} />
-            <Section2 form ={form}/>
-        </>
-        // <Box sx={{ maxWidth: 300 }} mx="auto">
-        //   <form onSubmit={form.onSubmit((values) => console.log(values))}>
-        //     <TextInput
-        //       withAsterisk
-        //       label="Email"
-        //       placeholder="your@email.com"
-        //       {...form.getInputProps('email')}
-        //     />
+            <Section2 form={form} />
+            <Section3 form={form} />
 
-        //     <Checkbox
-        //       mt="md"
-        //       label="I agree to sell my privacy"
-        //       {...form.getInputProps('termsOfService', { type: 'checkbox' })}
-        //     />
-
-        //     <Group position="right" mt="md">
-        //       <Button type="submit">Submit</Button>
-        //     </Group>
-        //   </form>
-        // </Box>
+          </form>
+        </Box>
     );
 }
 
@@ -69,52 +54,38 @@ function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     //   });
 
     return (
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-            <form onSubmit={form.onSubmit((values: FormDetailsProps) => console.log(values))}>
-                <TextInput
-                    withAsterisk
-                    label="Email"
-                    placeholder="your@email.com"
-                    {...form.getInputProps('email')}
-                />
-
-                <Checkbox
-                    mt="md"
-                    label="I agree to sell my privacy"
-                    {...form.getInputProps('termsOfService', { type: 'checkbox' })}
-                />
-
-                <Group position="right" mt="md">
-                    <Button type="submit">Submit</Button>
-                </Group>
-            </form>
-        </Box>
+        
+        <TextInput
+            withAsterisk
+            label="Email"
+            placeholder="your@email.com"
+            {...form.getInputProps('email')}
+        />
+                
     );
 }
 
 function Section2({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     
     return (
-        <Box sx={{ maxWidth: 300 }} mx="auto">
-            <form onSubmit={form.onSubmit((values) => console.log(values))}>
-                <TextInput
-                    withAsterisk
-                    label="Email"
-                    placeholder="your@email.com"
-                    {...form.getInputProps('email')}
-                />
+        <Checkbox
+          mt="md"
+          label="I agree to sell my privacy"
+          {...form.getInputProps('termsOfService', { type: 'checkbox' })}
+        />
 
-                <Checkbox
-                    mt="md"
-                    label="I agree to sell my privacy"
-                    {...form.getInputProps('termsOfService', { type: 'checkbox' })}
-                />
+                
+    );
+}
 
-                <Group position="right" mt="md">
-                    <Button type="submit">Submit</Button>
-                </Group>
-            </form>
-        </Box>
+function Section3({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+    
+    return (
+        
+        <Group position="right" mt="md">
+            <Button type="submit">Submit</Button>
+        </Group>
+           
     );
 }
 
