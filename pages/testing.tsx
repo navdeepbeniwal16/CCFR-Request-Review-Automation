@@ -124,7 +124,7 @@ function Demo() {
 
 
                 <h2>Section 3: Description of Proposed Collaborative Study</h2>
-                <Section3 form={form} />
+                <Section3a form={form} />
 
                 <h2>Section 4: Agreement</h2>
                 <Section4 form={form} />
@@ -365,7 +365,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
     )
 }
 
-function Section3({ form }: { form: UseFormReturnType<Application> }) {
+function Section3a({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <Stack spacing="md">
             <Textarea
