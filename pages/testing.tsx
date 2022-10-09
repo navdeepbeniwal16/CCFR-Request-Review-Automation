@@ -32,6 +32,7 @@ type ApplicationsPageProps = {
 // }
 
 function Demo() {
+
     const form = useForm<Application>({
         initialValues: {
             //termsOfService: false,
@@ -72,13 +73,43 @@ function Demo() {
             },
             status: 'Inactive',
             stage: 'Draft',
+            // ccfrCollaborators: undefined || [
+            //     {
+            //         centerNumber: undefined,
+            //         ccfrSite: '',
+            //         sitePIName: '',
+            //         sitePIDegree: '',
+            //     }
+            // ]
         },
-
-        validate: {
-            email: (value: Application["email"]) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-        },
+        validate: (values) => {
+            if (values.stage === 'Submitted' ) {
+                return {
+                    email: (/^\S+@\S+$/.test(values.email) ? null : 'Invalid email'),
+                }
+            }
+            return {}
+        }
+        // validate: (values) => {
+            
+        //     return {name: values.name.length < 2 ? 'Too short name' : null,
+        //     age:
+        //       values.age === undefined
+        //         ? 'Age is required'
+        //         : values.age < 18
+        //         ? 'You must be at least 18'
+        //         : null,}
+        //   },
     });
 
+    // draft -> stage
+    /**
+     * save button -> stage: draft
+     * submit button -> stage: submitted
+     * 
+     * isStageDraft ? 
+     */
+    console.log('form', form.values.stage)
     return (
         <Box sx={{ maxWidth: 1100 }} mx="auto">
             <form onSubmit={form.onSubmit((values) => console.log(values))}>
@@ -98,9 +129,28 @@ function Demo() {
                 <h2>Section 4: Agreement</h2>
                 <Section4 form={form} />
 
+                <Save form={form} />
                 <Submit form={form} />
             </form>
         </Box>
+    );
+}
+
+function Save({ form }: { form: UseFormReturnType<Application> }) {
+
+    return (
+
+        <Group position="right" mt="md">
+            <Button
+                type="submit"
+                onClick={() => {
+                    form.setFieldValue('stage',  "Draft")
+                }}
+            >
+                Save
+            </Button>
+        </Group>
+
     );
 }
 
@@ -109,7 +159,14 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
     return (
 
         <Group position="right" mt="md">
-            <Button type="submit">Submit</Button>
+            <Button
+                type="submit"
+                onClick={() => {
+                    form.setFieldValue('stage',  "Submitted")
+                }}
+            >
+                Submit
+            </Button>
         </Group>
 
     );
@@ -252,6 +309,56 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
 }
 
 function Section2({ form }: { form: UseFormReturnType<Application> }) {
+    const data = [
+        {
+            //termsOfService: false,
+
+            title: '',
+            institutionPrimary: {
+                investigator: '',
+                jobTitle: '',
+                institution: '',
+                department: '',
+            },
+
+            email: '',
+            phoneNumber: '',
+            address: {
+                streetName: '',
+                city: '',
+                state: '',
+                zipcode: '',
+                country: '',
+            },
+            institutionSecondary: false,
+            productCommercialization: false,
+            dateReceiptDeadline: undefined,
+            biospecimenReceiptDeadline: undefined,
+            agreement:{
+                a1: false,
+                a2: false,
+                a3: false,
+                a4: false,
+            },
+            studyDescription:{
+                abstract: '',
+                aims: '',
+                backgroundAndSignificance: '',
+                preliminaryData: '',
+                selectionCriteria: '',
+            },
+            status: 'Inactive',
+            stage: 'Draft',
+            ccfrCollaborators: {
+                centerNumber: 12,
+                ccfrSite: '',
+                sitePIName: '',
+                sitePIDegree: '',
+            }
+
+        },
+    ]
+    // const rows = 
     return (
         <>
         </>
@@ -262,6 +369,7 @@ function Section3({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <Stack spacing="md">
             <Textarea
+                withAsterisk
                 label="Project Title"
                 autosize
                 {...form.getInputProps('title')}
