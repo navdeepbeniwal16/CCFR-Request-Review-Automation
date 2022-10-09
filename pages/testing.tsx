@@ -260,21 +260,43 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
 
 function Section3({ form }: { form: UseFormReturnType<Application> }) {
     return (
-        <>
-            <Text>Please upload a brief description of the proposed research to use data/biospecimens from the CCFR.</Text>
+        <Stack spacing="md">
             <Textarea
                 label="Project Title"
                 autosize
-                minRows={2}
                 {...form.getInputProps('title')}
             />
             <Textarea
                 label="Abstract"
                 autosize
                 minRows={2}
-                {...form.getInputProps('title')}
+                {...form.getInputProps('studyDescription.abstract')}
             />
-        </>
+            <Textarea
+                label="Specific Aims"
+                autosize
+                minRows={2}
+                {...form.getInputProps('studyDescription.aims')}
+            />
+            <Textarea
+                label="Background and Significance of the Proposed Collaborative Study"
+                autosize
+                minRows={2}
+                {...form.getInputProps('studyDescription.backgroundAndSignificance')}
+            />
+            <Textarea
+                label="Preliminary Data"
+                autosize
+                minRows={2}
+                {...form.getInputProps('studyDescription.preliminaryData')}
+            />
+            <Textarea
+                label="Selection Criteria"
+                autosize
+                minRows={2}
+                {...form.getInputProps('studyDescription.selectionCriteria')}
+            />
+        </Stack>
     )
 }
 
