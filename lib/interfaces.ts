@@ -23,6 +23,7 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
+    agreement: Agreement,
     status: "Active" | "Rejected" | "Accepted" | "Inactive" // changed to enum
     stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
 }
@@ -114,4 +115,11 @@ export interface ExistingCCFRData {
 export interface SteeringCommitteeUIDs {
     name: string,
     UID: string
+}
+
+interface Agreement {
+    a1: boolean,
+    a2: boolean,
+    a3: boolean,
+    a4: boolean,
 }
