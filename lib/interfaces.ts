@@ -28,6 +28,8 @@ export interface Application {
     status: ApplicationStatus,
     stage: ApplicationStage,
     history: HistoryNode[],
+
+    isEmpty():Boolean
 }
 
 export interface Address {
@@ -124,4 +126,12 @@ export interface ExistingCCFRData {
 export interface SteeringCommitteeUIDs {
     name: string,
     UID: string,
+}
+
+export interface UserProfile {
+    displayName?: string;
+    email? : string;
+    emailVerified? : boolean
+    phoneNumber?: string
+    photoURL?: string
 }
