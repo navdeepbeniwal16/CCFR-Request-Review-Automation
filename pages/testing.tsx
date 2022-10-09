@@ -1,5 +1,6 @@
 import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
+import { DatePicker } from '@mantine/dates';
 import { AuthAction, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth';
 import { Application } from '../lib/interfaces';
 // import { ApplicationsPage } from './applications';
@@ -52,7 +53,10 @@ function Demo() {
                 zipcode: '',
                 country: '',
             },
-            status: 'Active',
+
+            dateReceiptDeadline: undefined,
+            biospecimenReceiptDeadline: undefined,
+            status: 'Inactive',
             stage: 'Draft',
         },
 
@@ -223,7 +227,26 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
                 <Grid.Col span={8}>If requesting CCFR biospecimens, will they be used for product commercialization?</Grid.Col>
                 <Grid.Col span={2}><Switch onLabel="Yes" offLabel="No" size="xl"/></Grid.Col>
             </Grid>
+
+            <Space h="lg"/>
+
+            <Group grow>
+               
+                <DatePicker                 
+                    placeholder="Pick date" 
+                    label= "Deadline for receipt of data" 
+                    {...form.getInputProps('dateReceiptDeadline')}
+                />
             
+                <DatePicker 
+                    placeholder="Pick date" 
+                    label= "Deadline for receipt of biospecimens" 
+                    {...form.getInputProps('biospecimenReceiptDeadline')}
+                />
+
+            </Group>
+            
+
         </>
         
     )

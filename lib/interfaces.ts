@@ -5,7 +5,7 @@ export interface Application {
     email: string,
     phoneNumber: string,
     address: Address,
-    institutionSecondary?: Institution,
+    institutionSecondary?: boolean,
     productCommercialization?: boolean,
     dateReceiptDeadline?: Date,
     biospecimenReceiptDeadline?: Date,
@@ -23,7 +23,7 @@ export interface Application {
         numberOfReviewersAccepted?: number,
         totalReviewers?: number,
     },
-    status: "Active" | "Rejected" | "Accepted" // changed to enum
+    status: "Active" | "Rejected" | "Accepted" | "Inactive" // changed to enum
     stage: "Draft" | "Submitted" | "PMReview" | "BWGReview" | "SCReview" | "Accepted" // added key to indicate current stage of application
 }
 
