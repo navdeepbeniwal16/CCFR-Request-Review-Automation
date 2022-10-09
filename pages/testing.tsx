@@ -1,4 +1,4 @@
-import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack } from '@mantine/core';
+import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack, Textarea } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
 import { AuthAction, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth';
@@ -63,6 +63,13 @@ function Demo() {
                 a3: false,
                 a4: false,
             },
+            studyDescription:{
+                abstract: '',
+                aims: '',
+                backgroundAndSignificance: '',
+                preliminaryData: '',
+                selectionCriteria: '',
+            },
             status: 'Inactive',
             stage: 'Draft',
         },
@@ -75,9 +82,6 @@ function Demo() {
     return (
         <Box sx={{ maxWidth: 1100 }} mx="auto">
             <form onSubmit={form.onSubmit((values) => console.log(values))}>
-                <h1>Section Demo</h1>
-                <SectionA form={form} />
-                <SectionB form={form} />
 
                 <h1>Application Details</h1>
                 <Section0 form={form} />
@@ -97,33 +101,6 @@ function Demo() {
                 <Submit form={form} />
             </form>
         </Box>
-    );
-}
-
-
-function SectionA({ form }: { form: UseFormReturnType<Application> }) {
-    return (
-
-        <TextInput
-            withAsterisk
-            label="Email"
-            placeholder="your@email.com"
-            {...form.getInputProps('email')}
-        />
-
-    );
-}
-
-function SectionB({ form }: { form: UseFormReturnType<Application> }) {
-
-    return (
-        <Checkbox
-            mt="md"
-            label="I agree to sell my privacy"
-            {...form.getInputProps('termsOfService', { type: 'checkbox' })}
-        />
-
-
     );
 }
 
@@ -285,6 +262,18 @@ function Section3({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <>
             <Text>Please upload a brief description of the proposed research to use data/biospecimens from the CCFR.</Text>
+            <Textarea
+                label="Project Title"
+                autosize
+                minRows={2}
+                {...form.getInputProps('title')}
+            />
+            <Textarea
+                label="Abstract"
+                autosize
+                minRows={2}
+                {...form.getInputProps('title')}
+            />
         </>
     )
 }
