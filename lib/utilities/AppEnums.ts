@@ -30,12 +30,17 @@ export enum ApplicationReviewStatus {
 }
 
 
-
-
-
 /*
 Firestore DB Enums
 */
 export enum DBCollections {
     Applications = "applications"
+}
+
+export enum UserRole {
+    APPLICANT = "Applicant",
+    SC_MEMBER = "Steering Committee Member",
+    BGW_CHAIR = "BWG Chair",
+    PROGRAM_MANAGER = "Program Manager",
+    ADMIN = "Portal Administrator"
 }
