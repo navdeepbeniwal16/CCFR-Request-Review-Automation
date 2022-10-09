@@ -1,47 +1,101 @@
-import { getAuth, UserRecord } from 'firebase-admin/auth';
-import admin from 'firebase-admin/';
-import { AdminApp } from "./AdminApp";
+import { getAuth, UserIdentifier, UserRecord } from 'firebase-admin/auth';
+import { AdminApp } from './AdminApp';
+import { printErrorTrace } from './utilities/errorHandler';
+import { UserRole } from './utilities/AppEnums';
 
-const app:admin.app.App = AdminApp.getInstance();
+// NOTE: MODULE ONLY TO BE USED FOR ADMIN OPERATIONS
+AdminApp.initialize();
 
-export const getUser = async (userEmail:string): Promise<any> => {
+export const getUser = async (email: string): Promise<any> => {
     let user = null;
 
     const result = await getAuth()
-        .getUserByEmail(userEmail)
-        .then((userRecord) => {
-            if(userRecord) user = userRecord;
+        .getUserByEmail(email)
+        .then(userRecord => {
+            if (userRecord) user = userRecord;
         })
-        .catch((error) => {
-            console.log('Error fetching user data:', error);
+        .catch(error => {
+            printErrorTrace(getUser, error, false);
         });
 
     return user;
-}
+};
 
-export const getUserRole = async (userEmail:string) => {
-    const user:UserRecord = await getUser(userEmail);
-    if(user && user.customClaims && user.customClaims.role) {
+export const getAllUsers = async (nextPageToken?: string) => {
+    const users: UserRecord[] = [];
+
+    await getAuth()
+        .listUsers(1000, nextPageToken) // 1000 is the maximum number of users that can be fetched from firebase in single request
+        .then(async listUsersResult => {
+            listUsersResult.users.forEach(userRecord => {
+                users.push(userRecord);
+            });
+            if (listUsersResult.pageToken) {
+                const usersFromRecurseiveReq = await getAllUsers(
+                    listUsersResult.pageToken,
+                );
+                users.push(...usersFromRecurseiveReq);
+            }
+        })
+        .catch(error => {
+            printErrorTrace(getAllUsers, error, false);
+        });
+
+    return users;
+};
+
+export const getUsersByRole = async (role: UserRole) => {
+    const users: UserRecord[] = [];
+    const allUsers: UserRecord[] = await getAllUsers();
+    allUsers.forEach(user => {
+        if (
+            user.customClaims &&
+            user.customClaims.role &&
+            user.customClaims.role === role
+        ) {
+            users.push(user);
+        }
+    });
+
+    return users;
+};
+
+export const deleteUser = async (email: string) => {
+    const user = await getUser(email);
+    let isDeleted = false;
+    if (user !== undefined && user !== null) {
+        await getAuth()
+            .deleteUser(user.uid)
+            .then(() => {
+                console.log('Successfully deleted user');
+                isDeleted = true;
+            })
+            .catch(error => {
+                printErrorTrace(deleteUser, error, false);
+            });
+    }
+
+    return isDeleted;
+};
+
+export const getUserRole = async (email: string) => {
+    const user: UserRecord = await getUser(email);
+    if (user && user.customClaims && user.customClaims.role) {
         return user.customClaims.role;
     }
 
     return null;
-}
+};
 
-// query func to check if the user exists on the database or not
-export const userExists = async (userEmail:string): Promise<Boolean> => {
-    const user = await getUser(userEmail);
-    if(user) return true;
-
-    return false;
-}
-
-export const setUserRole = async (userEmail:string, userRole: string): Promise<any> => {
+export const setUserRole = async (
+    email: string,
+    role: string,
+): Promise<any> => {
     let isUpdated = false;
 
-    const user:UserRecord = await getUser(userEmail);
-    if(user) {
-        await getAuth().setCustomUserClaims(user.uid, { role: userRole });
+    const user: UserRecord = await getUser(email);
+    if (user) {
+        await getAuth().setCustomUserClaims(user.uid, { role: role });
         isUpdated = true;
     }
 
@@ -49,11 +103,11 @@ export const setUserRole = async (userEmail:string, userRole: string): Promise<a
     return isUpdated;
 };
 
-export const removeUserRole = async (userEmail:string): Promise<any> => {
+export const removeUserRole = async (email: string): Promise<any> => {
     let isRemoved = false;
-    
-    const user:UserRecord = await getUser(userEmail);
-    if(user) {
+
+    const user: UserRecord = await getUser(email);
+    if (user) {
         await getAuth().setCustomUserClaims(user.uid, {}); // updating with an empty claim
         isRemoved = true;
     }
@@ -62,3 +116,10 @@ export const removeUserRole = async (userEmail:string): Promise<any> => {
     return isRemoved;
 };
 
+// query func to check if the user exists on the database or not
+export const userExists = async (email: string): Promise<Boolean> => {
+    const user = await getUser(email);
+    if (user) return true;
+
+    return false;
+};
