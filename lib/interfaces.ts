@@ -1,10 +1,10 @@
 export interface Application {
     id?: string,
-    title?: string,
-    institutionPrimary?: Institution,
-    email?: string,
-    phoneNumber?: number,
-    address?: Address,
+    title: string,
+    institutionPrimary: Institution,
+    email: string,
+    phoneNumber: string,
+    address: Address,
     institutionSecondary?: Institution,
     productCommercialization?: boolean,
     dateReceiptDeadline?: Date,
@@ -28,18 +28,18 @@ export interface Application {
 }
 
 interface Address {
-    streetNumber?: number,
-    streetName?: string,
-    state?: string,
-    zipcode?: number,
-    country?: string,
+    streetName: string,
+    city: string,
+    state: string,
+    zipcode: string,
+    country: string,
 }
 
 interface Institution {
-    investigator?: string,
-    jobTitle?: string,
-    institution?: string,
-    department?: string,
+    investigator: string,
+    jobTitle: string,
+    institution: string,
+    department: string,
     accessType?: "Data" | "Biospecimens" | "Both", // changed to enum
 }
 
@@ -60,7 +60,7 @@ interface StudyDescription {
 
 interface Request {
     name: string,
-    type: string, 
+    type: string,
     quantity: number,
     numSamples: number,
 }
@@ -100,18 +100,18 @@ export interface ExistingCCFRSiteData {
 }
 
 export interface ExistingCCFRBiospecimens {
-    biospecimenData:string,
-    name:string,
-    condition:string
+    biospecimenData: string,
+    name: string,
+    condition: string
 }
 
 export interface ExistingCCFRData {
-    dataID:string,
-    name:string,
-    condition:string
+    dataID: string,
+    name: string,
+    condition: string
 }
 
 export interface SteeringCommitteeUIDs {
-    name:string,
-    UID:string
+    name: string,
+    UID: string
 }

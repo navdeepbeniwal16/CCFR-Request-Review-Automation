@@ -7,50 +7,57 @@ import { Application } from '../lib/interfaces';
 
 type ApplicationsPageProps = {
     title: string | null
-    applications: Application[]
+    // applications: Application[]
 }
 
-type FormDetailsProps = {
-    termsOfService: boolean
+// type FormDetailsProps = {
+//     termsOfService: boolean
 
-    titleProject: string
+//     titleProject: string
 
-    principalInvestigator: string
-    jobTitle: string
-    institution: string
-    department: string
-    email: string
-    phone: string
-    addressForm: string
-    city: string
-    stateForm: string
-    zip: string
-    country: string
+//     principalInvestigator: string
+//     jobTitle: string
+//     institution: string
+//     department: string
+//     email: string
+//     phone: string
+//     addressForm: string
+//     city: string
+//     stateForm: string
+//     zip: string
+//     country: string
 
     
-}
+// }
 
 function Demo() {
-    const form = useForm({
+    const form = useForm<Application>({
         initialValues: {
-            termsOfService: false,
+            //termsOfService: false,
 
-            titleProject: '',
-            principalInvestigator: '',
-            jobTitle: '',
-            institution: '',
-            department: '',
+            title: '',
+            institutionPrimary: {
+                investigator: '',
+                jobTitle: '',
+                institution: '',
+                department: '',
+            },
+            
             email: '',
-            phone: '',
-            addressForm: '',
-            city: '',
-            stateForm: '',
-            zip: '',
-            country: '',
+            phoneNumber: '',
+            address: {
+                streetName: '',
+                city: '',
+                state: '',
+                zipcode: '',
+                country: '',
+            },
+            status: 'Active',
+            stage: 'Draft',
         },
 
         validate: {
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            email: (value: Application["email"]) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
         },
     });
 
@@ -73,10 +80,8 @@ function Demo() {
             <h2>Section 3: Description of Proposed Collaborative Study</h2>
             <Section3 form={form} />
 
-            <h2>Section 4: AGREEMENT for us of epidemiologic, pathologic and outcome data and for biomaterials provided from the Colon Cancer Family Registry</h2>
+            <h2>Section 4: Agreement</h2>
             <Section4 form={form} />
-
-            <h2>Application Review and Approval</h2>
 
             <Submit form={form} />
           </form>
@@ -85,7 +90,7 @@ function Demo() {
 }
 
 
-function SectionA({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function SectionA({ form }: { form: UseFormReturnType<Application> }) {
     return (
         
         <TextInput
@@ -98,7 +103,7 @@ function SectionA({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     );
 }
 
-function SectionB({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function SectionB({ form }: { form: UseFormReturnType<Application> }) {
     
     return (
         <Checkbox
@@ -111,7 +116,7 @@ function SectionB({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     );
 }
 
-function Submit({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function Submit({ form }: { form: UseFormReturnType<Application> }) {
     
     return (
         
@@ -122,30 +127,30 @@ function Submit({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     );
 }
 
-function Section0({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function Section0({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <TextInput
             withAsterisk
             label="Title of Project"
-            {...form.getInputProps('titleProject')}
+            {...form.getInputProps('title')}
         />
     )
     
 }
 
-function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function Section1({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <>
             <Group position="center" grow>
                 <TextInput
                     withAsterisk
                     label="Principal Investigator"
-                    {...form.getInputProps('principalInvestigator')}
+                    {...form.getInputProps('institutionPrimary.investigator')}
                 />
                 <TextInput
                     withAsterisk
                     label="Job Title"
-                    {...form.getInputProps('jobTitle')}
+                    {...form.getInputProps('institutionPrimary.jobTitle')}
                 />
             </Group>
 
@@ -153,12 +158,12 @@ function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
                 <TextInput
                     withAsterisk
                     label="Institution"
-                    {...form.getInputProps('institution')}
+                    {...form.getInputProps('institutionPrimary.institution')}
                 />
                 <TextInput
                     withAsterisk
                     label="Department"
-                    {...form.getInputProps('department')}
+                    {...form.getInputProps('institutionPrimary.department')}
                 />
             </Group>
 
@@ -171,26 +176,26 @@ function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
                 />
                 <TextInput
                     label="Phone Number"
-                    {...form.getInputProps('phone')}
+                    {...form.getInputProps('phoneNumber')}
                 />
             </Group>
 
             <TextInput
                 withAsterisk
                 label="Address"
-                {...form.getInputProps('addressForm')}
+                {...form.getInputProps('address.streetName')}
             />
 
             <Group position="center" grow>
                 <TextInput
                     withAsterisk
                     label="City/Suburb"
-                    {...form.getInputProps('city')}
+                    {...form.getInputProps('address.city')}
                 />
                 <TextInput
                     withAsterisk
                     label="State"
-                    {...form.getInputProps('stateForm')}
+                    {...form.getInputProps('address.state')}
                 />
             </Group>
 
@@ -198,12 +203,12 @@ function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
                 <TextInput
                     withAsterisk
                     label="Zip/Post Code"
-                    {...form.getInputProps('zip')}
+                    {...form.getInputProps('address.zipcode')}
                 />
                 <TextInput
                     withAsterisk
                     label="Country"
-                    {...form.getInputProps('country')}
+                    {...form.getInputProps('address.country')}
                 />
             </Group>
             <Space h="lg"/>
@@ -225,14 +230,14 @@ function Section1({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     
 }
 
-function Section2({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function Section2({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <>
         </>
     )
 }
 
-function Section3({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function Section3({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <>
             <Text>Please upload a brief description of the proposed research to use data/biospecimens from the CCFR.</Text>
@@ -240,7 +245,7 @@ function Section3({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     )
 }
 
-function Section4({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
+function Section4({ form }: { form: UseFormReturnType<Application> }) {
     return (
         <>
             <Stack align="flex-start">
@@ -283,30 +288,6 @@ function Section4({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
     )
 }
 
-function Section5({ form }: { form: UseFormReturnType<FormDetailsProps> }) {
-    return (
-        <>
-            <Text>
-                The above application has been reviewed and approved by:
-            </Text>
-            <Group>
-                <TextInput
-                    withAsterisk
-                    label="Email Address"
-                    placeholder='your@email.com'
-                    {...form.getInputProps('email')}
-                />
-                <TextInput
-                    label="Phone Number"
-                    {...form.getInputProps('phone')}
-                />
-            </Group>
-
-        </>
-    )
-}
-
-
 
 
 // below is the code required to ensure user is authenticated 
@@ -318,7 +299,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
 
     const _props: ApplicationsPageProps = {
         title: appType,
-        applications: data,
+        // applications: data,
     }
 
     return {
@@ -330,20 +311,20 @@ export default withAuthUser<ApplicationsPageProps>({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
 })(Demo)
 
-const data: Application[] = [
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: "Impact of Inflammatory Bowel Disease on CRC Mortality.",
-        institutionPrimary: {
-            investigator: 'Scott Adams',
-            institution: "University of Melbourne",
-        },
-        dataRequired: [{
-            name: "test",
-            type: "test",
-            quantity: 10,
-            numSamples: 1,
-        }],
-        status: 'active',
-    }
-];
+// const data: Application[] = [
+//     {
+//         id: String(Math.floor(Math.random() * 10000)),
+//         title: "Impact of Inflammatory Bowel Disease on CRC Mortality.",
+//         institutionPrimary: {
+//             investigator: 'Scott Adams',
+//             institution: "University of Melbourne",
+//         },
+//         dataRequired: [{
+//             name: "test",
+//             type: "test",
+//             quantity: 10,
+//             numSamples: 1,
+//         }],
+//         status: 'Active',
+//     }
+// ];
