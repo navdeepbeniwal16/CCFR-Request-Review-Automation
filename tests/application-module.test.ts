@@ -27,42 +27,44 @@ beforeAll(async  () => {
     authorization = auth.auth(app);
     db = firestore.firestore(app);
 
-    const currentUserCredential = await authorization.signInWithEmailAndPassword('bob@test.com', 'password');
+    // const currentUserCredential = await authorization.signInWithEmailAndPassword('bob@test.com', 'password');
    
 
-    console.log('App is initalised? : ' + app.name);
-    console.log('Authorization is initalised? : ' + authorization);
-    console.log('User logged in? ' + currentUserCredential.user?.email);
-    console.log('Db is initalised? : ' + db.app);
+    // console.log('App is initalised? : ' + app.name);
+    // console.log('Authorization is initalised? : ' + authorization);
+    // console.log('User logged in? ' + currentUserCredential.user?.email);
+    // console.log('Db is initalised? : ' + db.app);
 });
 
 describe('dummy test suite', () => {
     // test('test saveApplicationAsDraft', async () => {
     //     const testApplication = generateDummyApplication();
-    //     const result = await saveApplicationAsDraft(testApplication, authorization, db);
+    //     const result = await ApplicationModule.saveApplicationAsDraft(testApplication, authorization, db);
     //     expect(result).toBe(true);
     // });
 
-    // test('test saveAndSubmitApplication', async () => {
-    //     const testApplication = generateDummyApplication();
-    //     const result = await saveAndSubmitApplication(testApplication, authorization, db);
-    //     expect(result).toBe(true);
-    // });
+    test('test saveAndSubmitApplication', async () => {
+        const testApplication = generateDummyApplication();
+        const result = await ApplicationModule.saveAndSubmitApplication(testApplication, authorization, db);
+        expect(result).toBe(true);
+    });
 
     // test('test getApplicationById', async () => {
-    //     const result = await getApplicationById('5', authorization, db);
+    //     const result = await ApplicationModule.getApplicationById('15', authorization, db);
     //     console.log('getApplicationById Result ' + result);
+    //     if(result.isEmpty()) {
+    //         console.log('No Application found...!');
+    //     }
     //     expect(result);
     // });
 
     // test('test getApplicationByTitle', async () => {
-    //     const result:Application = await getApplicationByTitle('test-title', authorization, db);
-    //     // console.log('getApplicationById Result ' + result !== undefined ? result.email : 'Result is undefined');
+    //     const result:Application = await ApplicationModule.getApplicationByTitle('test-title-random', authorization, db);
     //     console.log('getApplicationById Result ');
-    //     if(result === undefined) {
-    //         console.log('Result is undefined');
+    //     if(result.isEmpty()) {
+    //         console.log('Result is empty');
     //     } else {
-    //         console.log('Result is defined!!!');
+    //         console.log('Result is not empty!!!');
     //         console.log(result.email);
     //     }
     //     expect(result);
@@ -75,25 +77,25 @@ describe('dummy test suite', () => {
     // });
 
     // test('test getSavedApplicationsByApplicant', async () => {
-    //     const result:Application[] = await getSavedApplicationsByApplicant('test-email',authorization, db);
+    //     const result:Application[] = await ApplicationModule.getSavedApplicationsByApplicant('test-email',authorization, db);
     //     console.log('Submitted applications : ' + result.length);
     //     expect(result);
     // });
 
     // test('test getSubmittedApplicationsByApplicant', async () => {
-    //     const result:Application[] = await getSubmittedApplicationsByApplicant('test-email',authorization, db);
+    //     const result:Application[] = await ApplicationModule.getSubmittedApplicationsByApplicant('test-email',authorization, db);
     //     console.log('Submitted applications : ' + result.length);
     //     expect(result);
     // });
 
     // test('test getApplicationsByStatus', async () => {
-    //     const result:Application[] = await getApplicationsByStatus(ApplicationStatus.ACTIVE, authorization, db);
+    //     const result:Application[] = await ApplicationModule.getApplicationsByStatus(ApplicationStatus.Rejected, authorization, db);
     //     console.log('Active applications : ' + result.length);
     //     expect(result);
     // });
 
     // test('test getApplicationsByStage', async () => {
-    //     const result:Application[] = await ApplicationModule.getApplicationsByStage(ApplicationStage.Draft, authorization, db);
+    //     const result:Application[] = await ApplicationModule.getApplicationsByStage(ApplicationStage.BWGReview, authorization, db);
     //     console.log('Drafted applications : ' + result.length);
     //     expect(result);
     // });
@@ -105,7 +107,7 @@ describe('dummy test suite', () => {
     // });
 
     // test('test updateApplicationStatus', async () => {
-    //     const result = await ApplicationModule.updateApplicationStatus('5', ApplicationStatus.Rejected, authorization, db);
+    //     const result = await ApplicationModule.updateApplicationStatus('15', ApplicationStatus.Rejected, authorization, db);
     //     console.log('Rejected application? : ' + result);
     //     expect(result);
     // });
@@ -118,16 +120,16 @@ describe('dummy test suite', () => {
     //     expect(result);
     // });
 
-    test('test getUserRole', async () => {
-        
-        UserAdminModule.getUserRole('bob@test.com');
-    })
+    // test('test createFirestoreDataFromApplication', async () => {
+    //     ApplicationModule.createFirestoreDataFromApplication(generateDummyApplication());
+
+    // })
 });
 
 // Utlity functions to be used while development
 const generateDummyApplication = (): Application => {
     const application = <Application>{};
-    application.id = '9';
+    application.id = '11';
     application.title = 'test-title';
     application.email = 'test-email';
     
