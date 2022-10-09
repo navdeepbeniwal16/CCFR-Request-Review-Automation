@@ -1,5 +1,6 @@
 import { describe, expect, test, beforeAll } from '@jest/globals';
 import * as ApplicationModule from '../lib/application';
+import * as UserAdminModule from '../lib/admin-users';
 import firebase from 'firebase/app'
 import firestore from 'firebase';
 import auth from 'firebase';
@@ -14,19 +15,24 @@ const firebaseConfig = {
     storageBucket: "ccfr-portal.appspot.com",
     messagingSenderId: "986450998335",
     appId: "1:986450998335:web:056d0380ce67be4784748a"
-}; 
+  };
 
 let app: firebase.app.App;
 let authorization: auth.auth.Auth;
 let db: firestore.firestore.Firestore;
+let currentUserCredential: auth.auth.UserCredential;
 
-beforeAll(() => {
+beforeAll(async  () => {
     app = firebase.initializeApp(firebaseConfig);
     authorization = auth.auth(app);
     db = firestore.firestore(app);
 
+    const currentUserCredential = await authorization.signInWithEmailAndPassword('bob@test.com', 'password');
+   
+
     console.log('App is initalised? : ' + app.name);
-    console.log('Authorization is initalised? : ' + authorization.currentUser);
+    console.log('Authorization is initalised? : ' + authorization);
+    console.log('User logged in? ' + currentUserCredential.user?.email);
     console.log('Db is initalised? : ' + db.app);
 });
 
@@ -63,7 +69,7 @@ describe('dummy test suite', () => {
     // });
 
     // test('test getAllSubmittedApplications', async () => {
-    //     const result:Application[] = await getAllSubmittedApplications(authorization, db);
+    //     const result:Application[] = await ApplicationModule.getAllSubmittedApplications(authorization, db);
     //     console.log('Submitted applications : ' + result.length);
     //     expect(result);
     // });
@@ -111,6 +117,11 @@ describe('dummy test suite', () => {
     //     console.log('Updated application? : ' + result);
     //     expect(result);
     // });
+
+    test('test getUserRole', async () => {
+        
+        UserAdminModule.getUserRole('bob@test.com');
+    })
 });
 
 // Utlity functions to be used while development
