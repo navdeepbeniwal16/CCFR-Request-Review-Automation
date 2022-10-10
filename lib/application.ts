@@ -1,11 +1,10 @@
-import { Application } from './interfaces';
-import firebase from 'firebase';
-import {
-    ApplicationStage,
-    ApplicationStatus,
-    DBCollections,
-} from './utilities/AppEnums';
+import { Application, SteeringCommitteeUIDs, ExistingCCFRData, ExistingCCFRBiospecimens, ExistingCCFRSiteData, Review, BiospecimenForm } from "./interfaces"
+import firebase from "firebase";
+import { ApplicationStage, ApplicationStatus, DBCollections, ApplicationReviewStatus, UserRole } from "./utilities/AppEnums";
+import { isServerRuntime } from "next/dist/server/config-shared";
 import { printErrorTrace } from './utilities/errorHandler';
+import * as adminUserModule from '../lib/admin-users'
+
 
 const initEmptyApplication = () => {
     let application: Application = {} as Application;
@@ -56,8 +55,17 @@ export const saveApplicationAsDraft = async (application: Application) => {
 };
 
 export const saveAndSubmitApplication = async (application: Application) => {
-    application.stage = ApplicationStage.Submitted;
+    application.stage = ApplicationStage.PMReview;
     application.status = ApplicationStatus.Active;
+    application.programManagerReview = <Review>{};
+    const progMgr = await adminUserModule.getUsersByRole(UserRole.PROGRAM_MANAGER);
+    if (progMgr.length < 1) {
+        throw new Error("Bwg chair not found");
+    }
+    const programManager = progMgr[0];
+    application.programManagerReview!.name = programManager.displayName!; // replace with name form admin sdk api
+    application.programManagerReview.status = ApplicationReviewStatus.In_Review;
+
     await firebase
         .firestore()
         .collection(DBCollections.Applications)
@@ -246,7 +254,6 @@ export const getApplicationsByStage = async (stage: ApplicationStage) => {
     return fetchedApplications;
 };
 
-// TODO:
 export const withdrawApplication = async (applicationId: string) => {
     let application: Application = await getApplicationById(applicationId);
     let isWithdrawn = false;
@@ -323,4 +330,187 @@ export const updateApplication = async (application: Application) => {
     }
 
     return isStatusChanged;
-};
+}
+
+export const getAllSteeringCommitteeMembers = async () => {
+    let fetchedSCMembers: SteeringCommitteeUIDs[] = [];
+
+    const docRef = firebase.firestore().collection("SteeringCommitteeUIDs");
+    await docRef.get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                fetchedSCMembers.push(<SteeringCommitteeUIDs>doc.data());
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+
+    return fetchedSCMembers;
+}
+
+export const getExistingCCFRSiteData = async () => {
+    let fetchedSCMembers: ExistingCCFRSiteData[] = [];
+
+    const docRef = firebase.firestore().collection("ExistingCCFRSiteData");
+    await docRef.get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                fetchedSCMembers.push(<ExistingCCFRSiteData>doc.data());
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+
+    return fetchedSCMembers;
+}
+
+export const getExistingCCFRBiospecimens = async () => {
+    let fetchedSCMembers: ExistingCCFRBiospecimens[] = [];
+
+    const docRef = firebase.firestore().collection("ExistingCCFRBiospecimens");
+    await docRef.get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                fetchedSCMembers.push(<ExistingCCFRBiospecimens>doc.data());
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+
+    return fetchedSCMembers;
+}
+
+export const getExistingCCFRData = async () => {
+    let fetchedSCMembers: ExistingCCFRData[] = [];
+
+    const docRef = firebase.firestore().collection("ExistingCCFRData");
+    await docRef.get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                fetchedSCMembers.push(<ExistingCCFRData>doc.data());
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+
+    return fetchedSCMembers;
+}
+
+export const programManagerReviewApplication = async (applicationId: string, status: ApplicationReviewStatus) => {
+    let application = await getApplicationById(applicationId);
+    let isStatusChanged = false;
+    if (!application.isEmpty()) {
+        if (status == ApplicationReviewStatus.Approved) {
+            application.programManagerReview!.status = ApplicationReviewStatus.Approved;
+            if (application.biospecimenRequired) {
+                application.stage = ApplicationStage.BWGReview;
+                const bwgChairs = await adminUserModule.getUsersByRole(UserRole.BGW_CHAIR);
+                if (bwgChairs.length < 1) {
+                    throw new Error("Bwg chair not found");
+                }
+                const bwgChair = bwgChairs[0];
+                application.BWGChairReview = <Review>{};
+                application.BWGChairReview!.name = bwgChair.displayName!;
+                application.BWGChairReview.status = ApplicationReviewStatus.In_Review;
+            }
+            else {
+                isStatusChanged = await instantiateSteeringCommitteeReviewProcess(application);
+                return isStatusChanged;
+            }
+            await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+                .then(() => {
+                    console.log("Application approved successfully!");
+                    isStatusChanged = true;
+                })
+                .catch((error) => {
+                    console.error("Error writing approving application: ", error);
+                    isStatusChanged = false;
+                });
+        }
+        else if (status == ApplicationReviewStatus.Rejected) {
+            application.stage = ApplicationStage.PMReview;
+            application.programManagerReview!.status = ApplicationReviewStatus.Rejected;
+            await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+                .then(() => {
+                    console.log("Application rejected successfully!");
+                    isStatusChanged = true;
+                })
+                .catch((error) => {
+                    console.error("Error writing rejecting application: ", error);
+                    isStatusChanged = false;
+                });
+        }
+    }
+
+    return isStatusChanged;
+}
+
+
+export const addBiospecimenFormInformation = async (applicationId: string, biospecimenForm: BiospecimenForm) => {
+    let application = await getApplicationById(applicationId);
+    let isStatusChanged = false;
+    if (!application.isEmpty()) {
+        application.biospecimenForm = biospecimenForm;
+        isStatusChanged = await instantiateSteeringCommitteeReviewProcess(application);
+    }
+    return isStatusChanged;
+}
+
+export const instantiateSteeringCommitteeReviewProcess = async (application: Application) => {
+    application = createApplication(application);
+    application.stage = ApplicationStage.SCReview;
+    let isStatusChanged = false;
+    let scReviewers = await getAllSteeringCommitteeMembers();
+    application.steeringCommitteeReview = {};
+    application.steeringCommitteeReview.reviewStartDate = new Date();
+    application.steeringCommitteeReview.numberOfReviewersAccepted = 0;
+    application.steeringCommitteeReview.reviewers = [];
+    application.steeringCommitteeReview.totalReviewers = scReviewers.length;
+    for (let i = 0; i < scReviewers.length; i++) {
+        let scReviewerObj = <Review>{};
+        scReviewerObj.name = scReviewers[i].name;
+        scReviewerObj.status = ApplicationReviewStatus.In_Review;
+        application.steeringCommitteeReview.reviewers.push(scReviewerObj);
+    }
+    await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+        .then(() => {
+            console.log("Application updated successfully!");
+            isStatusChanged = true;
+        })
+        .catch((error) => {
+            console.error("Error writing updating application: ", error);
+            isStatusChanged = false;
+        });
+    return isStatusChanged;
+}
+
+
+export const steeringCommitteeReviewApplication = async (applicationId: string, status: ApplicationReviewStatus, steeringCommitteeMemberName: string) => {
+    let application = await getApplicationById(applicationId);
+    let isStatusChanged = false;
+    if (!application.isEmpty()) {
+        for (let i = 0; i < application.steeringCommitteeReview!.reviewers!.length; i++) {
+            if (application.steeringCommitteeReview!.reviewers![i].name == steeringCommitteeMemberName) {
+                application.steeringCommitteeReview!.reviewers![i].status = status;
+            }
+        }
+        await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+            .then(() => {
+                console.log("Application reviewed successfully!");
+                isStatusChanged = true;
+            })
+            .catch((error) => {
+                console.error("Error writing reviewing application: ", error);
+                isStatusChanged = false;
+            });
+    }
+    return isStatusChanged;
+}

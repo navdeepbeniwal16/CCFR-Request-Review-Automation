@@ -16,6 +16,7 @@ export interface Application {
     dataRequired?: Request[],
     programManagerReview?: Review,
     biospecimenRequired?: Request[],
+    BWGChairReview?: Review,
     createdAt: Date,
     biospecimenForm?: BiospecimenForm,
     steeringCommitteeReview?: {
@@ -29,7 +30,7 @@ export interface Application {
     stage: ApplicationStage,
     history: HistoryNode[],
 
-    isEmpty():Boolean
+    isEmpty(): Boolean
 }
 
 export interface Address {
@@ -65,7 +66,7 @@ export interface StudyDescription {
 
 export interface Request {
     name: string,
-    type: string, 
+    type: string,
     quantity: number,
     numSamples: number,
 }
@@ -130,8 +131,8 @@ export interface SteeringCommitteeUIDs {
 
 export interface UserProfile {
     displayName?: string;
-    email? : string;
-    emailVerified? : boolean
+    email?: string;
+    emailVerified?: boolean
     phoneNumber?: string
     photoURL?: string
 }
