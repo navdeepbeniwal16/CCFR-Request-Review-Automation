@@ -1,4 +1,4 @@
-import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack, Textarea } from '@mantine/core';
+import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack, Textarea, Autocomplete } from '@mantine/core';
 import { useState } from 'react';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
@@ -55,7 +55,12 @@ function Demo() {
                 zipcode: '',
                 country: '',
             },
-            institutionSecondary: false,
+            institutionSecondary: {
+                investigator: '',
+                jobTitle: '',
+                institution: '',
+                department: '',
+            },
             productCommercialization: false,
             dateReceiptDeadline: undefined,
             biospecimenReceiptDeadline: undefined,
@@ -91,16 +96,7 @@ function Demo() {
             }
             return {}
         }
-        // validate: (values) => {
-            
-        //     return {name: values.name.length < 2 ? 'Too short name' : null,
-        //     age:
-        //       values.age === undefined
-        //         ? 'Age is required'
-        //         : values.age < 18
-        //         ? 'You must be at least 18'
-        //         : null,}
-        //   },
+
     });
 
     // draft -> stage
@@ -279,8 +275,39 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
             {checked
             // (scndIns.naem || scndInst.biospec)
              && (
-                
-                <Text>Menace</Text>
+                <>
+                <Autocomplete
+                    label="If yes, access to what?"
+                    placeholder="Pick one"
+                    data={['Data', 'BioSpecimens', 'Both']}
+                    {...form.getInputProps('institutionSecondary.accessType')}
+                />
+                <Group position="center" grow>
+                    <TextInput
+                        withAsterisk
+                        label="Principal Investigator"
+                        {...form.getInputProps('institutionSecondary.investigator')}
+                    />
+                    <TextInput
+                        withAsterisk
+                        label="Job Title"
+                        {...form.getInputProps('institutionSecondary.jobTitle')}
+                    />
+                </Group>
+
+                <Group position="center" grow>
+                    <TextInput
+                        withAsterisk
+                        label="Institution"
+                        {...form.getInputProps('institutionSecondary.institution')}
+                    />
+                    <TextInput
+                        withAsterisk
+                        label="Department"
+                        {...form.getInputProps('institutionSecondary.department')}
+                    />
+                </Group>
+                </>
             )}
 
             <Space h="lg" />

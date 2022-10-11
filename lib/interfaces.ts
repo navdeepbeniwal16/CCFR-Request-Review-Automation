@@ -5,7 +5,7 @@ export interface Application {
     email?: string,
     phoneNumber?: number,
     address?: Address,
-    institutionSecondary?: boolean,
+    institutionSecondary?: Institution,
     productCommercialization?: boolean,
     dateReceiptDeadline?: Date,
     biospecimenReceiptDeadline?: Date,
