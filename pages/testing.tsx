@@ -64,13 +64,13 @@ function Demo() {
             productCommercialization: false,
             dateReceiptDeadline: undefined,
             biospecimenReceiptDeadline: undefined,
-            agreement:{
+            agreement: {
                 a1: false,
                 a2: false,
                 a3: false,
                 a4: false,
             },
-            studyDescription:{
+            studyDescription: {
                 abstract: '',
                 aims: '',
                 backgroundAndSignificance: '',
@@ -87,10 +87,21 @@ function Demo() {
                     sitePIDegree: '',
                     isChecked: false,
                 }
+            ],
+            biospecimenForm: undefined || [
+                {
+                    amountRequired: undefined,
+                    proposedTestingMethodlogy: '',
+                    clarifications: undefined,
+                    BWGStatusReview: '',
+                }
+
             ]
+
+
         },
         validate: (values) => {
-            if (values.stage === 'Submitted' ) {
+            if (values.stage === 'Submitted') {
                 return {
                     email: (/^\S+@\S+$/.test(values.email || '') ? null : 'Invalid email'),
                 }
@@ -111,27 +122,23 @@ function Demo() {
     return (
         <Box sx={{ maxWidth: 1100 }} mx="auto">
             <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                <Stack spacing="xl">
 
-                <h1>Application Details</h1>
-                <Section0 form={form} />
+                    <Section0 form={form} />
 
-                <h2>Section 1: Investigator and General Information</h2>
-                <Section1 form={form} />
+                    <Section1 form={form} />
 
-                <h2>Section 2: CCFR Collaborators</h2>
-                <Section2 form={form}/>
+                    <Section2 form={form} />
 
-                <h2>Section 3A: Description of Proposed Collaborative Study</h2>
-                <Section3a form={form} />
+                    <Section3a form={form} />
 
-                <h2>Section 3B: Specimen and Data Criteria</h2>
-                <Section3b form={form} />
+                    <Section3b form={form} />
 
-                <h2>Section 4: Agreement</h2>
-                <Section4 form={form} />
+                    <Section4 form={form} />
 
-                <Save form={form} />
-                <Submit form={form} />
+                    <Save form={form} />
+                    <Submit form={form} />
+                </Stack>
             </form>
         </Box>
     );
@@ -145,7 +152,7 @@ function Save({ form }: { form: UseFormReturnType<Application> }) {
             <Button
                 type="submit"
                 onClick={() => {
-                    form.setFieldValue('stage',  "Draft")
+                    form.setFieldValue('stage', "Draft")
                 }}
             >
                 Save
@@ -163,7 +170,7 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
             <Button
                 type="submit"
                 onClick={() => {
-                    form.setFieldValue('stage',  "Submitted")
+                    form.setFieldValue('stage', "Submitted")
                 }}
             >
                 Submit
@@ -175,19 +182,25 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
 
 function Section0({ form }: { form: UseFormReturnType<Application> }) {
     return (
-        <TextInput
-            withAsterisk
-            label="Title of Project"
-            {...form.getInputProps('title')}
-        />
+        <Box>
+            <h1>Application Details</h1>
+            <TextInput
+                withAsterisk
+                label="Title of Project"
+                {...form.getInputProps('title')}
+            />
+        </Box>
+
     )
 
 }
 
 function Section1({ form }: { form: UseFormReturnType<Application> }) {
-    const [checked, setChecked]= useState(false);
+    const [checked, setChecked] = useState(false);
     return (
-        <>
+        <Box>
+            <h2>Section 1: Investigator and General Information</h2>
+
             <Group position="center" grow>
                 <TextInput
                     withAsterisk
@@ -269,50 +282,50 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
                         onLabel="Yes"
                         offLabel="No"
                         size="xl"
-                       
+
                     />
                 </Grid.Col>
             </Grid>
-            
-            <Space h="lg" />
-            
-            {checked
-            // (scndIns.naem || scndInst.biospec)
-             && (
-                <>
-                <Autocomplete
-                    label="If yes, access to what?"
-                    placeholder="Pick one"
-                    data={['Data', 'BioSpecimens', 'Both']}
-                    {...form.getInputProps('institutionSecondary.accessType')}
-                />
-                <Group position="center" grow>
-                    <TextInput
-                        withAsterisk
-                        label="Principal Investigator"
-                        {...form.getInputProps('institutionSecondary.investigator')}
-                    />
-                    <TextInput
-                        withAsterisk
-                        label="Job Title"
-                        {...form.getInputProps('institutionSecondary.jobTitle')}
-                    />
-                </Group>
 
-                <Group position="center" grow>
-                    <TextInput
-                        withAsterisk
-                        label="Institution"
-                        {...form.getInputProps('institutionSecondary.institution')}
-                    />
-                    <TextInput
-                        withAsterisk
-                        label="Department"
-                        {...form.getInputProps('institutionSecondary.department')}
-                    />
-                </Group>
-                </>
-            )}
+            <Space h="lg" />
+
+            {checked
+                // (scndIns.naem || scndInst.biospec)
+                && (
+                    <>
+                        <Autocomplete
+                            label="If yes, access to what?"
+                            placeholder="Pick one"
+                            data={['Data', 'BioSpecimens', 'Both']}
+                            {...form.getInputProps('institutionSecondary.accessType')}
+                        />
+                        <Group position="center" grow>
+                            <TextInput
+                                withAsterisk
+                                label="Principal Investigator"
+                                {...form.getInputProps('institutionSecondary.investigator')}
+                            />
+                            <TextInput
+                                withAsterisk
+                                label="Job Title"
+                                {...form.getInputProps('institutionSecondary.jobTitle')}
+                            />
+                        </Group>
+
+                        <Group position="center" grow>
+                            <TextInput
+                                withAsterisk
+                                label="Institution"
+                                {...form.getInputProps('institutionSecondary.institution')}
+                            />
+                            <TextInput
+                                withAsterisk
+                                label="Department"
+                                {...form.getInputProps('institutionSecondary.department')}
+                            />
+                        </Group>
+                    </>
+                )}
 
             <Space h="lg" />
 
@@ -328,7 +341,7 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
                 </Grid.Col>
             </Grid>
 
-           
+
 
 
             <Space h="lg" />
@@ -350,7 +363,7 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
             </Group>
 
 
-        </>
+        </Box>
 
     )
 
@@ -364,7 +377,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                 <Group spacing="xs">
                     <Text italic>
                         {_ccfrPeople.ccfrSite},
-                    </Text> 
+                    </Text>
                     <Text>
                         Site PI:
                     </Text>
@@ -372,97 +385,157 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                         {_ccfrPeople.sitePIName}, {_ccfrPeople.sitePIDegree}
                     </Text>
                 </Group>
-                
+
             </td>
             <td><Checkbox /></td>
-            
+
         </tr>
     ));
-    
+
     return (
-        <>
-        <Table>
-            <thead>
-                <tr>
-                <th>Center Number</th>
-                <th>CCFR Site and Site Principal Investigator</th>
-                <th>Check which apply (if known)</th>
-                </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-        </Table>
+        <Box>
+            <h2>Section 2: CCFR Collaborators</h2>
 
-        <Text>Add new Collaborators</Text>
-        <Group grow>
-            <TextInput
-                label="Other Collaborating Investigators"
-            />
-            <TextInput
-                label="Affiliation"
-            />
-        </Group>
-        
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Center Number</th>
+                        <th>CCFR Site and Site Principal Investigator</th>
+                        <th>Check which apply (if known)</th>
+                    </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </Table>
+            <Space h="md" />
+            <Text weight="500">Add new Collaborators</Text>
+            <Group grow>
+                <TextInput
+                    label="Other Collaborating Investigators"
+                />
+                <TextInput
+                    label="Affiliation"
+                />
+            </Group>
 
-        </>
+
+        </Box>
     )
 }
 
 function Section3a({ form }: { form: UseFormReturnType<Application> }) {
     return (
-        <Stack spacing="md">
-            <Textarea
-                withAsterisk
-                label="Project Title"
-                autosize
-                {...form.getInputProps('title')}
-            />
-            <Textarea
-                label="Abstract"
-                autosize
-                minRows={2}
-                {...form.getInputProps('studyDescription.abstract')}
-            />
-            <Textarea
-                label="Specific Aims"
-                autosize
-                minRows={2}
-                {...form.getInputProps('studyDescription.aims')}
-            />
-            <Textarea
-                label="Background and Significance of the Proposed Collaborative Study"
-                autosize
-                minRows={2}
-                {...form.getInputProps('studyDescription.backgroundAndSignificance')}
-            />
-            <Textarea
-                label="Preliminary Data"
-                autosize
-                minRows={2}
-                {...form.getInputProps('studyDescription.preliminaryData')}
-            />
-            <Textarea
-                label="Selection Criteria"
-                autosize
-                minRows={2}
-                {...form.getInputProps('studyDescription.selectionCriteria')}
-            />
-        </Stack>
+        <Box>
+            <h2>Section 3A: Description of Proposed Collaborative Study</h2>
+
+            <Stack spacing="md">
+                <Textarea
+                    withAsterisk
+                    label="Project Title"
+                    autosize
+                    {...form.getInputProps('title')}
+                />
+                <Textarea
+                    label="Abstract"
+                    autosize
+                    minRows={2}
+                    {...form.getInputProps('studyDescription.abstract')}
+                />
+                <Textarea
+                    label="Specific Aims"
+                    autosize
+                    minRows={2}
+                    {...form.getInputProps('studyDescription.aims')}
+                />
+                <Textarea
+                    label="Background and Significance of the Proposed Collaborative Study"
+                    autosize
+                    minRows={2}
+                    {...form.getInputProps('studyDescription.backgroundAndSignificance')}
+                />
+                <Textarea
+                    label="Preliminary Data"
+                    autosize
+                    minRows={2}
+                    {...form.getInputProps('studyDescription.preliminaryData')}
+                />
+                <Textarea
+                    label="Selection Criteria"
+                    autosize
+                    minRows={2}
+                    {...form.getInputProps('studyDescription.selectionCriteria')}
+                />
+            </Stack>
+        </Box>
     )
 }
 
 function Section3b({ form }: { form: UseFormReturnType<Application> }) {
+
     return (
-        <>
-        <Text>Complete the following section to describe your selection criteria, the type of data and biospecimens, and preferred number of subjects/samples needed</Text>
+        <Box>
+            <h2>Section 3B: Specimen and Data Criteria</h2>
 
+            <Text>Complete the following section to describe your selection criteria, the type of data and biospecimens, and preferred number of subjects/samples needed</Text>
 
-        </>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Selection Criteria</th>
+                        <th>Type of Data</th>
+                        <th>Type of BioSpecimen</th>
+                        <th>Amount of BioSpecimen</th>
+                        <th>Number of Participants/Samples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <TextInput />
+                        </td>
+                        <td>
+                            <Autocomplete
+                                placeholder="Pick one"
+                                data={dataOption}
+
+                            />
+                        </td>
+                        <td>
+                            <Autocomplete
+                                placeholder="Pick one"
+                                data={bioOption}
+
+                            />
+                        </td>
+                        <td>
+                            <TextInput />
+                        </td>
+                        <td>
+                            <TextInput />
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
+            <Space h="md" />
+            <Group grow>
+                <Text>*1Limited primarily to Phase I high-risk probands</Text>
+                <Text>*2Very limited availability</Text>
+
+            </Group>
+            <Space h="sm" />
+            <Group grow>
+                <Text>*3Limited to Phase I, no data for centers 15, 16</Text>
+                <Text>*4Limited to Phase-I probands, no data for centers 12 and 17</Text>
+            </Group>
+
+        </Box>
     )
 }
 
 function Section4({ form }: { form: UseFormReturnType<Application> }) {
     return (
-        <>
+        <Box>
+            <h2>Section 4: Agreement</h2>
+
             <Stack align="flex-start">
                 <Checkbox
                     label="I agree to form a collaboration with the Colon CFR (CCFR). I agree to assume all risks and responsibilities in connection with the receipt, handling, storage and
@@ -505,7 +578,7 @@ function Section4({ form }: { form: UseFormReturnType<Application> }) {
             </Stack>
             <Space h="xl" />
 
-        </>
+        </Box>
     )
 }
 
@@ -570,5 +643,5 @@ const dataOption: string[] = ["DNA from blood", "DNA from lymphoblast cell-lines
 ]
 
 const bioOption: string[] = ["Family history of cancer data", "Baseline epi/risk factor questionnaire data"
-    
+
 ]

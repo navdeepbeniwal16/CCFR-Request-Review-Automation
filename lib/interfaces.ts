@@ -15,7 +15,7 @@ export interface Application {
     programManagerReview?: Review,
     biospecimenRequired?: Request[],
     createdAt?: Date,
-    biospecimenForm?: BiospecimenForm,
+    biospecimenForm?: BiospecimenForm[],
     steeringCommitteeReview?: {
         reviewStartDate?: Date,
         reviewers?: Review[],
