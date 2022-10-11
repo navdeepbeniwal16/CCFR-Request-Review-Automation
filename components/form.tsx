@@ -14,7 +14,7 @@ import {
     Table,
     CloseButton,
 } from '@mantine/core';
-import { useState } from 'react';
+import { Key, useState } from 'react';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
 import {
@@ -104,12 +104,12 @@ export function Form() {
                     isChecked: false,
                 },
             ],
-            biospecimenForm: undefined || [
+            dataRequired: undefined || [
                 {
-                    amountRequired: undefined,
-                    proposedTestingMethodlogy: '',
-                    clarifications: undefined,
-                    BWGStatusReview: '',
+                    name: '',
+                    type: '',
+                    quantity: 0,
+                    numSamples: 0,
                 },
             ],
         },
@@ -416,11 +416,21 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             </Table>
             <Space h="md" />
             <Button>Add new Collaborators</Button>
-            <Space h="md"/>
-            <Group grow>
-                <TextInput label="Other Collaborating Investigators" />
-                <TextInput label="Affiliation" />
-            </Group>
+            <Space h="md" />
+            <Grid align="center">
+                <Grid.Col span={5}>
+                    <TextInput label="Other Collaborating Investigators" />
+
+                </Grid.Col>
+                <Grid.Col span={5}>
+                    <TextInput label="Affiliation" />
+                </Grid.Col>
+                <Grid.Col span={2}>
+                    <CloseButton aria-label="Close modal"></CloseButton>
+                </Grid.Col>
+
+            </Grid>
+
         </Box>
     );
 }
@@ -477,6 +487,61 @@ function Section3a({ form }: { form: UseFormReturnType<Application> }) {
 }
 
 function Section3b({ form }: { form: UseFormReturnType<Application> }) {
+    const [formData, setFormData] = useState<Application['biospecimenRequired']>(form.values.dataRequired);
+
+    const newData = {
+        name: '',
+        type: '',
+        quantity: 0,
+        numSamples: 0,
+    }
+
+    const addNewData = () => {
+        if (formData) {
+            setFormData([...formData, newData])
+        }
+    }
+
+    const handleChanges = (subType: string, event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+
+        const { value } = event.target;
+        const list = formData && [...formData];
+        // const changedData = list[index][name]
+
+        // console.log({ subType, value, event, index })
+        list[index][subType] = value;
+        setFormData(list)
+
+        form.setFieldValue('dataRequired', formData)
+        // console.log('list', list)
+
+    }
+
+    const handleChangesAuto = (subType: string, event:string, index: number) => {
+
+        const value = event;
+        const list = formData && [...formData];
+        // const changedData = list[index][name]
+
+        // console.log({ subType, value, event, index })
+        list[index][subType] = value;
+        setFormData(list)
+        form.setFieldValue('dataRequired', formData)
+        // console.log('list', list)
+
+    }
+
+    const removeData = (index) => {
+        const list = formData && [...formData];
+        const updatedList = list?.filter((value, _index) => _index !== index);
+
+        console.log('updatedLst',  updatedList)
+        setFormData(updatedList)
+        form.setFieldValue('dataRequired', updatedList)
+    }
+
+    console.log('localformData', formData)
+    console.log('real form', form.values)
     return (
         <Box>
             <h2>Section 3B: Specimen and Data Criteria</h2>
@@ -491,46 +556,65 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                 <thead>
                     <tr>
                         <th>Selection Criteria</th>
-                        <th>Type of Data</th>
-                        <th>Type of BioSpecimen</th>
+                        <th>Type of Data/BioSpecimen</th>
                         <th>Amount of BioSpecimen</th>
                         <th>No. Participants/Samples</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            
-                            <Textarea autosize></Textarea>
-                         
-                            
-                        </td>
-                        <td>
-                            <Autocomplete
-                                placeholder="Pick one"
-                                data={dataOption}
-                            />
-                        </td>
-                        <td>
-                            <Autocomplete
-                                placeholder="Pick one"
-                                data={bioOption}
-                            />
-                        </td>
-                        <td>
-                            <TextInput />
-                        </td>
-                        <td>
-                            <TextInput />
-                        </td>
-                        <td>
-                            <CloseButton/>
-                        </td>
-                    </tr>
+                    {
+                        formData && formData.map((data, index: number) => (
+                            <tr key={index}>
+                                <td>
+                                    <Textarea
+                                        autosize
+                                        value={data.name}
+                                        onChange={(event) => { handleChanges('name', event, index) }}
+                                        // {...form.getInputProps('dataRequired[1].name')}
+                                    ></Textarea>
+                                </td>
+                                <td>
+                                    <Autocomplete
+                                        placeholder="Pick one"
+                                        data={[...dataOption, ...bioOption]}
+                                        value={data.type}
+                                        onChange={(event) => { handleChangesAuto('type', event, index) }}
+                                        //{...form.getInputProps('dataRequired.type')}
+                                    />
+                                </td>
+                                <td>
+                                    <TextInput
+                                        type= 'number'
+                                        onChange={(event) => { handleChanges('quantity', event, index) }}
+                                        value={data.quantity} 
+                                        //{...form.getInputProps('dataRequired.quantity')}
+                                    />
+                                </td>
+                                <td>
+                                    <TextInput
+                                        type='number'
+                                        onChange={(event) => { handleChanges('numSamples', event, index) }}
+                                        value={data.numSamples}
+                                        //{...form.getInputProps('dataRequired.numSamples')}
+                                    />
+                                </td>
+                                <td>
+                                    <CloseButton
+                                        onClick={() => removeData(index)}
+                                    />
+                                </td>
+                            </tr>
+
+                        ))
+                    }
                 </tbody>
             </Table>
+
             <Space h="md" />
+            <Button onClick={addNewData}>Add New</Button>
+            <Space h="md" />
+
             <Group grow>
                 <Text>*¹Limited primarily to Phase I high-risk probands</Text>
                 <Text>*²Very limited availability</Text>

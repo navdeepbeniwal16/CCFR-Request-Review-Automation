@@ -57,7 +57,7 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({ title, applications
     )
 }
 
-export const getServerSideProps= withAuthUserTokenSSR({
+export const getServerSideProps = withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, query }) => {
     const appType: ApplicationsPageProps['title'] = query.type?.toString() || null

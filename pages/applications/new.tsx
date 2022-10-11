@@ -11,7 +11,7 @@ const NewApplicationPage = () => {
     return (
         <>
             <h1>New Application</h1>
-            <Form/>
+            <Form></Form>
         </>
     )
 }

@@ -63,8 +63,8 @@ interface StudyDescription {
 interface Request {
     name: string,
     type: string,
-    quantity: number,
-    numSamples: number,
+    quantity?: number,
+    numSamples?: number,
 }
 
 interface Review {
