@@ -1,4 +1,4 @@
-import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack, Textarea, Autocomplete } from '@mantine/core';
+import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack, Textarea, Autocomplete, Table } from '@mantine/core';
 import { useState } from 'react';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
@@ -79,14 +79,15 @@ function Demo() {
             },
             status: 'Inactive',
             stage: 'Draft',
-            // ccfrCollaborators: undefined || [
-            //     {
-            //         centerNumber: undefined,
-            //         ccfrSite: '',
-            //         sitePIName: '',
-            //         sitePIDegree: '',
-            //     }
-            // ]
+            ccfrCollaborators: undefined || [
+                {
+                    centerNumber: undefined,
+                    ccfrSite: '',
+                    sitePIName: '',
+                    sitePIDegree: '',
+                    isChecked: false,
+                }
+            ]
         },
         validate: (values) => {
             if (values.stage === 'Submitted' ) {
@@ -118,7 +119,7 @@ function Demo() {
                 <Section1 form={form} />
 
                 <h2>Section 2: CCFR Collaborators</h2>
-
+                <Section2 form={form}/>
 
                 <h2>Section 3: Description of Proposed Collaborative Study</h2>
                 <Section3a form={form} />
@@ -353,16 +354,51 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
 }
 
 function Section2({ form }: { form: UseFormReturnType<Application> }) {
-    const rows = ccfrPeople.map((ccfrPeople) => (
-        <tr key={ccfrPeople.centerNumber}>
-          <td>{ccfrPeople.ccfrSite}</td>
-          <td>{ccfrPeople.sitePIName}</td>
-          <td>{ccfrPeople.sitePIDegree}</td>
+    const rows = ccfrPeople?.map((_ccfrPeople, i) => (
+        <tr key={i}>
+            <td>{_ccfrPeople.centerNumber}</td>
+            <td>
+                <Group spacing="xs">
+                    <Text italic>
+                        {_ccfrPeople.ccfrSite},
+                    </Text> 
+                    <Text>
+                        Site PI:
+                    </Text>
+                    <Text weight="700">
+                        {_ccfrPeople.sitePIName}, {_ccfrPeople.sitePIDegree}
+                    </Text>
+                </Group>
+                
+            </td>
+            <td><Checkbox /></td>
+            
         </tr>
       ));
     
     return (
         <>
+        <Table>
+            <thead>
+                <tr>
+                <th>Center Number</th>
+                <th>CCFR Site and Site Principal Investigator</th>
+                <th>Check which apply (if known)</th>
+                </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+        </Table>
+
+        <Text>Add new Collaborators</Text>
+        <Group grow>
+            <TextInput
+                label="Other Collaborating Investigators"
+            />
+            <TextInput
+                label="Affiliation"
+            />
+        </Group>
+        
 
         </>
     )

@@ -49,6 +49,7 @@ export interface Collaborator {
     ccfrSite?: string,
     sitePIName?: string,
     sitePIDegree?: string,
+    isChecked?: boolean,
 }
 
 interface StudyDescription {
