@@ -417,19 +417,40 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             <Space h="md" />
             <Button>Add new Collaborators</Button>
             <Space h="md" />
-            <Grid align="center">
-                <Grid.Col span={5}>
-                    <TextInput label="Other Collaborating Investigators" />
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Other Collaborating Investigators</th>
+                        <th>Affiliation</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        
+                    <tr>
+                        
+                        <td>
+                            <TextInput
+                                
+                                //{...form.getInputProps('dataRequired.quantity')}
+                            />
+                        </td>
+                        <td>
+                            <TextInput
+                                
+                                //{...form.getInputProps('dataRequired.numSamples')}
+                            />
+                        </td>
+                        <td>
+                            <CloseButton
+                            />
+                        </td>
+                    </tr>
 
-                </Grid.Col>
-                <Grid.Col span={5}>
-                    <TextInput label="Affiliation" />
-                </Grid.Col>
-                <Grid.Col span={2}>
-                    <CloseButton aria-label="Close modal"></CloseButton>
-                </Grid.Col>
-
-            </Grid>
+                        
+                </tbody>
+            </Table>
 
         </Box>
     );
@@ -571,7 +592,6 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                                         autosize
                                         value={data.name}
                                         onChange={(event) => { handleChanges('name', event, index) }}
-                                        // {...form.getInputProps('dataRequired[1].name')}
                                     ></Textarea>
                                 </td>
                                 <td>
@@ -580,7 +600,6 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                                         data={[...dataOption, ...bioOption]}
                                         value={data.type}
                                         onChange={(event) => { handleChangesAuto('type', event, index) }}
-                                        //{...form.getInputProps('dataRequired.type')}
                                     />
                                 </td>
                                 <td>
@@ -588,7 +607,6 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                                         type= 'number'
                                         onChange={(event) => { handleChanges('quantity', event, index) }}
                                         value={data.quantity} 
-                                        //{...form.getInputProps('dataRequired.quantity')}
                                     />
                                 </td>
                                 <td>
