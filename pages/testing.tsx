@@ -121,8 +121,11 @@ function Demo() {
                 <h2>Section 2: CCFR Collaborators</h2>
                 <Section2 form={form}/>
 
-                <h2>Section 3: Description of Proposed Collaborative Study</h2>
+                <h2>Section 3A: Description of Proposed Collaborative Study</h2>
                 <Section3a form={form} />
+
+                <h2>Section 3B: Specimen and Data Criteria</h2>
+                <Section3b form={form} />
 
                 <h2>Section 4: Agreement</h2>
                 <Section4 form={form} />
@@ -374,7 +377,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             <td><Checkbox /></td>
             
         </tr>
-      ));
+    ));
     
     return (
         <>
@@ -444,6 +447,16 @@ function Section3a({ form }: { form: UseFormReturnType<Application> }) {
                 {...form.getInputProps('studyDescription.selectionCriteria')}
             />
         </Stack>
+    )
+}
+
+function Section3b({ form }: { form: UseFormReturnType<Application> }) {
+    return (
+        <>
+        <Text>Complete the following section to describe your selection criteria, the type of data and biospecimens, and preferred number of subjects/samples needed</Text>
+
+
+        </>
     )
 }
 
@@ -551,3 +564,11 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
         sitePIDegree: 'Phd'
     }
 ];
+
+const dataOption: string[] = ["DNA from blood", "DNA from lymphoblast cell-lines*1"
+
+]
+
+const bioOption: string[] = ["Family history of cancer data", "Baseline epi/risk factor questionnaire data"
+    
+]
