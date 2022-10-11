@@ -111,7 +111,7 @@ export interface ExistingCCFRData {
     dataID: string,
     name: string,
     condition: string
-}
+
 
 export interface SteeringCommitteeUIDs {
     name: string,
