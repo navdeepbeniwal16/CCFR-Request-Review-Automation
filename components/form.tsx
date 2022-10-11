@@ -498,7 +498,10 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                 <tbody>
                     <tr>
                         <td>
-                            <Textarea></Textarea>
+                            
+                            <Textarea autosize></Textarea>
+                         
+                            
                         </td>
                         <td>
                             <Autocomplete
