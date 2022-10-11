@@ -12,6 +12,7 @@ import {
     Textarea,
     Autocomplete,
     Table,
+    CloseButton,
 } from '@mantine/core';
 import { useState } from 'react';
 import { useForm, UseFormReturnType } from '@mantine/form';
@@ -414,7 +415,8 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                 <tbody>{rows}</tbody>
             </Table>
             <Space h="md" />
-            <Text weight="500">Add new Collaborators</Text>
+            <Button>Add new Collaborators</Button>
+            <Space h="md"/>
             <Group grow>
                 <TextInput label="Other Collaborating Investigators" />
                 <TextInput label="Affiliation" />
@@ -493,6 +495,7 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                         <th>Type of BioSpecimen</th>
                         <th>Amount of BioSpecimen</th>
                         <th>No. Participants/Samples</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -520,6 +523,9 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                         </td>
                         <td>
                             <TextInput />
+                        </td>
+                        <td>
+                            <CloseButton/>
                         </td>
                     </tr>
                 </tbody>
