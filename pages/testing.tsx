@@ -1,8 +1,9 @@
 import { TextInput, Checkbox, Button, Group, Box, Switch, Text, Space, Grid, Stack, Textarea } from '@mantine/core';
+import { useState } from 'react';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
 import { AuthAction, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth';
-import { Application } from '../lib/interfaces';
+import { Application, Collaborator } from '../lib/interfaces';
 // import { ApplicationsPage } from './applications';
 
 
@@ -46,7 +47,7 @@ function Demo() {
             },
 
             email: '',
-            phoneNumber: '',
+            phoneNumber: undefined,
             address: {
                 streetName: '',
                 city: '',
@@ -85,7 +86,7 @@ function Demo() {
         validate: (values) => {
             if (values.stage === 'Submitted' ) {
                 return {
-                    email: (/^\S+@\S+$/.test(values.email) ? null : 'Invalid email'),
+                    email: (/^\S+@\S+$/.test(values.email || '') ? null : 'Invalid email'),
                 }
             }
             return {}
@@ -184,6 +185,7 @@ function Section0({ form }: { form: UseFormReturnType<Application> }) {
 }
 
 function Section1({ form }: { form: UseFormReturnType<Application> }) {
+    const [checked, setChecked]= useState(false);
     return (
         <>
             <Group position="center" grow>
@@ -262,13 +264,25 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
                 <Grid.Col span={8}>Will a 2nd institution require access to CCFR data/biospecimens be involved in your study?</Grid.Col>
                 <Grid.Col span={2}>
                     <Switch
+                        checked={checked}
+                        onChange={(event) => setChecked(event.currentTarget.checked)}
                         onLabel="Yes"
                         offLabel="No"
                         size="xl"
-                        {...form.getInputProps('institutionSecondary')}
+                       
                     />
                 </Grid.Col>
             </Grid>
+            
+            <Space h="lg" />
+            
+            {checked
+            // (scndIns.naem || scndInst.biospec)
+             && (
+                
+                <Text>Menace</Text>
+            )}
+
             <Space h="lg" />
 
             <Grid>
@@ -282,6 +296,9 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
                     />
                 </Grid.Col>
             </Grid>
+
+           
+
 
             <Space h="lg" />
 
@@ -309,58 +326,17 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
 }
 
 function Section2({ form }: { form: UseFormReturnType<Application> }) {
-    const data = [
-        {
-            //termsOfService: false,
-
-            title: '',
-            institutionPrimary: {
-                investigator: '',
-                jobTitle: '',
-                institution: '',
-                department: '',
-            },
-
-            email: '',
-            phoneNumber: '',
-            address: {
-                streetName: '',
-                city: '',
-                state: '',
-                zipcode: '',
-                country: '',
-            },
-            institutionSecondary: false,
-            productCommercialization: false,
-            dateReceiptDeadline: undefined,
-            biospecimenReceiptDeadline: undefined,
-            agreement:{
-                a1: false,
-                a2: false,
-                a3: false,
-                a4: false,
-            },
-            studyDescription:{
-                abstract: '',
-                aims: '',
-                backgroundAndSignificance: '',
-                preliminaryData: '',
-                selectionCriteria: '',
-            },
-            status: 'Inactive',
-            stage: 'Draft',
-            ccfrCollaborators: {
-                centerNumber: 12,
-                ccfrSite: '',
-                sitePIName: '',
-                sitePIDegree: '',
-            }
-
-        },
-    ]
-    // const rows = 
+    const rows = ccfrPeople.map((ccfrPeople) => (
+        <tr key={ccfrPeople.centerNumber}>
+          <td>{ccfrPeople.ccfrSite}</td>
+          <td>{ccfrPeople.sitePIName}</td>
+          <td>{ccfrPeople.sitePIDegree}</td>
+        </tr>
+      ));
+    
     return (
         <>
+
         </>
     )
 }
@@ -497,3 +473,18 @@ export default withAuthUser<ApplicationsPageProps>({
 //         status: 'Active',
 //     }
 // ];
+
+const ccfrPeople: Application['ccfrCollaborators'] = [
+    {
+        centerNumber: 13,
+        ccfrSite: 'Melbourne University',
+        sitePIName: 'John',
+        sitePIDegree: 'Phd'
+    },
+    {
+        centerNumber: 15,
+        ccfrSite: 'RMIT University',
+        sitePIName: 'Kenneth',
+        sitePIDegree: 'Phd'
+    }
+];

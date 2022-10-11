@@ -1,10 +1,10 @@
 export interface Application {
     id?: string,
-    title: string,
-    institutionPrimary: Institution,
-    email: string,
-    phoneNumber: string,
-    address: Address,
+    title?: string,
+    institutionPrimary?: Institution,
+    email?: string,
+    phoneNumber?: number,
+    address?: Address,
     institutionSecondary?: boolean,
     productCommercialization?: boolean,
     dateReceiptDeadline?: Date,
@@ -44,7 +44,7 @@ interface Institution {
     accessType?: "Data" | "Biospecimens" | "Both", // changed to enum
 }
 
-interface Collaborator {
+export interface Collaborator {
     centerNumber?: number,
     ccfrSite?: string,
     sitePIName?: string,
