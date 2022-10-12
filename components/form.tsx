@@ -30,25 +30,6 @@ type ApplicationsPageProps = {
     // applications: Application[]
 };
 
-// type FormDetailsProps = {
-//     termsOfService: boolean
-
-//     titleProject: string
-
-//     principalInvestigator: string
-//     jobTitle: string
-//     institution: string
-//     department: string
-//     email: string
-//     phone: string
-//     addressForm: string
-//     city: string
-//     stateForm: string
-//     zip: string
-//     country: string
-
-// }
-
 export function Form() {
     const form = useForm<Application>({
         initialValues: {
@@ -101,7 +82,7 @@ export function Form() {
                     ccfrSite: '',
                     sitePIName: '',
                     sitePIDegree: '',
-                    isChecked: false,
+                    isChecked: true,
                 },
             ],
             dataRequired: undefined || [
@@ -381,8 +362,35 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
     );
 }
 
+const splitCcfrData = (ccfrPeople: Application['ccfrCollaborators']) => {
+    const peopleInTable : Application['ccfrCollaborators'] = [];
+    const peopleInInput : Application['ccfrCollaborators'] = [];
+    ccfrPeople?.forEach(data => {
+        if (data.centerNumber) return peopleInTable.push(data)
+        return peopleInInput.push(data)
+
+    });
+    return {peopleInTable, peopleInInput}
+}
+
 function Section2({ form }: { form: UseFormReturnType<Application> }) {
-    const rows = ccfrPeople?.map((_ccfrPeople, i) => (
+    // const peopleInTable = ccfrPeople?.filter(data => data.centerNumber)
+    // console.log('peopleinTable', peopleInTable)
+    // const peopleInInput = []
+    const [peopleInTable, setpeopleInTable] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => data.centerNumber));
+    const [checkedPeopleInTable, setcheckedPeopleInTable] = useState<Application['ccfrCollaborators']>([]);
+    const [formData, setFormData] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => !data.centerNumber));
+    // const {peopleInTable, peopleInInput} = splitCcfrData(formData)
+
+    const handleCheckboxOnClick = (data) => {
+        /**
+         * 1. cek uda ada di checkedPeopleInTable belom?
+         *     - uda ad -> skip
+         *      - belom -> tmbhin
+         */
+        
+    }
+    const rows = peopleInTable?.map((_ccfrPeople, i) => (
         <tr key={i}>
             <td>{_ccfrPeople.centerNumber}</td>
             <td>
@@ -395,12 +403,12 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                 </Group>
             </td>
             <td>
-                <Checkbox />
+                <Checkbox
+                    // onClick={}
+                />
             </td>
         </tr>
     ));
-    
-    const [formData, setFormData] = useState<Application['ccfrCollaborators']>(form.values.ccfrCollaborators);
     
     const newData = {
         sitePIName: '',
@@ -410,7 +418,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
 
     const addNewData = () => {
         if (formData) {
-            setFormData([...formData, newData])
+            setFormData([ ...formData, newData])
         }
     }
 
@@ -420,16 +428,31 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
 
         console.log('updatedLst',  updatedList)
         setFormData(updatedList)
-        form.setFieldValue('ccfrCollaborators', updatedList)
+
+        const allData = updatedList && peopleInTable &&  [...peopleInTable, ...updatedList]
+
+        form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
     }
 
+    const handleChanges = (subType: string, event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+
+        const { value } = event.target;
+        const list = formData && [...formData];
+
+        list[index][subType] = value;
+        setFormData(list)
+
+        const allData = peopleInTable && formData && [...peopleInTable, ...formData]
+
+        form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
+    }
 
 
 
     return (
         <Box>
             <h2>Section 2: CCFR Collaborators</h2>
-
+            {/* Table 1 */}
             <Table>
                 <thead>
                     <tr>
@@ -443,6 +466,8 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             <Space h="md" />
             <Button onClick={addNewData}>Add new Collaborators</Button>
             <Space h="md" />
+
+            {/* Table 2 */}
             <Table>
                 <thead>
                     <tr>
@@ -453,19 +478,19 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                 </thead>
                 <tbody>
                     {
-                        formData && formData.map((data, index: number)=>(
+                        formData?.map((data, index: number)=>(
                             <tr key={index}>
                                 
                                 <td>
                                     <TextInput
+                                        onChange={(event) => { handleChanges('sitePIName', event, index) }}
                                         value={data.sitePIName}
-                                        //{...form.getInputProps('dataRequired.quantity')}
                                     />
                                 </td>
                                 <td>
                                     <TextInput
+                                        onChange={(event) => { handleChanges('ccfrSite', event, index) }}
                                         value={data.ccfrSite}
-                                        //{...form.getInputProps('dataRequired.numSamples')}
                                     />
                                 </td>
                                 <td>
@@ -593,7 +618,7 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
     }
 
     console.log('localformData', formData)
-    console.log('real form', form.values)
+    console.log('real form', form.values.ccfrCollaborators)
     return (
         <Box>
             <h2>Section 3B: Specimen and Data Criteria</h2>
@@ -645,7 +670,6 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                                         type='number'
                                         onChange={(event) => { handleChanges('numSamples', event, index) }}
                                         value={data.numSamples}
-                                        //{...form.getInputProps('dataRequired.numSamples')}
                                     />
                                 </td>
                                 <td>
@@ -724,21 +748,15 @@ function Section4({ form }: { form: UseFormReturnType<Application> }) {
                     <Text weight={700}>
                         [Recommended funding acknowledgement]
                     </Text>
-                    &quot;Research reported in this publication was supported in part
-                    by the National Cancer Institute (NCI) of the National
-                    Institutes of Health (NIH) under award number U01 CA167551.
-                    The content of this manuscript does not necessarily reflect
-                    the views or policies of the NIH or any of the collaborating
-                    centers in the Colon Cancer Family Registry (CCFR), nor does
-                    mention of trade names, commercial products, or
-                    organizations imply endorsement by the US Government or the
-                    CCFR.&quot; [Additional funding acknowledgement for the
-                    manuscripts utilizing CCFR GWAS data can be found in our
+                    &quot;Research reported in this publication was supported in part by the National Cancer Institute (NCI) of the National
+                    Institutes of Health (NIH) under award number U01 CA167551. The content of this manuscript does not necessarily reflect
+                    the views or policies of the NIH or any of the collaborating centers in the Colon Cancer Family Registry (CCFR), nor does
+                    mention of trade names, commercial products, or organizations imply endorsement by the US Government or the
+                    CCFR.&quot; [Additional funding acknowledgement for the manuscripts utilizing CCFR GWAS data can be found in our
                     Policy for Publications www.coloncfr.org/publications.]
                 </Text>
                 <Text size="sm">
-                    This document formalizes the agreement between the applicant
-                    and site(s) to collaborate.
+                    This document formalizes the agreement between the applicant and site(s) to collaborate.
                 </Text>
             </Stack>
             <Space h="xl" />
@@ -750,14 +768,33 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
     {
         centerNumber: 13,
         ccfrSite: 'Melbourne University',
-        sitePIName: 'John',
+        sitePIName: 'John Louis',
         sitePIDegree: 'Phd',
+        isChecked:false
     },
     {
         centerNumber: 15,
         ccfrSite: 'RMIT University',
-        sitePIName: 'Kenneth',
+        sitePIName: 'Kenneth Barrish',
         sitePIDegree: 'Phd',
+        isChecked:false
+
+    },
+    {
+        centerNumber: 21,
+        ccfrSite: 'RMIT University',
+        sitePIName: 'Jana Truman',
+        sitePIDegree: 'Phd',
+        isChecked:false
+
+    },
+    {
+        centerNumber: 17,
+        ccfrSite: 'DDDD University',
+        sitePIName: 'Derrek Legstrong',
+        sitePIDegree: 'Phd',
+        isChecked:false
+
     },
 ];
 
