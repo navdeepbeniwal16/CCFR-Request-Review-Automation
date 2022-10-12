@@ -362,33 +362,23 @@ function Section1({ form }: { form: UseFormReturnType<Application> }) {
     );
 }
 
-const splitCcfrData = (ccfrPeople: Application['ccfrCollaborators']) => {
-    const peopleInTable : Application['ccfrCollaborators'] = [];
-    const peopleInInput : Application['ccfrCollaborators'] = [];
-    ccfrPeople?.forEach(data => {
-        if (data.centerNumber) return peopleInTable.push(data)
-        return peopleInInput.push(data)
-
-    });
-    return {peopleInTable, peopleInInput}
-}
-
 function Section2({ form }: { form: UseFormReturnType<Application> }) {
-    // const peopleInTable = ccfrPeople?.filter(data => data.centerNumber)
-    // console.log('peopleinTable', peopleInTable)
-    // const peopleInInput = []
     const [peopleInTable, setpeopleInTable] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => data.centerNumber));
-    const [checkedPeopleInTable, setcheckedPeopleInTable] = useState<Application['ccfrCollaborators']>([]);
+    const [checkedPeopleInTable, setCheckedPeopleInTable] = useState<Application['ccfrCollaborators']>([]);
     const [formData, setFormData] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => !data.centerNumber));
-    // const {peopleInTable, peopleInInput} = splitCcfrData(formData)
 
-    const handleCheckboxOnClick = (data) => {
-        /**
-         * 1. cek uda ada di checkedPeopleInTable belom?
-         *     - uda ad -> skip
-         *      - belom -> tmbhin
-         */
-        
+    const handleCheckboxOnClick = (event: React.ChangeEvent<HTMLInputElement>, index:number) => {
+
+        //console.log('people in table', peopleInTable)
+        const ppl = [...peopleInTable as Collaborator[]] 
+        ppl[index]['isChecked'] = event.currentTarget.checked
+        setpeopleInTable(ppl)
+
+        const checkedPeople = peopleInTable?.filter(data => data.isChecked)
+        setCheckedPeopleInTable(checkedPeople)
+
+        form.setFieldValue('ccfrCollaborators', [...checkedPeople as Collaborator[], ...formData as Collaborator[]])
+
     }
     const rows = peopleInTable?.map((_ccfrPeople, i) => (
         <tr key={i}>
@@ -404,7 +394,8 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             </td>
             <td>
                 <Checkbox
-                    // onClick={}
+                    // checked={_ccfrPeople.isChecked}
+                    onChange={(event) => handleCheckboxOnClick(event, i)}
                 />
             </td>
         </tr>
@@ -429,7 +420,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
         console.log('updatedLst',  updatedList)
         setFormData(updatedList)
 
-        const allData = updatedList && peopleInTable &&  [...peopleInTable, ...updatedList]
+        const allData = updatedList && checkedPeopleInTable &&  [...checkedPeopleInTable, ...updatedList]
 
         form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
     }
@@ -442,7 +433,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
         list[index][subType] = value;
         setFormData(list)
 
-        const allData = peopleInTable && formData && [...peopleInTable, ...formData]
+        const allData = checkedPeopleInTable && formData && [...checkedPeopleInTable, ...formData]
 
         form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
     }
@@ -790,7 +781,7 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
     },
     {
         centerNumber: 17,
-        ccfrSite: 'DDDD University',
+        ccfrSite: 'Hustler University',
         sitePIName: 'Derrek Legstrong',
         sitePIDegree: 'Phd',
         isChecked:false
