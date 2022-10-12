@@ -4,10 +4,15 @@ import {
     AuthAction,
     withAuthUserTokenSSR,
 } from 'next-firebase-auth';
+import { Form } from '../../components/Form';
+
 
 const NewApplicationPage = () => {
     return (
-        <h1>New Application</h1>
+        <>
+            <h1>New Application</h1>
+            <Form></Form>
+        </>
     )
 }
 

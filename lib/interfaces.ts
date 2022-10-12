@@ -67,11 +67,11 @@ export interface StudyDescription {
     selectionCriteria?: string;
 }
 
-export interface Request {
-    name: string;
-    type: string;
-    quantity: number;
-    numSamples: number;
+interface Request {
+    name: string,
+    type: string,
+    quantity?: number,
+    numSamples?: number,
 }
 
 export interface Review {
