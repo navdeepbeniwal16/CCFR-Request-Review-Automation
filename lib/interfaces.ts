@@ -1,107 +1,115 @@
-import { ApplicationReviewStatus, ApplicationStage, ApplicationStatus, InstitutionAccessType } from "./utilities/AppEnums";
+import {
+    ApplicationReviewStatus,
+    ApplicationStage,
+    ApplicationStatus,
+    InstitutionAccessType,
+} from './utilities/AppEnums';
 
 export interface Application {
-    id: string,
-    title: string,
-    institutionPrimary: Institution,
-    email: string,
-    phoneNumber?: number,
-    address?: Address,
-    institutionSecondary?: Institution,
-    productCommercialization?: boolean,
-    dateReceiptDeadline?: Date,
-    biospecimenReceiptDeadline?: Date,
-    ccfrCollaborators?: Collaborator[],
-    studyDescription?: StudyDescription,
-    dataRequired?: Request[],
-    programManagerReview?: Review,
-    biospecimenRequired?: Request[],
-    BWGChairReview?: Review,
-    createdAt: Date,
-    biospecimenForm?: BiospecimenForm,
+    id: string;
+    title: string;
+    institutionPrimary: Institution;
+    email: string;
+    phoneNumber?: number;
+    address?: Address;
+    institutionSecondary?: Institution;
+    productCommercialization?: boolean;
+    dateReceiptDeadline?: Date;
+    biospecimenReceiptDeadline?: Date;
+    ccfrCollaborators?: Collaborator[];
+    studyDescription?: StudyDescription;
+    dataRequired?: Request[];
+    programManagerReview?: Review;
+    biospecimenRequired?: Request[];
+    BWGChairReview?: Review;
+    createdAt: Date;
+    biospecimenForm?: BiospecimenForm;
     steeringCommitteeReview?: {
-        reviewStartDate?: Date,
-        reviewers?: Review[],
-        firstAcceptance?: Date,
-        numberOfReviewersAccepted?: number,
-        totalReviewers?: number,
-    },
-    status: ApplicationStatus,
-    stage: ApplicationStage,
-    history: HistoryNode[],
+        reviewStartDate?: Date;
+        reviewers?: Review[];
+        firstAcceptance?: Date;
+        numberOfReviewersAccepted?: number;
+        totalReviewers?: number;
+    };
+    status: ApplicationStatus;
+    stage: ApplicationStage;
+    history: HistoryNode[];
 
-    isEmpty(): Boolean
+    isEmpty(): Boolean;
 }
 
 export interface Address {
-    streetNumber?: number,
-    streetName?: string,
-    state?: string,
-    zipcode?: number,
-    country?: string,
+    streetNumber?: number;
+    streetName?: string;
+    state?: string;
+    zipcode?: number;
+    country?: string;
 }
 
 export interface Institution {
-    investigator?: string,
-    jobTitle?: string,
-    institution?: string,
-    department?: string,
-    accessType?: InstitutionAccessType
+    investigator?: string;
+    jobTitle?: string;
+    institution?: string;
+    department?: string;
+    accessType?: InstitutionAccessType;
 }
 
 export interface Collaborator {
-    centerNumber?: number,
-    ccfrSite?: string,
-    sitePIName?: string,
-    sitePIDegree?: string,
+    centerNumber?: number;
+    ccfrSite?: string;
+    sitePIName?: string;
+    sitePIDegree?: string;
 }
 
 export interface StudyDescription {
-    abstract?: string,
-    aims?: string,
-    backgroundAndSignificance?: string,
-    preliminaryData?: string,
-    selectionCriteria?: string,
+    abstract?: string;
+    aims?: string;
+    backgroundAndSignificance?: string;
+    preliminaryData?: string;
+    selectionCriteria?: string;
 }
 
 export interface Request {
-    name: string,
-    type: string,
-    quantity: number,
-    numSamples: number,
+    name: string;
+    type: string;
+    quantity: number;
+    numSamples: number;
 }
 
 export interface Review {
-    name: string,
-    status: ApplicationReviewStatus,
+    name: string;
+    status: ApplicationReviewStatus;
 }
 
 export interface BiospecimenForm {
-    amountRequired?: number,
-    proposedTestingMethodlogy?: string,
-    clarifications?: Clarification,
-    BWGStatusReview?: string,
+    amountRequired?: number;
+    proposedTestingMethodlogy?: string;
+    clarifications?: Clarification;
+    BWGStatusReview?: string;
 }
 
 export interface Clarification {
-    additionalDispatchRequirement?: "Yes" | "No" | "TBD",
-    fluoroscentDyeQuantificationRequired?: "Yes" | "No" | "TBD",
-    LCLDerivedDNAAcceptable?: "Yes" | "No" | "TBD",
-    depletedDNASampleRequest?: "Exclude Sample(s)" | "Extract at CCFR Site(s)" | "TBD",
+    additionalDispatchRequirement?: 'Yes' | 'No' | 'TBD';
+    fluoroscentDyeQuantificationRequired?: 'Yes' | 'No' | 'TBD';
+    LCLDerivedDNAAcceptable?: 'Yes' | 'No' | 'TBD';
+    depletedDNASampleRequest?:
+        | 'Exclude Sample(s)'
+        | 'Extract at CCFR Site(s)'
+        | 'TBD';
     neoplasticCellularity?: {
-        minNC?: string,
-        minVolume?: string,
-    },
-    BWGGroupConclusions?: string,
-    applicantCommentResponse?: string,
+        minNC?: string;
+        minVolume?: string;
+    };
+    BWGGroupConclusions?: string;
+    applicantCommentResponse?: string;
 }
 
 export interface HistoryNode {
-    title: string,
-    description: string,
-    timestamp: Date,
-    userID?: string,
-    stage: Application['stage']
+    title: string;
+    description: string;
+    timestamp: Date;
+    userID?: string;
+    stage: Application['stage'];
 }
 
 export interface ExistingCCFRSiteData {
@@ -113,26 +121,34 @@ export interface ExistingCCFRSiteData {
 }
 
 export interface ExistingCCFRBiospecimens {
-    biospecimenData: string,
-    name: string,
-    condition: string,
+    biospecimenData: string;
+    name: string;
+    condition: string;
 }
 
 export interface ExistingCCFRData {
-    dataID: string,
-    name: string,
-    condition: string,
+    dataID: string;
+    name: string;
+    condition: string;
 }
 
 export interface SteeringCommitteeUIDs {
-    name: string,
-    UID: string,
+    name: string;
+    UID: string;
 }
 
 export interface UserProfile {
     displayName?: string;
     email?: string;
-    emailVerified?: boolean
-    phoneNumber?: string
-    photoURL?: string
+    emailVerified?: boolean;
+    phoneNumber?: string;
+    photoURL?: string;
+}
+
+export interface Notification {
+    receiverEmail: string;
+    createdDate: Date;
+    text: string;
+    isRead: Boolean;
+    id?: string;
 }
