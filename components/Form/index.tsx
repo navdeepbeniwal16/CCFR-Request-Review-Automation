@@ -49,12 +49,6 @@ export function Form() {
             productCommercialization: false,
             dateReceiptDeadline: undefined,
             biospecimenReceiptDeadline: undefined,
-            agreement: {
-                a1: false,
-                a2: false,
-                a3: false,
-                a4: false,
-            },
             studyDescription: {
                 abstract: '',
                 aims: '',

@@ -1,25 +1,23 @@
 import { Box, Button, Checkbox, CloseButton, Group, Space, Table, Text, TextInput } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Application, Collaborator } from "../../lib/interfaces";
 
 export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeople: Collaborator[]; }) {
     const { form, ccfrPeople } = props;
-    const [peopleInTable, setpeopleInTable] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => data.centerNumber));
-    const [checkedPeopleInTable, setCheckedPeopleInTable] = useState<Application['ccfrCollaborators']>([]);
-    const [formData, setFormData] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => !data.centerNumber));
+    const [peopleInTable, setpeopleInTable] = useState<Collaborator[]>(ccfrPeople?.filter(data => data.centerNumber));
+    const [checkedPeopleInTable, setCheckedPeopleInTable] = useState<Collaborator[]>([]);
+    const [formData, setFormData] = useState<Collaborator[]>(ccfrPeople?.filter(data => !data.centerNumber));
+    useEffect(()=>{form.setFieldValue('ccfrCollaborators', [...checkedPeopleInTable as Collaborator[], ...formData as Collaborator[]])},[checkedPeopleInTable])
 
     const handleCheckboxOnClick = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
 
-        //console.log('people in table', peopleInTable)
-        const ppl = [...peopleInTable as Collaborator[]]
-        ppl[index]['isChecked'] = event.currentTarget.checked
-        setpeopleInTable(ppl)
-
-        const checkedPeople = peopleInTable?.filter(data => data.isChecked)
-        setCheckedPeopleInTable(checkedPeople)
-
-        form.setFieldValue('ccfrCollaborators', [...checkedPeople as Collaborator[], ...formData as Collaborator[]])
+        if(event.currentTarget.checked){
+            setCheckedPeopleInTable([...checkedPeopleInTable, peopleInTable[index]])
+        } else {
+            setCheckedPeopleInTable(checkedPeopleInTable?.filter(data=>data!=peopleInTable[index]))
+            
+        }
 
     }
     const rows = peopleInTable?.map((_ccfrPeople, i) => (
@@ -36,7 +34,6 @@ export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeop
             </td>
             <td>
                 <Checkbox
-                    checked={_ccfrPeople.isChecked}
                     onChange={(event) => handleCheckboxOnClick(event, i)}
                 />
             </td>
@@ -79,8 +76,6 @@ export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeop
 
         form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
     }
-
-
 
     return (
         <Box>
@@ -135,8 +130,6 @@ export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeop
 
                         ))
                     }
-
-
 
                 </tbody>
             </Table>
