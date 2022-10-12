@@ -35,6 +35,9 @@ export enum DBCollections {
     Applications = 'applications',
     Notification = 'notification',
     Notifications = 'notifications',
+    ExistingCCFRSiteData = 'ExistingCCFRSiteData',
+    ExistingCCFRBiospecimens = 'ExistingCCFRBiospecimens',
+    ExistingCCFRData = 'ExistingCCFRData',
 }
 
 export enum UserRole {

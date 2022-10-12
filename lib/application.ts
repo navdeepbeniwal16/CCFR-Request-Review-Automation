@@ -65,10 +65,10 @@ export const saveAndSubmitApplication = async (
         UserRole.PROGRAM_MANAGER,
     );
     if (progMgr.length < 1) {
-        throw new Error('Bwg chair not found');
+        throw new Error('Program manager not found');
     }
     const programManager = progMgr[0];
-    application.programManagerReview!.name = programManager.displayName!; // replace with name form admin sdk api
+    application.programManagerReview.name = programManager.displayName!;
     application.programManagerReview.status = ApplicationReviewStatus.In_Review;
 
     await db
@@ -99,6 +99,7 @@ export const getApplicationById = async (
             if (doc.exists) {
                 console.log(doc.id, ' => ', doc.data());
                 fetchedApplication = <Application>doc.data();
+                fetchedApplication.id = applicationId;
                 return fetchedApplication;
             } else {
                 console.log('No application found');
@@ -375,7 +376,7 @@ export const getExistingCCFRSiteData = async (
 ) => {
     let fetchedSCMembers: ExistingCCFRSiteData[] = [];
 
-    const docRef = db.collection('ExistingCCFRSiteData');
+    const docRef = db.collection(DBCollections.ExistingCCFRSiteData);
     await docRef
         .get()
         .then(querySnapshot => {
@@ -396,7 +397,7 @@ export const getExistingCCFRBiospecimens = async (
 ) => {
     let fetchedSCMembers: ExistingCCFRBiospecimens[] = [];
 
-    const docRef = db.collection('ExistingCCFRBiospecimens');
+    const docRef = db.collection(DBCollections.ExistingCCFRBiospecimens);
     await docRef
         .get()
         .then(querySnapshot => {
@@ -415,7 +416,7 @@ export const getExistingCCFRBiospecimens = async (
 export const getExistingCCFRData = async (db: FirebaseFirestore.Firestore) => {
     let fetchedSCMembers: ExistingCCFRData[] = [];
 
-    const docRef = db.collection('ExistingCCFRData');
+    const docRef = db.collection(DBCollections.ExistingCCFRData);
     await docRef
         .get()
         .then(querySnapshot => {
@@ -438,66 +439,83 @@ export const programManagerReviewApplication = async (
 ) => {
     let application = await getApplicationById(db, applicationId);
     let isStatusChanged = false;
-    if (!isApplicationEmpty(application)) {
-        if (status == ApplicationReviewStatus.Approved) {
-            application.programManagerReview!.status =
-                ApplicationReviewStatus.Approved;
-            if (application.biospecimenRequired) {
-                application.stage = ApplicationStage.BWGReview;
-                const bwgChairs = await adminUserModule.getUsersByRole(
-                    UserRole.BGW_CHAIR,
-                );
-                if (bwgChairs.length < 1) {
-                    throw new Error('Bwg chair not found');
+
+    try {
+        if (!isApplicationEmpty(application)) {
+            if (status == ApplicationReviewStatus.Approved) {
+                application.programManagerReview = <Review>{};
+                application.programManagerReview.status =
+                    ApplicationReviewStatus.Approved;
+                if (application.biospecimenRequired) {
+                    application.stage = ApplicationStage.BWGReview;
+                    const bwgChairs = await adminUserModule.getUsersByRole(
+                        UserRole.BGW_CHAIR,
+                    );
+                    if (bwgChairs.length < 1) {
+                        throw new Error('Data Error: Bwg chair not found');
+                    }
+                    const bwgChair = bwgChairs[0];
+                    if (
+                        bwgChair.displayName === undefined ||
+                        bwgChair.displayName === null ||
+                        bwgChair.displayName === ''
+                    ) {
+                        throw new Error(
+                            'Data Error: Bwg chair display name is either undefined, null or empty',
+                        );
+                    }
+
+                    application.BWGChairReview = <Review>{};
+                    application.BWGChairReview!.name = bwgChair.displayName!;
+                    application.BWGChairReview.status =
+                        ApplicationReviewStatus.In_Review;
+                } else {
+                    isStatusChanged =
+                        await instantiateSteeringCommitteeReviewProcess(
+                            db,
+                            application,
+                        );
+                    return isStatusChanged;
                 }
-                const bwgChair = bwgChairs[0];
-                application.BWGChairReview = <Review>{};
-                application.BWGChairReview!.name = bwgChair.displayName!;
-                application.BWGChairReview.status =
-                    ApplicationReviewStatus.In_Review;
-            } else {
-                isStatusChanged =
-                    await instantiateSteeringCommitteeReviewProcess(
-                        db,
-                        application,
-                    );
-                return isStatusChanged;
+                await db
+                    .collection(DBCollections.Applications)
+                    .doc(application.id)
+                    .set(application)
+                    .then(() => {
+                        console.log('Application approved successfully!');
+                        isStatusChanged = true;
+                    })
+                    .catch(error => {
+                        console.error(
+                            'Error writing approving application: ',
+                            error,
+                        );
+                        isStatusChanged = false;
+                    });
+            } else if (status == ApplicationReviewStatus.Rejected) {
+                application.stage = ApplicationStage.PMReview; // @Saood - Is is required, isn't this already flagged when a user submit the application?
+                application.programManagerReview!.status =
+                    ApplicationReviewStatus.Rejected;
+                await db
+                    .collection(DBCollections.Applications)
+                    .doc(application.id)
+                    .set(application)
+                    .then(() => {
+                        console.log('Application rejected successfully!');
+                        isStatusChanged = true;
+                    })
+                    .catch(error => {
+                        printErrorTrace(
+                            programManagerReviewApplication,
+                            error,
+                            false,
+                        );
+                        isStatusChanged = false;
+                    });
             }
-            await db
-                .collection(DBCollections.Applications)
-                .doc(application.id)
-                .set(application)
-                .then(() => {
-                    console.log('Application approved successfully!');
-                    isStatusChanged = true;
-                })
-                .catch(error => {
-                    console.error(
-                        'Error writing approving application: ',
-                        error,
-                    );
-                    isStatusChanged = false;
-                });
-        } else if (status == ApplicationReviewStatus.Rejected) {
-            application.stage = ApplicationStage.PMReview;
-            application.programManagerReview!.status =
-                ApplicationReviewStatus.Rejected;
-            await db
-                .collection(DBCollections.Applications)
-                .doc(application.id)
-                .set(application)
-                .then(() => {
-                    console.log('Application rejected successfully!');
-                    isStatusChanged = true;
-                })
-                .catch(error => {
-                    console.error(
-                        'Error writing rejecting application: ',
-                        error,
-                    );
-                    isStatusChanged = false;
-                });
         }
+    } catch (error) {
+        printErrorTrace(programManagerReviewApplication, error, false);
     }
 
     return isStatusChanged;
@@ -511,6 +529,7 @@ export const addBiospecimenFormInformation = async (
     let application = await getApplicationById(db, applicationId);
     let isStatusChanged = false;
     if (!isApplicationEmpty(application)) {
+        application.BWGChairReview!.status = ApplicationReviewStatus.Approved;
         application.biospecimenForm = biospecimenForm;
         isStatusChanged = await instantiateSteeringCommitteeReviewProcess(
             db,
@@ -548,7 +567,11 @@ export const instantiateSteeringCommitteeReviewProcess = async (
             isStatusChanged = true;
         })
         .catch(error => {
-            console.error('Error writing updating application: ', error);
+            printErrorTrace(
+                instantiateSteeringCommitteeReviewProcess,
+                error,
+                false,
+            );
             isStatusChanged = false;
         });
     return isStatusChanged;
