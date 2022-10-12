@@ -399,6 +399,32 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             </td>
         </tr>
     ));
+    
+    const [formData, setFormData] = useState<Application['ccfrCollaborators']>(form.values.ccfrCollaborators);
+    
+    const newData = {
+        sitePIName: '',
+        ccfrSite: '',
+        isChecked: true,
+    }
+
+    const addNewData = () => {
+        if (formData) {
+            setFormData([...formData, newData])
+        }
+    }
+
+    const removeData = (index) => {
+        const list = formData && [...formData];
+        const updatedList = list?.filter((value, _index) => _index !== index);
+
+        console.log('updatedLst',  updatedList)
+        setFormData(updatedList)
+        form.setFieldValue('ccfrCollaborators', updatedList)
+    }
+
+
+
 
     return (
         <Box>
@@ -415,7 +441,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                 <tbody>{rows}</tbody>
             </Table>
             <Space h="md" />
-            <Button>Add new Collaborators</Button>
+            <Button onClick={addNewData}>Add new Collaborators</Button>
             <Space h="md" />
             <Table>
                 <thead>
@@ -426,27 +452,32 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                     </tr>
                 </thead>
                 <tbody>
-                    
-                        
-                    <tr>
-                        
-                        <td>
-                            <TextInput
+                    {
+                        formData && formData.map((data, index: number)=>(
+                            <tr key={index}>
                                 
-                                //{...form.getInputProps('dataRequired.quantity')}
-                            />
-                        </td>
-                        <td>
-                            <TextInput
-                                
-                                //{...form.getInputProps('dataRequired.numSamples')}
-                            />
-                        </td>
-                        <td>
-                            <CloseButton
-                            />
-                        </td>
-                    </tr>
+                                <td>
+                                    <TextInput
+                                        value={data.sitePIName}
+                                        //{...form.getInputProps('dataRequired.quantity')}
+                                    />
+                                </td>
+                                <td>
+                                    <TextInput
+                                        value={data.ccfrSite}
+                                        //{...form.getInputProps('dataRequired.numSamples')}
+                                    />
+                                </td>
+                                <td>
+                                    <CloseButton
+                                        onClick={()=>removeData(index)}
+                                    />
+                                </td>
+                            </tr>
+
+                        ))
+                    }
+                        
 
                         
                 </tbody>
@@ -508,7 +539,7 @@ function Section3a({ form }: { form: UseFormReturnType<Application> }) {
 }
 
 function Section3b({ form }: { form: UseFormReturnType<Application> }) {
-    const [formData, setFormData] = useState<Application['biospecimenRequired']>(form.values.dataRequired);
+    const [formData, setFormData] = useState<Application['dataRequired']>(form.values.dataRequired);
 
     const newData = {
         name: '',
