@@ -15,12 +15,14 @@ import {
     withAuthUser,
     AuthAction,
     withAuthUserTokenSSR,
+    getFirebaseAdmin,
 } from 'next-firebase-auth';
 import Link from 'next/link';
 import Countdown from 'react-countdown';
 import ApplicationStepper from '../../components/ApplicationStepper';
 import ApplicationTimeLine from '../../components/ApplicationTimeline';
 import VotingTable from '../../components/VotingTable';
+import { getApplicationById } from '../../lib/application';
 import { Application } from '../../lib/interfaces';
 import {
     ApplicationStage,
@@ -49,13 +51,6 @@ const tabGroups = (
         </Tabs.Tab>
         <Tabs.Tab value="track" icon={<IconHistory size={24} />}>
             <Text size={'lg'}>Tracking</Text>
-        </Tabs.Tab>
-        <Tabs.Tab
-            value="chat"
-            icon={<IconMessageCircle size={24} />}
-            rightSection={badge}
-        >
-            <Text size={'lg'}>Chat</Text>
         </Tabs.Tab>
     </Group>
 );
@@ -173,10 +168,6 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({ application }) => {
                     <ApplicationTimeLine history={application.history} />
                 </Group>
             </Tabs.Panel>
-
-            <Tabs.Panel value="chat" pt="xs">
-                chat
-            </Tabs.Panel>
         </Tabs>
     );
 };
@@ -185,54 +176,12 @@ export const getServerSideProps = withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, query }) => {
     const appId: string = query.appId?.toString() || '';
+    const db = getFirebaseAdmin().firestore();
+
+    const application = await getApplicationById(db, appId);
 
     const _props: ApplicationPageProps = {
-        application: {
-            id: String(Math.floor(Math.random() * 10000)),
-            title: 'Molecular Identification of Lynch Syndrome.',
-            institutionPrimary: {
-                investigator: 'Mary Jones',
-                institution: 'Royal Melbourne Institute of Technology',
-            },
-            email: 'mary.jones@rmite.edu.au',
-            dataRequired: [
-                {
-                    name: 'test',
-                    type: 'test',
-                    quantity: 10,
-                    numSamples: 1,
-                },
-            ],
-            createdAt: JSON.parse(JSON.stringify(new Date('2022-02-01'))),
-            status: ApplicationStatus.Active,
-            stage: ApplicationStage.PMReview,
-            steeringCommitteeReview: {
-                reviewStartDate: JSON.parse(
-                    JSON.stringify(new Date('2022-09-09')),
-                ),
-                totalReviewers: 4,
-            },
-            history: [
-                {
-                    title: 'Submitted',
-                    description: 'Application successfully submitted',
-                    timestamp: JSON.parse(
-                        JSON.stringify(new Date('2022-08-01')),
-                    ),
-                    userID: 'sagdg',
-                    stage: ApplicationStage.Draft,
-                },
-                {
-                    title: 'Approved by PM',
-                    description: 'Project Manager has approved application',
-                    timestamp: JSON.parse(
-                        JSON.stringify(new Date('2022-09-09')),
-                    ),
-                    userID: 'sagdg',
-                    stage: ApplicationStage.Draft,
-                },
-            ],
-        },
+        application: application,
     };
 
     return {

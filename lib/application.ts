@@ -1,7 +1,5 @@
 import { Application, SteeringCommitteeUIDs, ExistingCCFRData, ExistingCCFRBiospecimens, ExistingCCFRSiteData, Review, BiospecimenForm } from "./interfaces"
-import firebase from "firebase";
 import { ApplicationStage, ApplicationStatus, DBCollections, ApplicationReviewStatus, UserRole } from "./utilities/AppEnums";
-import { isServerRuntime } from "next/dist/server/config-shared";
 import { printErrorTrace } from './utilities/errorHandler';
 import * as adminUserModule from '../lib/admin-users'
 
@@ -16,7 +14,7 @@ const initEmptyApplication = () => {
 };
 
 const createApplication = (
-    data: firebase.firestore.DocumentData | Application | undefined,
+    data: FirebaseFirestore.DocumentData | Application | undefined,
 ) => {
     const application: Application = <Application>data;
     application.isEmpty = (): Boolean => {
@@ -35,11 +33,10 @@ const createApplicationData = (application: Application) => {
     return data;
 };
 
-export const saveApplicationAsDraft = async (application: Application) => {
+export const saveApplicationAsDraft = async (db: FirebaseFirestore.Firestore, application: Application) => {
     application.stage = ApplicationStage.Draft;
 
-    await firebase
-        .firestore()
+    await db
         .collection(DBCollections.Applications)
         .doc(application.id)
         .set(application)
@@ -54,7 +51,7 @@ export const saveApplicationAsDraft = async (application: Application) => {
     return true;
 };
 
-export const saveAndSubmitApplication = async (application: Application) => {
+export const saveAndSubmitApplication = async (db: FirebaseFirestore.Firestore, application: Application) => {
     application.stage = ApplicationStage.PMReview;
     application.status = ApplicationStatus.Active;
     application.programManagerReview = <Review>{};
@@ -66,8 +63,7 @@ export const saveAndSubmitApplication = async (application: Application) => {
     application.programManagerReview!.name = programManager.displayName!; // replace with name form admin sdk api
     application.programManagerReview.status = ApplicationReviewStatus.In_Review;
 
-    await firebase
-        .firestore()
+    await db
         .collection(DBCollections.Applications)
         .doc(application.id)
         .set(application)
@@ -82,9 +78,8 @@ export const saveAndSubmitApplication = async (application: Application) => {
     return true;
 };
 
-export const getApplicationById = async (applicationId: string) => {
-    const docRef = firebase
-        .firestore()
+export const getApplicationById = async (db: FirebaseFirestore.Firestore, applicationId: string) => {
+    const docRef = db
         .collection(DBCollections.Applications)
         .doc(applicationId);
     let fetchedApplication: Application = initEmptyApplication();
@@ -106,11 +101,10 @@ export const getApplicationById = async (applicationId: string) => {
     return fetchedApplication;
 };
 
-export const getApplicationByTitle = async (applicationTitle: string) => {
+export const getApplicationByTitle = async (db: FirebaseFirestore.Firestore, applicationTitle: string) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = firebase
-        .firestore()
+    const docRef = db
         .collection(DBCollections.Applications)
         .where('title', '==', applicationTitle);
     await docRef
@@ -133,11 +127,10 @@ export const getApplicationByTitle = async (applicationTitle: string) => {
     }
 };
 
-export const getAllSubmittedApplications = async () => {
+export const getAllSubmittedApplications = async (db: FirebaseFirestore.Firestore) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = firebase
-        .firestore()
+    const docRef = db
         .collection(DBCollections.Applications)
         .where('stage', '==', ApplicationStage.Submitted);
     await docRef
@@ -157,12 +150,12 @@ export const getAllSubmittedApplications = async () => {
 };
 
 export const getSavedApplicationsByApplicant = async (
+    db: FirebaseFirestore.Firestore, 
     applicantEmail: string,
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = firebase
-        .firestore()
+    const docRef = db
         .collection(DBCollections.Applications)
         .where('email', '==', applicantEmail)
         .where('stage', '==', ApplicationStage.Draft);
@@ -183,12 +176,12 @@ export const getSavedApplicationsByApplicant = async (
 };
 
 export const getSubmittedApplicationsByApplicant = async (
-    applicantEmail: string,
+    db: FirebaseFirestore.Firestore, 
+    applicantEmail: string
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = firebase
-        .firestore()
+    const docRef = db
         .collection(DBCollections.Applications)
         .where('email', '==', applicantEmail)
         .where('stage', '==', ApplicationStage.Submitted);
@@ -208,11 +201,10 @@ export const getSubmittedApplicationsByApplicant = async (
     return fetchedApplications;
 };
 
-export const getApplicationsByStatus = async (status: ApplicationStatus) => {
+export const getApplicationsByStatus = async (db: FirebaseFirestore.Firestore, status: ApplicationStatus) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = firebase
-        .firestore()
+    const docRef = db
         .collection(DBCollections.Applications)
         .where('status', '==', status);
     await docRef
@@ -231,11 +223,10 @@ export const getApplicationsByStatus = async (status: ApplicationStatus) => {
     return fetchedApplications;
 };
 
-export const getApplicationsByStage = async (stage: ApplicationStage) => {
+export const getApplicationsByStage = async (db: FirebaseFirestore.Firestore, stage: ApplicationStage) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = firebase
-        .firestore()
+    const docRef = db
         .collection(DBCollections.Applications)
         .where('stage', '==', stage);
     await docRef
@@ -254,14 +245,13 @@ export const getApplicationsByStage = async (stage: ApplicationStage) => {
     return fetchedApplications;
 };
 
-export const withdrawApplication = async (applicationId: string) => {
-    let application: Application = await getApplicationById(applicationId);
+export const withdrawApplication = async (db: FirebaseFirestore.Firestore, applicationId: string) => {
+    let application: Application = await getApplicationById(db, applicationId);
     let isWithdrawn = false;
     if (!application.isEmpty()) {
         application.stage = ApplicationStage.Draft; // TODO: Check with Saood, it probably should be apart of the status rather than Stage
         const data = createApplicationData(application);
-        await firebase
-            .firestore()
+        await db
             .collection(DBCollections.Applications)
             .doc(application.id)
             .set(data)
@@ -279,16 +269,16 @@ export const withdrawApplication = async (applicationId: string) => {
 };
 
 export const updateApplicationStatus = async (
+    db: FirebaseFirestore.Firestore, 
     applicationId: string,
     status: ApplicationStatus,
 ) => {
-    let application = await getApplicationById(applicationId);
+    let application = await getApplicationById(db, applicationId);
     let isStatusChanged = false;
     if (!application.isEmpty()) {
         application.status = status;
         const applicationData = createApplicationData(application);
-        await firebase
-            .firestore()
+        await db
             .collection(DBCollections.Applications)
             .doc(application.id)
             .set(applicationData)
@@ -305,16 +295,15 @@ export const updateApplicationStatus = async (
     return isStatusChanged;
 };
 
-export const updateApplication = async (application: Application) => {
+export const updateApplication = async (db: FirebaseFirestore.Firestore, application: Application) => {
     let isStatusChanged = false;
     application = createApplication(application);
     if (application.isEmpty() && application.id) {
-        let foundApplication = await getApplicationById(application.id);
+        let foundApplication = await getApplicationById(db, application.id);
 
         if (!foundApplication.isEmpty()) {
             const applicationData = createApplicationData(application);
-            await firebase
-                .firestore()
+            await db
                 .collection(DBCollections.Applications)
                 .doc(application.id)
                 .set(applicationData)
@@ -332,10 +321,10 @@ export const updateApplication = async (application: Application) => {
     return isStatusChanged;
 }
 
-export const getAllSteeringCommitteeMembers = async () => {
+export const getAllSteeringCommitteeMembers = async (db: FirebaseFirestore.Firestore) => {
     let fetchedSCMembers: SteeringCommitteeUIDs[] = [];
 
-    const docRef = firebase.firestore().collection("SteeringCommitteeUIDs");
+    const docRef = db.collection("SteeringCommitteeUIDs");
     await docRef.get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -350,10 +339,10 @@ export const getAllSteeringCommitteeMembers = async () => {
     return fetchedSCMembers;
 }
 
-export const getExistingCCFRSiteData = async () => {
+export const getExistingCCFRSiteData = async (db: FirebaseFirestore.Firestore) => {
     let fetchedSCMembers: ExistingCCFRSiteData[] = [];
 
-    const docRef = firebase.firestore().collection("ExistingCCFRSiteData");
+    const docRef = db.collection("ExistingCCFRSiteData");
     await docRef.get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -368,10 +357,10 @@ export const getExistingCCFRSiteData = async () => {
     return fetchedSCMembers;
 }
 
-export const getExistingCCFRBiospecimens = async () => {
+export const getExistingCCFRBiospecimens = async (db: FirebaseFirestore.Firestore) => {
     let fetchedSCMembers: ExistingCCFRBiospecimens[] = [];
 
-    const docRef = firebase.firestore().collection("ExistingCCFRBiospecimens");
+    const docRef = db.collection("ExistingCCFRBiospecimens");
     await docRef.get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -386,10 +375,10 @@ export const getExistingCCFRBiospecimens = async () => {
     return fetchedSCMembers;
 }
 
-export const getExistingCCFRData = async () => {
+export const getExistingCCFRData = async (db: FirebaseFirestore.Firestore) => {
     let fetchedSCMembers: ExistingCCFRData[] = [];
 
-    const docRef = firebase.firestore().collection("ExistingCCFRData");
+    const docRef = db.collection("ExistingCCFRData");
     await docRef.get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -404,8 +393,8 @@ export const getExistingCCFRData = async () => {
     return fetchedSCMembers;
 }
 
-export const programManagerReviewApplication = async (applicationId: string, status: ApplicationReviewStatus) => {
-    let application = await getApplicationById(applicationId);
+export const programManagerReviewApplication = async (db: FirebaseFirestore.Firestore, applicationId: string, status: ApplicationReviewStatus) => {
+    let application = await getApplicationById(db, applicationId);
     let isStatusChanged = false;
     if (!application.isEmpty()) {
         if (status == ApplicationReviewStatus.Approved) {
@@ -422,10 +411,10 @@ export const programManagerReviewApplication = async (applicationId: string, sta
                 application.BWGChairReview.status = ApplicationReviewStatus.In_Review;
             }
             else {
-                isStatusChanged = await instantiateSteeringCommitteeReviewProcess(application);
+                isStatusChanged = await instantiateSteeringCommitteeReviewProcess(db, application);
                 return isStatusChanged;
             }
-            await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+            await db.collection(DBCollections.Applications).doc(application.id).set(application)
                 .then(() => {
                     console.log("Application approved successfully!");
                     isStatusChanged = true;
@@ -438,7 +427,7 @@ export const programManagerReviewApplication = async (applicationId: string, sta
         else if (status == ApplicationReviewStatus.Rejected) {
             application.stage = ApplicationStage.PMReview;
             application.programManagerReview!.status = ApplicationReviewStatus.Rejected;
-            await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+            await db.collection(DBCollections.Applications).doc(application.id).set(application)
                 .then(() => {
                     console.log("Application rejected successfully!");
                     isStatusChanged = true;
@@ -454,21 +443,21 @@ export const programManagerReviewApplication = async (applicationId: string, sta
 }
 
 
-export const addBiospecimenFormInformation = async (applicationId: string, biospecimenForm: BiospecimenForm) => {
-    let application = await getApplicationById(applicationId);
+export const addBiospecimenFormInformation = async (db: FirebaseFirestore.Firestore, applicationId: string, biospecimenForm: BiospecimenForm) => {
+    let application = await getApplicationById(db, applicationId);
     let isStatusChanged = false;
     if (!application.isEmpty()) {
         application.biospecimenForm = biospecimenForm;
-        isStatusChanged = await instantiateSteeringCommitteeReviewProcess(application);
+        isStatusChanged = await instantiateSteeringCommitteeReviewProcess(db, application);
     }
     return isStatusChanged;
 }
 
-export const instantiateSteeringCommitteeReviewProcess = async (application: Application) => {
+export const instantiateSteeringCommitteeReviewProcess = async (db: FirebaseFirestore.Firestore, application: Application) => {
     application = createApplication(application);
     application.stage = ApplicationStage.SCReview;
     let isStatusChanged = false;
-    let scReviewers = await getAllSteeringCommitteeMembers();
+    let scReviewers = await getAllSteeringCommitteeMembers(db);
     application.steeringCommitteeReview = {};
     application.steeringCommitteeReview.reviewStartDate = new Date();
     application.steeringCommitteeReview.numberOfReviewersAccepted = 0;
@@ -480,7 +469,7 @@ export const instantiateSteeringCommitteeReviewProcess = async (application: App
         scReviewerObj.status = ApplicationReviewStatus.In_Review;
         application.steeringCommitteeReview.reviewers.push(scReviewerObj);
     }
-    await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+    await db.collection(DBCollections.Applications).doc(application.id).set(application)
         .then(() => {
             console.log("Application updated successfully!");
             isStatusChanged = true;
@@ -493,8 +482,8 @@ export const instantiateSteeringCommitteeReviewProcess = async (application: App
 }
 
 
-export const steeringCommitteeReviewApplication = async (applicationId: string, status: ApplicationReviewStatus, steeringCommitteeMemberName: string) => {
-    let application = await getApplicationById(applicationId);
+export const steeringCommitteeReviewApplication = async (db: FirebaseFirestore.Firestore, applicationId: string, status: ApplicationReviewStatus, steeringCommitteeMemberName: string) => {
+    let application = await getApplicationById(db, applicationId);
     let isStatusChanged = false;
     if (!application.isEmpty()) {
         for (let i = 0; i < application.steeringCommitteeReview!.reviewers!.length; i++) {
@@ -502,7 +491,7 @@ export const steeringCommitteeReviewApplication = async (applicationId: string, 
                 application.steeringCommitteeReview!.reviewers![i].status = status;
             }
         }
-        await firebase.firestore().collection(DBCollections.Applications).doc(application.id).set(application)
+        await db.collection(DBCollections.Applications).doc(application.id).set(application)
             .then(() => {
                 console.log("Application reviewed successfully!");
                 isStatusChanged = true;

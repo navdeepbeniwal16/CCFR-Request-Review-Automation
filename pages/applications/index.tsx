@@ -3,6 +3,7 @@ import {
     withAuthUser,
     AuthAction,
     withAuthUserTokenSSR,
+    getFirebaseAdmin,
 } from 'next-firebase-auth';
 import Head from 'next/head';
 import ApplicationTable from '../../components/ApplicationTable';
@@ -13,9 +14,9 @@ import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Application } from '../../lib/interfaces';
 import {
-    ApplicationStage,
-    ApplicationStatus,
-} from '../../lib/utilities/AppEnums';
+    getAllSteeringCommitteeMembers,
+    getAllSubmittedApplications,
+} from '../../lib/application';
 
 type ApplicationsPageProps = {
     title: string | null;
@@ -69,7 +70,7 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
                 numSteeringCommittee={numSteeringCommittee}
                 fetchMoreData={() => {
                     setTimeout(() => {
-                        setApps(apps.concat(data));
+                        // TODO: add pagination here
                     }, 1500);
                 }}
             />
@@ -82,11 +83,15 @@ export const getServerSideProps = withAuthUserTokenSSR({
 })(async ({ AuthUser, query }) => {
     const appType: ApplicationsPageProps['title'] =
         query.type?.toString() || null;
+    const db = getFirebaseAdmin().firestore();
+    const data = await getAllSubmittedApplications(db);
+    const steeringCommittee = await getAllSteeringCommitteeMembers(db);
+    console.log(data);
 
     const _props: ApplicationsPageProps = {
         title: appType,
         applications: data,
-        numSteeringCommittee: 10,
+        numSteeringCommittee: steeringCommittee.length,
     };
 
     return {
@@ -97,236 +102,3 @@ export const getServerSideProps = withAuthUserTokenSSR({
 export default withAuthUser<ApplicationsPageProps>({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
 })(ApplicationsPage);
-
-const data: Application[] = [
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Impact of Inflammatory Bowel Disease on CRC Mortality.',
-        institutionPrimary: {
-            investigator: 'Scott Adams',
-            institution: 'University of Melbourne',
-        },
-        email: 'scott.adams@unimelb.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-04-15'))),
-        status: ApplicationStatus.Active,
-        stage: ApplicationStage.PMReview,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Family History Characteristics in the Colon CFRs.',
-        institutionPrimary: {
-            investigator: 'Dennis Ahnen',
-            institution: 'Royal Melbourne Institute of Technology',
-        },
-        email: 'dennisa@rmit.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-07-16'))),
-        status: ApplicationStatus.Active,
-        stage: ApplicationStage.Draft,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Promoting Colon Cancer Screening Among Genetically Defined High-Risk Populations Within the Cooperative Family Registry for Colon Cancer Studies (CFRCCS).',
-        institutionPrimary: {
-            investigator: 'Dennis Ahnen',
-            institution: 'Monash University',
-        },
-        email: 'dahnen@monash.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2021-12-19'))),
-        status: ApplicationStatus.Rejected,
-        stage: ApplicationStage.Complete,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Colorectal Screening Practices in Members of High Risk Families.',
-        institutionPrimary: {
-            investigator: 'John Smith',
-            institution: 'University of Melbourne',
-        },
-        email: 'jsmith@unimelb.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2021-11-10'))),
-        status: ApplicationStatus.Active,
-        stage: ApplicationStage.BWGReview,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Molecular Identification of Lynch Syndrome.',
-        institutionPrimary: {
-            investigator: 'Mary Jones',
-            institution: 'Royal Melbourne Institute of Technology',
-        },
-        email: 'mary.jones@rmite.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-02-01'))),
-        status: ApplicationStatus.Active,
-        stage: ApplicationStage.SCReview,
-        steeringCommitteeReview: {
-            reviewStartDate: JSON.parse(JSON.stringify(new Date('2022-09-09'))),
-            totalReviewers: 4,
-        },
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Social determinants of colorectal cancer screening, treatment and outcomes in the Colon-CFR.',
-        institutionPrimary: {
-            investigator: 'Irene Clarke',
-            institution: 'Monash University',
-        },
-        email: 'iclarke@monash.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        biospecimenRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-06-26'))),
-        status: ApplicationStatus.Accepted,
-        stage: ApplicationStage.Complete,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Collaboration with OFBCR on the BRIDGES Project.',
-        institutionPrimary: {
-            investigator: 'Yoland Intil',
-            institution: 'University of Melbourne',
-        },
-        email: 'yolandi@unimelb.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-04-25'))),
-        status: ApplicationStatus.Accepted,
-        stage: ApplicationStage.Complete,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Studies into Gynecological Cancers Associated with the Syndrome: Hereditary Nonpolyposis Colon Cancer.',
-        institutionPrimary: {
-            investigator: 'Sam Yard',
-            institution: 'Monash University',
-        },
-        email: 'samyard@monash.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-09-19'))),
-        status: ApplicationStatus.Active,
-        stage: ApplicationStage.PMReview,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Validation of a novel MSI panel.',
-        institutionPrimary: {
-            investigator: 'Jeff Bacher',
-            institution: 'Royal Melbourne Institute of Technology',
-        },
-        email: 'jeffb@rmit.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        biospecimenRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-05-14'))),
-        status: ApplicationStatus.Rejected,
-        stage: ApplicationStage.Complete,
-        history: [],
-    },
-    {
-        id: String(Math.floor(Math.random() * 10000)),
-        title: 'Colorectal Cancer Screening in Australia.',
-        institutionPrimary: {
-            investigator: 'Dris Oakrim',
-            institution: 'University of Melbourne',
-        },
-        email: 'doakrim@unimelb.edu.au',
-        dataRequired: [
-            {
-                name: 'test',
-                type: 'test',
-                quantity: 10,
-                numSamples: 1,
-            },
-        ],
-        createdAt: JSON.parse(JSON.stringify(new Date('2022-06-16'))),
-        status: ApplicationStatus.Rejected,
-        stage: ApplicationStage.Complete,
-        history: [],
-    },
-];
