@@ -3,8 +3,15 @@ import * as ApplicationModule from '../lib/application';
 import firebase from 'firebase/app';
 import firestore from 'firebase';
 import auth from 'firebase';
-import { Application, Institution } from '../lib/interfaces';
 import {
+    Application,
+    BiospecimenForm,
+    Clarification,
+    Institution,
+    ResourceRequest,
+} from '../lib/interfaces';
+import {
+    ApplicationReviewStatus,
     ApplicationStage,
     ApplicationStatus,
     InstitutionAccessType,
@@ -57,8 +64,10 @@ describe('application apis test suite', () => {
     //     expect(result).toBe(true);
     // });
     // test('test getApplicationById', async () => {
-    //     const result = await ApplicationModule.getApplicationById('5');
-    //     console.log('getApplicationById Result ' + result);
+    //     const result = await ApplicationModule.getApplicationById(
+    //         'application-4',
+    //     );
+    //     console.log('getApplicationById Result ' + result.id);
     //     if (result.isEmpty()) {
     //         console.log('No Application found...!');
     //     }
@@ -136,12 +145,51 @@ describe('application apis test suite', () => {
     //     console.log('Updated application? : ' + result);
     //     expect(result);
     // });
+    // test('test getExistingCCFRSiteData', async () => {
+    //     const result = await ApplicationModule.getExistingCCFRSiteData();
+    //     console.log('Site Data Length ? : ' + result.length);
+    //     expect(result);
+    // });
+    // test('test getExistingCCFRBiospecimens', async () => {
+    //     const result = await ApplicationModule.getExistingCCFRBiospecimens();
+    //     console.log('Biospecimens Data Length ? : ' + result.length);
+    //     expect(result);
+    // });
+    // test('test getExistingCCFRData', async () => {
+    //     const result = await ApplicationModule.getExistingCCFRData();
+    //     console.log('CCFRData Length ? : ' + result.length);
+    //     expect(result);
+    // });
+    // test('test programManagerReviewApplication', async () => {
+    //     const result = await ApplicationModule.programManagerReviewApplication(
+    //         '12',
+    //         ApplicationReviewStatus.Approved,
+    //     );
+    //     console.log('Application Approved ? : ' + result);
+    //     expect(result);
+    // });
+    // test('test addBiospecimenFormInformation', async () => {
+    //     const biospecimenForm: BiospecimenForm = {};
+    //     biospecimenForm.BWGStatusReview = 'Status review string';
+    //     biospecimenForm.amountRequired = 3;
+    //     biospecimenForm.clarifications = <Clarification>{};
+    //     biospecimenForm.clarifications.additionalDispatchRequirement = 'Yes';
+    //     biospecimenForm.clarifications.depletedDNASampleRequest =
+    //         'Extract at CCFR Site(s)';
+    //     const result = await ApplicationModule.addBiospecimenFormInformation(
+    //         '12',
+    //         biospecimenForm,
+    //     );
+    //     console.log('Biospeciment infor added ? : ' + result);
+    //     expect(result);
+    // });
+    // TODO: Test steering committee memeber review
 });
 
 // Utlity functions to be used while development
 const generateDummyApplication = (): Application => {
     const application = <Application>{};
-    application.id = '11';
+    application.id = '12';
     application.title = 'test-title';
     application.email = 'test-email';
 
@@ -152,5 +200,15 @@ const generateDummyApplication = (): Application => {
     institution.accessType = InstitutionAccessType.Data;
     institution.department = 'depart1';
     application.institutionPrimary = institution;
+
+    application.biospecimenRequired = [];
+    const specimen: ResourceRequest = {
+        name: 'resource name',
+        type: 'resource type',
+        quantity: 3,
+        numSamples: 2,
+    };
+    application.biospecimenRequired.push(specimen);
+
     return application;
 };

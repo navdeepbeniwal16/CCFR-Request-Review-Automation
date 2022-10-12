@@ -25,7 +25,7 @@ beforeAll(async () => {
     db = firestore.firestore(app);
 
     const currentUserCredential = await userModule.loginUser(
-        'test-user-1@123.com',
+        'bwg-test-user@123.com',
         'strongPass',
     );
 
@@ -43,7 +43,7 @@ describe('User Module Test Suite', () => {
     // });
     // test('test registerUser() : ', async () => {
     //     const result = await userModule.registerUser(
-    //         'test-user-1@123.com',
+    //         'bwg-test-user@123.com',
     //         'strongPass',
     //     );
     //     console.log('Registered User : ' + result);
@@ -51,7 +51,7 @@ describe('User Module Test Suite', () => {
     // });
     // test('test updateUserProfile() : ', async () => {
     //     const userProfile: UserProfile = {
-    //         displayName: 'Bob The Builder',
+    //         displayName: 'Becky Wagger',
     //     };
     //     const result = await userModule.updateUserProfile(userProfile);
     //     console.log('Updated User ? : ' + result);
