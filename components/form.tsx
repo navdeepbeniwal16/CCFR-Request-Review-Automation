@@ -394,7 +394,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             </td>
             <td>
                 <Checkbox
-                    // checked={_ccfrPeople.isChecked}
+                    checked={_ccfrPeople.isChecked}
                     onChange={(event) => handleCheckboxOnClick(event, i)}
                 />
             </td>
@@ -761,7 +761,7 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
         ccfrSite: 'Melbourne University',
         sitePIName: 'John Louis',
         sitePIDegree: 'Phd',
-        isChecked:false
+        isChecked:true
     },
     {
         centerNumber: 15,
