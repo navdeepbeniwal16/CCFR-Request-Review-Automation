@@ -34,8 +34,6 @@ export interface Application {
     status: ApplicationStatus;
     stage: ApplicationStage;
     history: HistoryNode[];
-
-    isEmpty(): Boolean;
 }
 
 export interface Address {
