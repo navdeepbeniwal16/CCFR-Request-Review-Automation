@@ -17,6 +17,7 @@ import {
 import { Key, useState } from 'react';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
+import { showNotification } from '@mantine/notifications';
 import {
     AuthAction,
     withAuthUser,
@@ -145,6 +146,10 @@ function Save({ form }: { form: UseFormReturnType<Application> }) {
                 type="submit"
                 onClick={() => {
                     form.setFieldValue('stage', 'Draft');
+                    showNotification({
+                        title: 'Form Saved',
+                        message: 'See you soon!',
+                    })
                 }}
             >
                 Save
@@ -160,6 +165,12 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
                 type="submit"
                 onClick={() => {
                     form.setFieldValue('stage', 'Submitted');
+
+                    showNotification({
+                        title: 'Form Submitted',
+                        message: 'Great Job!',
+                    })
+
                 }}
             >
                 Submit
@@ -367,10 +378,10 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
     const [checkedPeopleInTable, setCheckedPeopleInTable] = useState<Application['ccfrCollaborators']>([]);
     const [formData, setFormData] = useState<Application['ccfrCollaborators']>(ccfrPeople?.filter(data => !data.centerNumber));
 
-    const handleCheckboxOnClick = (event: React.ChangeEvent<HTMLInputElement>, index:number) => {
+    const handleCheckboxOnClick = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
 
         //console.log('people in table', peopleInTable)
-        const ppl = [...peopleInTable as Collaborator[]] 
+        const ppl = [...peopleInTable as Collaborator[]]
         ppl[index]['isChecked'] = event.currentTarget.checked
         setpeopleInTable(ppl)
 
@@ -400,7 +411,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
             </td>
         </tr>
     ));
-    
+
     const newData = {
         sitePIName: '',
         ccfrSite: '',
@@ -409,7 +420,7 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
 
     const addNewData = () => {
         if (formData) {
-            setFormData([ ...formData, newData])
+            setFormData([...formData, newData])
         }
     }
 
@@ -417,10 +428,10 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
         const list = formData && [...formData];
         const updatedList = list?.filter((value, _index) => _index !== index);
 
-        console.log('updatedLst',  updatedList)
+        console.log('updatedLst', updatedList)
         setFormData(updatedList)
 
-        const allData = updatedList && checkedPeopleInTable &&  [...checkedPeopleInTable, ...updatedList]
+        const allData = updatedList && checkedPeopleInTable && [...checkedPeopleInTable, ...updatedList]
 
         form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
     }
@@ -469,9 +480,9 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                 </thead>
                 <tbody>
                     {
-                        formData?.map((data, index: number)=>(
+                        formData?.map((data, index: number) => (
                             <tr key={index}>
-                                
+
                                 <td>
                                     <TextInput
                                         onChange={(event) => { handleChanges('sitePIName', event, index) }}
@@ -486,16 +497,16 @@ function Section2({ form }: { form: UseFormReturnType<Application> }) {
                                 </td>
                                 <td>
                                     <CloseButton
-                                        onClick={()=>removeData(index)}
+                                        onClick={() => removeData(index)}
                                     />
                                 </td>
                             </tr>
 
                         ))
                     }
-                        
 
-                        
+
+
                 </tbody>
             </Table>
 
@@ -585,7 +596,7 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
 
     }
 
-    const handleChangesAuto = (subType: string, event:string, index: number) => {
+    const handleChangesAuto = (subType: string, event: string, index: number) => {
 
         const value = event;
         const list = formData && [...formData];
@@ -603,7 +614,7 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
         const list = formData && [...formData];
         const updatedList = list?.filter((value, _index) => _index !== index);
 
-        console.log('updatedLst',  updatedList)
+        console.log('updatedLst', updatedList)
         setFormData(updatedList)
         form.setFieldValue('dataRequired', updatedList)
     }
@@ -651,9 +662,9 @@ function Section3b({ form }: { form: UseFormReturnType<Application> }) {
                                 </td>
                                 <td>
                                     <TextInput
-                                        type= 'number'
+                                        type='number'
                                         onChange={(event) => { handleChanges('quantity', event, index) }}
-                                        value={data.quantity} 
+                                        value={data.quantity}
                                     />
                                 </td>
                                 <td>
@@ -761,14 +772,14 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
         ccfrSite: 'Melbourne University',
         sitePIName: 'John Louis',
         sitePIDegree: 'Phd',
-        isChecked:true
+        isChecked: true
     },
     {
         centerNumber: 15,
         ccfrSite: 'RMIT University',
         sitePIName: 'Kenneth Barrish',
         sitePIDegree: 'Phd',
-        isChecked:false
+        isChecked: false
 
     },
     {
@@ -776,7 +787,7 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
         ccfrSite: 'RMIT University',
         sitePIName: 'Jana Truman',
         sitePIDegree: 'Phd',
-        isChecked:false
+        isChecked: false
 
     },
     {
@@ -784,7 +795,7 @@ const ccfrPeople: Application['ccfrCollaborators'] = [
         ccfrSite: 'Hustler University',
         sitePIName: 'Derrek Legstrong',
         sitePIDegree: 'Phd',
-        isChecked:false
+        isChecked: false
 
     },
 ];
