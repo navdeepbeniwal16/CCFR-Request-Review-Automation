@@ -13,16 +13,21 @@ import { Section2 } from './Section2';
 import { Section3a } from './Section3a';
 import { Section4 } from './Section4';
 import { Section3b } from './Section3b';
-// import { ApplicationsPage } from './applications';
+import { ApplicationStage, ApplicationStatus } from '../../lib/utilities/AppEnums';
 
-type ApplicationsPageProps = {
-    title: string | null;
-    // applications: Application[]
+export type ApplicationFormProps = {
+    title?: string;
+    application?: Application;
+    readOnly?: boolean;
+    ccfrPeople?: Collaborator[];
+    dataAvailable?: string[];
+    bioAvailable?: string[];
 };
 
-export function Form() {
+export default function ApplicationForm({ title, application, readOnly, ccfrPeople, dataAvailable, bioAvailable}: ApplicationFormProps) {
     const form = useForm<Application>({
         initialValues: {
+            id: '',
             title: '',
             institutionPrimary: {
                 investigator: '',
@@ -56,15 +61,14 @@ export function Form() {
                 preliminaryData: '',
                 selectionCriteria: '',
             },
-            status: 'Inactive',
-            stage: 'Draft',
+            status: ApplicationStatus.Inactive,
+            stage: ApplicationStage.Draft,
             ccfrCollaborators: undefined || [
                 {
                     centerNumber: undefined,
                     ccfrSite: '',
                     sitePIName: '',
                     sitePIDegree: '',
-                    isChecked: true,
                 },
             ],
             dataRequired: undefined || [
@@ -75,6 +79,8 @@ export function Form() {
                     numSamples: 0,
                 },
             ],
+            createdAt: new Date(),
+            history: []
         },
         validate: values => {
             if (values.stage === 'Submitted') {
@@ -108,7 +114,7 @@ export function Form() {
 
                     <Section3a form={form} />
 
-                    <Section3b form={form} dataOption={dataOption} bioOption={bioOption}/>
+                    <Section3b form={form} dataOption={dataAvailable} bioOption={bioAvailable}/>
 
                     <Section4 form={form} />
 
@@ -160,46 +166,32 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
     );
 }
 
-const ccfrPeople: Application['ccfrCollaborators'] = [
-    {
-        centerNumber: 13,
-        ccfrSite: 'Melbourne University',
-        sitePIName: 'John Louis',
-        sitePIDegree: 'Phd',
-        isChecked: true
-    },
-    {
-        centerNumber: 15,
-        ccfrSite: 'RMIT University',
-        sitePIName: 'Kenneth Barrish',
-        sitePIDegree: 'Phd',
-        isChecked: false
+// const ccfrPeople: Application['ccfrCollaborators'] = [
+//     {
+//         centerNumber: 13,
+//         ccfrSite: 'Melbourne University',
+//         sitePIName: 'John Louis',
+//         sitePIDegree: 'Phd',
+//     },
+//     {
+//         centerNumber: 15,
+//         ccfrSite: 'RMIT University',
+//         sitePIName: 'Kenneth Barrish',
+//         sitePIDegree: 'Phd',
 
-    },
-    {
-        centerNumber: 21,
-        ccfrSite: 'RMIT University',
-        sitePIName: 'Jana Truman',
-        sitePIDegree: 'Phd',
-        isChecked: false
+//     },
+//     {
+//         centerNumber: 21,
+//         ccfrSite: 'RMIT University',
+//         sitePIName: 'Jana Truman',
+//         sitePIDegree: 'Phd',
+//     },
+//     {
+//         centerNumber: 17,
+//         ccfrSite: 'Hustler University',
+//         sitePIName: 'Derrek Legstrong',
+//         sitePIDegree: 'Phd',
 
-    },
-    {
-        centerNumber: 17,
-        ccfrSite: 'Hustler University',
-        sitePIName: 'Derrek Legstrong',
-        sitePIDegree: 'Phd',
-        isChecked: false
+//     },
+// ];
 
-    },
-];
-
-const dataOption: string[] = [
-    'DNA from blood',
-    'DNA from lymphoblast cell-lines*1',
-];
-
-const bioOption: string[] = [
-    'Family history of cancer data',
-    'Baseline epi/risk factor questionnaire data',
-];

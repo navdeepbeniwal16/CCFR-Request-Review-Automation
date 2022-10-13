@@ -126,7 +126,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({ application }) => {
             <Tabs.List>
                 <Group grow style={{ width: '100%' }}>
                     {tabGroups}
-                    {getActionButtons('pi')}
+                    {getActionButtons('bwg')}
                 </Group>
             </Tabs.List>
 

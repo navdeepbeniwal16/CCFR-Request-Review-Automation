@@ -3,7 +3,7 @@ import { UseFormReturnType } from "@mantine/form";
 import { useState } from "react";
 import { Application } from "../../lib/interfaces";
 
-export function Section3b(props: { form: UseFormReturnType<Application>; dataOption: string[]; bioOption:string[]}) {
+export function Section3b(props: { form: UseFormReturnType<Application>; dataOption?: string[]; bioOption?:string[]}) {
     const { form, dataOption, bioOption } = props;
 
     const [formData, setFormData] = useState<Application['dataRequired']>(form.values.dataRequired);
@@ -86,7 +86,7 @@ export function Section3b(props: { form: UseFormReturnType<Application>; dataOpt
                                 <td>
                                     <Autocomplete
                                         placeholder="Pick one"
-                                        data={[...dataOption, ...bioOption]}
+                                        data={[...dataOption||[], ...bioOption||[]]}
                                         value={data.type}
                                         onChange={(event) => { handleChangesAuto('type', event, index) }}
                                     />

@@ -3,15 +3,23 @@ import {
     withAuthUser,
     AuthAction,
     withAuthUserTokenSSR,
+    getFirebaseAdmin,
 } from 'next-firebase-auth';
-import { Form } from '../../components/Form';
+import ApplicationForm, { ApplicationFormProps } from '../../components/Form';
+import { getExistingCCFRBiospecimens, getExistingCCFRData, getExistingCCFRSiteData } from '../../lib/application';
 
 
-const NewApplicationPage = () => {
+const NewApplicationPage = ({ccfrPeople, dataAvailable, bioAvailable}:ApplicationFormProps) => {
     return (
         <>
             <h1>New Application</h1>
-            <Form></Form>
+            <ApplicationForm
+                //application={}
+                //readOnly = {}
+                ccfrPeople = {ccfrPeople}
+                dataAvailable =  {dataAvailable}
+                bioAvailable = {bioAvailable}
+            />
         </>
     )
 }
@@ -19,12 +27,23 @@ const NewApplicationPage = () => {
 export const getServerSideProps = withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, query }) => {
+
+    const db = getFirebaseAdmin().firestore();
+    const ppl = await getExistingCCFRSiteData(db);
+    const dta = await getExistingCCFRData(db);
+    const bio = await getExistingCCFRBiospecimens(db);
+
+    const _props: ApplicationFormProps = {
+        ccfrPeople: ppl.map(p => ({centerNumber: parseInt(p.centerNumber) , ccfrSite: p.siteName, sitePIName: p.pIName, sitePIDegree:p.pIDegree})),
+        dataAvailable: dta.map(d => d.name),
+        bioAvailable: bio.map(b => b.name),
+    }
+
     return {
-        props: {
-        },
+        props: _props,
     }
 })
 
-export default withAuthUser({
+export default withAuthUser<ApplicationFormProps>({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
 })(NewApplicationPage)
