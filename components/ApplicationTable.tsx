@@ -71,7 +71,7 @@ const getStatusCol = (
     ]);
 
     let statusVO = status.toString();
-    let stageVO = <>stage.toString()</>;
+    let stageVO = <>{stage.toString()}</>;
     let statusColorVO = statusColor.get(status);
 
     if (stage == 'Draft') {

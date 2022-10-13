@@ -37,7 +37,7 @@ export default function ApplicationTimeLine({
 }: ApplicationTimeLineProps) {
     return (
         <Timeline align="right" active={1} m={20} style={{ height: '100%' }}>
-            {history.map((historyNode, i) => (
+            {history?.map((historyNode, i) => (
                 <Timeline.Item
                     key={i}
                     title={historyNode.title}
