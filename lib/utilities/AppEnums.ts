@@ -8,6 +8,7 @@ export enum InstitutionAccessType {
 }
 
 export enum ApplicationStatus {
+    Inactive = 'Inactive',
     Active = 'Active',
     Rejected = 'Rejected',
     Accepted = 'Accepted',
