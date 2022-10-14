@@ -28,6 +28,7 @@ import {
     ApplicationStage,
     ApplicationStatus,
 } from '../../lib/utilities/AppEnums';
+import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
 
 type ApplicationPageProps = {
     application: Application;
@@ -181,7 +182,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
     const application = await getApplicationById(db, appId);
 
     const _props: ApplicationPageProps = {
-        application: application,
+        application: convertApplicationTimestamp(application),
     };
 
     return {

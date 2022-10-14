@@ -17,6 +17,7 @@ import {
     getAllSteeringCommitteeMembers,
     getAllSubmittedApplications,
 } from '../../lib/application';
+import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
 
 type ApplicationsPageProps = {
     title: string | null;
@@ -86,11 +87,10 @@ export const getServerSideProps = withAuthUserTokenSSR({
     const db = getFirebaseAdmin().firestore();
     const data = await getAllSubmittedApplications(db);
     const steeringCommittee = await getAllSteeringCommitteeMembers(db);
-    console.log(data);
 
     const _props: ApplicationsPageProps = {
         title: appType,
-        applications: data,
+        applications: data.map(a => convertApplicationTimestamp(a)),
         numSteeringCommittee: steeringCommittee.length,
     };
 

@@ -137,7 +137,7 @@ function ApplicationRow({
             <td style={{ textAlign: 'center' }}>
                 {new Date(application.createdAt)
                     .toLocaleString('en-GB')
-                    .slice(0, 9)}
+                    .slice(0, 10)}
             </td>
             <td style={{ textAlign: 'center' }}>
                 {getStatusCol(application, numSteeringCommittee)}
