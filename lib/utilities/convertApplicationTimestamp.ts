@@ -3,10 +3,9 @@ import {set, get} from 'lodash';
 
 export default function convertApplicationTimestamp(application: Application) {
     const dates = [
-        "dateReceiptDeadline",
+        "dataReceiptDeadline",
         "biospecimenReceiptDeadline",
         "createdAt",
-        "history",
         ... application.steeringCommitteeReview ? [
             "steeringCommitteeReview.reviewStartDate",
             "steeringCommitteeReview.firstAcceptance",
