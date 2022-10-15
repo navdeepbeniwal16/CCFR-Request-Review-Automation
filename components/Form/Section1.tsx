@@ -1,13 +1,29 @@
-import { Autocomplete, Box, Grid, Group, Space, Switch, TextInput } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
-import { UseFormReturnType } from "@mantine/form";
-import { useState } from "react";
-import { Application } from "../../lib/interfaces";
+import {
+    Autocomplete,
+    Box,
+    Grid,
+    Group,
+    Space,
+    Switch,
+    TextInput,
+} from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { UseFormReturnType } from '@mantine/form';
+import { useAuthUser } from 'next-firebase-auth';
+import { useState } from 'react';
+import { Application } from '../../lib/interfaces';
 
-
-
-export function Section1({ form }: { form: UseFormReturnType<Application> }) {
-    const [checked, setChecked] = useState(false);
+export function Section1({
+    form,
+    readOnly,
+}: {
+    form: UseFormReturnType<Application>;
+    readOnly?: boolean;
+}) {
+    const [checked, setChecked] = useState(
+        'institutionSecondary' in form.values,
+    );
+    const auth = useAuthUser();
     return (
         <Box>
             <h2>Section 1: Investigator and General Information</h2>
@@ -17,11 +33,13 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                     withAsterisk
                     label="Principal Investigator"
                     {...form.getInputProps('institutionPrimary.investigator')}
+                    readOnly={readOnly}
                 />
                 <TextInput
                     withAsterisk
                     label="Job Title"
                     {...form.getInputProps('institutionPrimary.jobTitle')}
+                    readOnly={readOnly}
                 />
             </Group>
 
@@ -30,11 +48,13 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                     withAsterisk
                     label="Institution"
                     {...form.getInputProps('institutionPrimary.institution')}
+                    readOnly={readOnly}
                 />
                 <TextInput
                     withAsterisk
                     label="Department"
                     {...form.getInputProps('institutionPrimary.department')}
+                    readOnly={readOnly}
                 />
             </Group>
 
@@ -44,10 +64,13 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                     label="Email Address"
                     placeholder="your@email.com"
                     {...form.getInputProps('email')}
+                    value={form.values.email || auth.email}
+                    readOnly
                 />
                 <TextInput
                     label="Phone Number"
                     {...form.getInputProps('phoneNumber')}
+                    readOnly={readOnly}
                 />
             </Group>
 
@@ -55,6 +78,7 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                 withAsterisk
                 label="Address"
                 {...form.getInputProps('address.streetName')}
+                readOnly={readOnly}
             />
 
             <Group position="center" grow>
@@ -62,11 +86,13 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                     withAsterisk
                     label="City/Suburb"
                     {...form.getInputProps('address.city')}
+                    readOnly={readOnly}
                 />
                 <TextInput
                     withAsterisk
                     label="State"
                     {...form.getInputProps('address.state')}
+                    readOnly={readOnly}
                 />
             </Group>
 
@@ -75,11 +101,13 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                     withAsterisk
                     label="Zip/Post Code"
                     {...form.getInputProps('address.zipcode')}
+                    readOnly={readOnly}
                 />
                 <TextInput
                     withAsterisk
                     label="Country"
                     {...form.getInputProps('address.country')}
+                    readOnly={readOnly}
                 />
             </Group>
             <Space h="lg" />
@@ -98,6 +126,7 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                         onLabel="Yes"
                         offLabel="No"
                         size="xl"
+                        disabled={readOnly}
                     />
                 </Grid.Col>
             </Grid>
@@ -105,16 +134,25 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
             <Space h="lg" />
 
             {checked && (
-                // (scndIns.naem || scndInst.biospec)
                 <>
-                    <Autocomplete
-                        label="If yes, access to what?"
-                        placeholder="Pick one"
-                        data={['Data', 'BioSpecimens', 'Both']}
-                        {...form.getInputProps(
-                            'institutionSecondary.accessType',
-                        )}
-                    />
+                    {readOnly ? (
+                        <TextInput
+                            value={form.values.institutionSecondary?.accessType}
+                            label="If yes, access to what?"
+                            placeholder="Pick one"
+                            readOnly={readOnly}
+                        />
+                    ) : (
+                        <Autocomplete
+                            label="If yes, access to what?"
+                            placeholder="Pick one"
+                            data={['Data', 'BioSpecimens', 'Both']}
+                            {...form.getInputProps(
+                                'institutionSecondary.accessType',
+                            )}
+                            disabled={readOnly}
+                        />
+                    )}
                     <Group position="center" grow>
                         <TextInput
                             withAsterisk
@@ -122,6 +160,7 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                             {...form.getInputProps(
                                 'institutionSecondary.investigator',
                             )}
+                            readOnly={readOnly}
                         />
                         <TextInput
                             withAsterisk
@@ -129,6 +168,7 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                             {...form.getInputProps(
                                 'institutionSecondary.jobTitle',
                             )}
+                            readOnly={readOnly}
                         />
                     </Group>
 
@@ -139,6 +179,7 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                             {...form.getInputProps(
                                 'institutionSecondary.institution',
                             )}
+                            readOnly={readOnly}
                         />
                         <TextInput
                             withAsterisk
@@ -146,6 +187,7 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                             {...form.getInputProps(
                                 'institutionSecondary.department',
                             )}
+                            readOnly={readOnly}
                         />
                     </Group>
                 </>
@@ -164,25 +206,47 @@ export function Section1({ form }: { form: UseFormReturnType<Application> }) {
                         offLabel="No"
                         size="xl"
                         {...form.getInputProps('productCommercialization')}
+                        disabled={readOnly}
                     />
                 </Grid.Col>
             </Grid>
 
             <Space h="lg" />
+            {readOnly ? (
+                <Group grow>
+                    <TextInput
+                        value={form.values.dataReceiptDeadline
+                            ?.toLocaleString('en-GB')
+                            .slice(0, 10)}
+                        placeholder="Pick date"
+                        label="Deadline for receipt of data"
+                        readOnly={true}
+                    />
 
-            <Group grow>
-                <DatePicker
-                    placeholder="Pick date"
-                    label="Deadline for receipt of data"
-                    {...form.getInputProps('dateReceiptDeadline')}
-                />
+                    <TextInput
+                        value={form.values.biospecimenReceiptDeadline
+                            ?.toLocaleString('en-GB')
+                            .slice(0, 10)}
+                        placeholder="Pick date"
+                        label="Deadline for receipt of biospecimens"
+                        readOnly={true}
+                    />
+                </Group>
+            ) : (
+                <Group grow>
+                    <DatePicker
+                        placeholder="Pick date"
+                        label="Deadline for receipt of data"
+                        {...form.getInputProps('dataReceiptDeadline')}
+                    />
 
-                <DatePicker
-                    placeholder="Pick date"
-                    label="Deadline for receipt of biospecimens"
-                    {...form.getInputProps('biospecimenReceiptDeadline')}
-                />
-            </Group>
+                    <DatePicker
+                        placeholder="Pick date"
+                        label="Deadline for receipt of biospecimens"
+                        {...form.getInputProps('biospecimenReceiptDeadline')}
+                    />
+                </Group>
+            )}
         </Box>
     );
 }

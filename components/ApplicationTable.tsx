@@ -1,10 +1,11 @@
 import { Badge, Table, Button, Loader, Center, Text } from '@mantine/core';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Countdown from 'react-countdown';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TextTruncate from 'react-text-truncate';
 import { Application } from '../lib/interfaces';
-import { ApplicationStatus } from '../lib/utilities/AppEnums';
+import { ApplicationStage, ApplicationStatus } from '../lib/utilities/AppEnums';
+const Countdown = dynamic(() => import('react-countdown'), { ssr: false });
 
 type ApplicationTableProps = {
     applications: Application[];
@@ -143,9 +144,21 @@ function ApplicationRow({
                 {getStatusCol(application, numSteeringCommittee)}
             </td>
             <td>
-                <Link href={'/applications/' + application.id} passHref>
+                <Link
+                    href={
+                        application.stage == ApplicationStage.Draft
+                            ? {
+                                  pathname: '/applications/new',
+                                  query: { id: application.id },
+                              }
+                            : '/applications/' + application.id
+                    }
+                    passHref
+                >
                     <Button component="a" variant="subtle">
-                        Details
+                        {application.stage == ApplicationStage.Draft
+                            ? 'Continue'
+                            : 'Details'}
                     </Button>
                 </Link>
             </td>
