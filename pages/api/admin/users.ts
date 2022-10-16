@@ -1,3 +1,4 @@
+import { UserRecord } from 'firebase-admin/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { getAllUsers, getUsersByRole } from '../../../lib/admin-users'
@@ -5,7 +6,7 @@ import { UserRole } from '../../../lib/utilities/AppEnums';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        let users = []
+        let users = [];
         if (req.query.role) {
             const role = parseUserRole(req);
             if (role === UserRole.ADMIN ||

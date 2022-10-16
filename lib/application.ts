@@ -14,6 +14,7 @@ import {
     ApplicationReviewStatus,
     UserRole,
 } from './utilities/AppEnums';
+import * as userModule from './user';
 import { printErrorTrace } from './utilities/errorHandler';
 
 export const isApplicationEmpty = (application: Application) => {
@@ -60,7 +61,7 @@ export const saveAndSubmitApplication = async (
     application.stage = ApplicationStage.PMReview;
     application.status = ApplicationStatus.Active;
     application.programManagerReview = <Review>{};
-    const progMgr = await adminUserModule.getUsersByRole(
+    const progMgr = await userModule.getUsersByRoleAsAdmin(
         UserRole.PROGRAM_MANAGER,
     );
     if (progMgr.length < 1) {
@@ -443,7 +444,7 @@ export const programManagerReviewApplication = async (
                     ApplicationReviewStatus.Approved;
                 if (application.biospecimenRequired) {
                     application.stage = ApplicationStage.BWGReview;
-                    const bwgChairs = await adminUserModule.getUsersByRole(
+                    const bwgChairs = await userModule.getUsersByRoleAsAdmin(
                         UserRole.BGW_CHAIR,
                     );
                     if (bwgChairs.length < 1) {
