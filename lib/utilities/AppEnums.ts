@@ -43,8 +43,8 @@ export enum DBCollections {
 
 export enum UserRole {
     APPLICANT = 'Applicant',
-    SC_MEMBER = 'Steering Committee Member',
-    BGW_CHAIR = 'BWG Chair',
-    PROGRAM_MANAGER = 'Program Manager',
-    ADMIN = 'Portal Administrator',
+    SC_MEMBER = 'Steering_Committee_Member',
+    BGW_CHAIR = 'BWG_Chair',
+    PROGRAM_MANAGER = 'Program_Manager',
+    ADMIN = 'Portal_Administrator',
 }
