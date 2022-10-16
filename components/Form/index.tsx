@@ -76,7 +76,7 @@ export default function ApplicationForm({
             //router.push('');
         }
     };
-    console.log('app',form.values)
+
     return (
         <Box sx={{ maxWidth: 1100 }} mx="auto">
             <form onSubmit={form.onSubmit(onSubmitApplication)}>

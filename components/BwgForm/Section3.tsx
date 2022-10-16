@@ -15,6 +15,7 @@ export function Section3({
 
             <h2>{'Section 3: Clarifications'}</h2>
             <Radio.Group 
+                withAsterisk={!readOnly}
                 required
                 spacing="xl" 
                 label="Does applicant anticipate >1 dispatch, e.g., a 2nd dispatch to validate initial findings?"
@@ -26,6 +27,7 @@ export function Section3({
             </Radio.Group>
 
             <Radio.Group 
+                withAsterisk={!readOnly}
                 required
                 spacing="xl"
                 label="If requesting DNA, will fluorescent dye quantification be required?"
@@ -37,6 +39,7 @@ export function Section3({
             </Radio.Group>
 
             <Radio.Group 
+                withAsterisk={!readOnly}
                 required
                 spacing="xl"
                 label="If blood-derived DNA is not available, will LCL-derived DNA be acceptable?"
@@ -48,6 +51,7 @@ export function Section3({
             </Radio.Group>
 
             <Radio.Group 
+                withAsterisk={!readOnly}
                 required
                 spacing="xl"
                 label="If blood-derived DNA is not available, will saliva-derived DNA be acceptable?"
@@ -59,6 +63,7 @@ export function Section3({
             </Radio.Group>
 
             <Radio.Group 
+                withAsterisk={!readOnly}
                 required
                 spacing="xl"
                 label="Will participants with depleted blood/saliva/LCL DNA samples requiring DNA extraction be excluded or will extractions be requested?"
@@ -70,6 +75,7 @@ export function Section3({
             </Radio.Group>
 
             <Radio.Group 
+                withAsterisk={!readOnly}
                 required
                 spacing="xl"
                 label="Will participants with depleted FFPE tissue DNA be excluded, or will extractions be requested, or will FFPE sections be requested? If FFPE sections will be requested, how many/case?"
@@ -83,12 +89,14 @@ export function Section3({
             <Text>If requesting tumor FFPE (slides or DNA), what is the minimum neoplastic cellularity (NC (%)) required in the tumor bed (or in precursor material for DNAextraction) and what is the minimum tumor volume (mm3) needed?</Text>
             <Group grow>
                 <TextInput
+                    withAsterisk={!readOnly}
                     required
                     label="Minimum NC"
                     {...form.getInputProps('biospecimenForm.clarifications.neoplasticCellularity.minNC')}
                     readOnly={readOnly}
                 />
                 <TextInput
+                    withAsterisk={!readOnly}
                     required
                     label="Minimum Volume"
                     {...form.getInputProps('biospecimenForm.clarifications.neoplasticCellularity.minVolume')}
@@ -99,6 +107,7 @@ export function Section3({
             <Text>If requesting normal FFPE (slides or DNA), what is the minimum normal volume (mm3) needed?</Text>
             
             <TextInput
+                withAsterisk={!readOnly}
                 required
                 label="Minimum Volume"
                 {...form.getInputProps('biospecimenForm.clarifications.normalVolume')}

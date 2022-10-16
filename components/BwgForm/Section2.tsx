@@ -15,6 +15,7 @@ export function Section2({
             <h2>{'Section 2: Methodology & Testing'}</h2>
 
             <Textarea
+                withAsterisk={!readOnly}
                 required
                 label="Proposed Testing and Methodology"
                 {...form.getInputProps('biospecimenForm.proposedTestingMethodlogy')}

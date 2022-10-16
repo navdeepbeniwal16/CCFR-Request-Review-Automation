@@ -13,6 +13,7 @@ export function Section4({
         <Box>
             <h2>{'Section 4: Biospecimen Working Group Review Conclusions'}</h2>
             <Textarea
+                withAsterisk={!readOnly}
                 required
                 label="Biospecimen Working Group Review Conclusions"
                 {...form.getInputProps('biospecimenForm.clarifications.BWGGroupConclusions')}

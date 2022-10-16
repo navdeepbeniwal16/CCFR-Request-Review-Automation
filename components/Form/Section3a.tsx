@@ -15,7 +15,7 @@ export function Section3a({
 
             <Stack spacing="md">
                 <Textarea
-                    withAsterisk
+                    withAsterisk={readOnly}
                     label="Project Title"
                     autosize
                     {...form.getInputProps('title')}

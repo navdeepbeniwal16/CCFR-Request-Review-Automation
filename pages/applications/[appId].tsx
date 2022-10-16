@@ -31,7 +31,7 @@ import {
 } from '../../lib/application';
 import { Application, Collaborator } from '../../lib/interfaces';
 import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
-import { BWGApplicationForm } from '../../components/BwgForm';
+import { BWGForm } from '../../components/BwgForm';
 const Countdown = dynamic(() => import('react-countdown'), { ssr: false });
 
 type ApplicationPageProps = {
@@ -135,7 +135,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
     const handleSetModalOpen = () => {
         setIsModalOpened(true);
     }
-    
+
     return (
         <Tabs defaultValue="application" style={{ height: '100%' }} mt={-10}>
             <Tabs.List>
@@ -152,7 +152,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                     opened={isModalOpen}
                     onClose={() => setIsModalOpened(false)}
                 >
-                    <BWGApplicationForm 
+                    <BWGForm 
                         application={application}
                         readOnly={false}
                     />
@@ -163,11 +163,16 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                     readOnly={true}
                 />
                 
-                <h1>BWG Form</h1>
-                <BWGApplicationForm 
-                    application={application}
-                    readOnly={true}
-                />
+                {application.biospecimenForm && 
+                    <>
+                        <h1>BWG Form</h1>
+                        <BWGForm 
+                            application={application}
+                            readOnly={true}
+                        />
+                    </>
+
+                }
 
             </Tabs.Panel>
 
