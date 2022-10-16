@@ -4,6 +4,7 @@ import firestore from 'firebase';
 import auth from 'firebase';
 import * as userModule from '../lib/user';
 import { UserProfile } from '../lib/interfaces';
+import { UserRole } from '../lib/utilities/AppEnums';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyDw7VuWi3aB_SC3vAL7n4yh2o1TAMqLXEw',
@@ -60,6 +61,40 @@ describe('User Module Test Suite', () => {
     // test('test deleteUser() : ', async () => {
     //     const result = await userModule.deleteUser();
     //     console.log('Updated Deleted ? : ' + result);
+    //     expect(result);
+    // });
+
+    // test('test getUserAsAdmin() : ', async () => {
+    //     const result = await userModule.getUserAsAdmin('bob@test.com');
+    //     console.log('User email? ' + result?.email);
+    //     expect(result);
+    // });
+
+    // test('test getAllUserAsAdmin() : ', async () => {
+    //     const result = await userModule.getAllUsersAsAdmin();
+    //     for (const user of result) {
+    //         console.log(user.email);
+    //     }
+    //     expect(result);
+    // });
+
+    // test('test getUsersByRoleAsAdmin() : ', async () => {
+    //     const result = await userModule.getUsersByRoleAsAdmin(UserRole.BGW_CHAIR);
+    //     for (const user of result) {
+    //         console.log(user.email);
+    //     }
+    //     expect(result);
+    // });
+
+    // test('test getUsersByRoleAsAdmin() : ', async () => {
+    //     const result = await userModule.getUserRoleAsAdmin("bob@test.com");
+    //     console.log('User role : ' + result);
+    //     expect(result);
+    // });
+
+    // test('test setUserRoleAsAdmin() : ', async () => {
+    //     const result = await userModule.setUserRoleAsAdmin("bob1@test.com", UserRole.PROGRAM_MANAGER);
+    //     console.log('User role updated? : ' + result);
     //     expect(result);
     // });
 });
