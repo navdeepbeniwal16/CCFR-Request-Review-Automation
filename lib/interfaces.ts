@@ -90,14 +90,20 @@ export interface Clarification {
     additionalDispatchRequirement?: 'Yes' | 'No' | 'TBD';
     fluoroscentDyeQuantificationRequired?: 'Yes' | 'No' | 'TBD';
     LCLDerivedDNAAcceptable?: 'Yes' | 'No' | 'TBD';
+    salivaAcceptable?: 'Yes' | 'No' | 'TBD';
     depletedDNASampleRequest?:
         | 'Exclude Sample(s)'
         | 'Extract at CCFR Site(s)'
         | 'TBD';
+    depletedFFPE?:
+        | 'Exclude Sample(s)'
+        | 'Extract at CCFR Site(s)'
+        | 'Request FFPE';
     neoplasticCellularity?: {
         minNC?: string;
         minVolume?: string;
     };
+    normalVolume?: string; 
     BWGGroupConclusions?: string;
     applicantCommentResponse?: string;
 }

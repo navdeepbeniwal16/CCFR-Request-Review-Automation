@@ -183,3 +183,4 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
         </Group>
     );
 }
+
