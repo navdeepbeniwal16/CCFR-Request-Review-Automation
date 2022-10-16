@@ -2,8 +2,12 @@ import { Box, Textarea } from "@mantine/core"
 import { UseFormReturnType } from "@mantine/form"
 import { Application } from "../../lib/interfaces"
 
-export function Section4({ form }:{
-    form: UseFormReturnType<Application>
+export function Section4({ 
+    form, 
+    readOnly,
+}:{
+    form: UseFormReturnType<Application>;
+    readOnly?: boolean
 }){
     return (
         <Box>
@@ -12,6 +16,7 @@ export function Section4({ form }:{
                 required
                 label="Biospecimen Working Group Review Conclusions"
                 {...form.getInputProps('biospecimenForm.clarifications.BWGGroupConclusions')}
+                readOnly={readOnly}
             />
         </Box>
     )

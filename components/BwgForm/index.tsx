@@ -78,15 +78,15 @@ export function BWGApplicationForm({ title, application, readOnly}: BWGApplicati
         <Box sx={{ maxWidth: 1100 }} mx="auto">
             <form onSubmit={form.onSubmit(handleSubmit, handleError)}>
                 <Stack spacing="xl">
-                    <Section0 form={form} />
+                    <Section0 form={form}/>
 
-                    <Section1 form={form} />
+                    <Section1 form={form}/>
 
-                    <Section2 form={form} />
+                    <Section2 form={form} readOnly={readOnly}/>
 
-                    <Section3 form={form} />
+                    <Section3 form={form} readOnly={readOnly}/>
 
-                    <Section4 form={form} />
+                    <Section4 form={form} readOnly={readOnly}/>
 
                     <Submit form={form} />
                 </Stack>

@@ -3,8 +3,12 @@ import { UseFormReturnType } from '@mantine/form'
 import React from 'react'
 import { Application } from '../../lib/interfaces'
 
-export function Section2({ form }:{
+export function Section2({ 
+    form, 
+    readOnly,
+}:{
     form: UseFormReturnType<Application>
+    readOnly?: boolean
 }){
     return (
         <Box>
@@ -14,6 +18,7 @@ export function Section2({ form }:{
                 required
                 label="Proposed Testing and Methodology"
                 {...form.getInputProps('biospecimenForm.proposedTestingMethodlogy')}
+                readOnly={readOnly}
             />
         </Box>
     )

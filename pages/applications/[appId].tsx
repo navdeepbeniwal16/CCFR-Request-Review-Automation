@@ -95,6 +95,7 @@ const getActionButtons = (role: string, setModalOpen: () => void) => {
     }
 };
 
+
 const votingTimeInfo = (scReview: Application['steeringCommitteeReview']) => {
     const voteStartDate = new Date(scReview?.reviewStartDate || '');
     const voteEndDate = new Date(scReview?.reviewStartDate || '');
@@ -134,6 +135,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
     const handleSetModalOpen = () => {
         setIsModalOpened(true);
     }
+    
     return (
         <Tabs defaultValue="application" style={{ height: '100%' }} mt={-10}>
             <Tabs.List>
@@ -152,6 +154,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                 >
                     <BWGApplicationForm 
                         application={application}
+                        readOnly={false}
                     />
                 </Modal>
                 <ApplicationForm
@@ -159,8 +162,12 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                     ccfrPeople={ccfrPeople}
                     readOnly={true}
                 />
-
-                {/* <BWGApplicationForm readOnly={readOnly}/> */}
+                
+                <h1>BWG Form</h1>
+                <BWGApplicationForm 
+                    application={application}
+                    readOnly={true}
+                />
 
             </Tabs.Panel>
 
