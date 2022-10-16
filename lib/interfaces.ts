@@ -18,9 +18,9 @@ export interface Application {
     biospecimenReceiptDeadline?: Date;
     ccfrCollaborators?: Collaborator[];
     studyDescription?: StudyDescription;
-    dataRequired?: Request[];
+    dataRequired?: ResourceRequest[];
     programManagerReview?: Review;
-    biospecimenRequired?: Request[];
+    biospecimenRequired?: ResourceRequest[];
     BWGChairReview?: Review;
     createdAt: Date;
     biospecimenForm?: BiospecimenForm;
@@ -67,7 +67,7 @@ export interface StudyDescription {
     selectionCriteria?: string;
 }
 
-export interface Request {
+export interface ResourceRequest {
     name: string,
     type: string,
     quantity?: number,
