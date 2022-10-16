@@ -1,25 +1,60 @@
-import { Box, Button, Checkbox, CloseButton, Group, Space, Table, Text, TextInput } from "@mantine/core";
-import { UseFormReturnType } from "@mantine/form";
-import { useEffect, useState } from "react";
-import { Application, Collaborator } from "../../lib/interfaces";
+import {
+    Box,
+    Button,
+    Checkbox,
+    CloseButton,
+    Group,
+    Space,
+    Table,
+    Text,
+    TextInput,
+} from '@mantine/core';
+import { UseFormReturnType } from '@mantine/form';
+import { useEffect, useState } from 'react';
+import { Application, Collaborator } from '../../lib/interfaces';
 
-export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeople: Collaborator[]; }) {
-    const { form, ccfrPeople } = props;
-    const [peopleInTable, setpeopleInTable] = useState<Collaborator[]>(ccfrPeople?.filter(data => data.centerNumber));
-    const [checkedPeopleInTable, setCheckedPeopleInTable] = useState<Collaborator[]>([]);
-    const [formData, setFormData] = useState<Collaborator[]>(ccfrPeople?.filter(data => !data.centerNumber));
-    useEffect(()=>{form.setFieldValue('ccfrCollaborators', [...checkedPeopleInTable as Collaborator[], ...formData as Collaborator[]])},[checkedPeopleInTable])
+export function Section2({
+    form,
+    ccfrPeople,
+    readOnly,
+}: {
+    form: UseFormReturnType<Application>;
+    ccfrPeople: Collaborator[];
+    readOnly?: boolean;
+}) {
+    const peopleInTable = ccfrPeople?.filter(data => data.centerNumber);
+    const [checkedPeopleInTable, setCheckedPeopleInTable] = useState<
+        Collaborator[]
+    >(form.values.ccfrCollaborators || []);
+    const [formData, setFormData] = useState<Collaborator[]>(
+        form.values.ccfrCollaborators?.filter(data => !data.centerNumber) || [],
+    );
 
-    const handleCheckboxOnClick = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    useEffect(() => {
+        form.setFieldValue('ccfrCollaborators', [
+            ...(checkedPeopleInTable as Collaborator[]),
+            ...(formData as Collaborator[]),
+        ]);
+    }, [checkedPeopleInTable]);
 
-        if(event.currentTarget.checked){
-            setCheckedPeopleInTable([...checkedPeopleInTable, peopleInTable[index]])
+    const handleCheckboxOnClick = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        index: number,
+    ) => {
+        if (event.currentTarget.checked) {
+            setCheckedPeopleInTable([
+                ...checkedPeopleInTable,
+                peopleInTable[index],
+            ]);
         } else {
-            setCheckedPeopleInTable(checkedPeopleInTable?.filter(data=>data!=peopleInTable[index]))
-            
+            setCheckedPeopleInTable(
+                checkedPeopleInTable?.filter(
+                    data => data != peopleInTable[index],
+                ),
+            );
         }
+    };
 
-    }
     const rows = peopleInTable?.map((_ccfrPeople, i) => (
         <tr key={i}>
             <td>{_ccfrPeople.centerNumber}</td>
@@ -34,48 +69,60 @@ export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeop
             </td>
             <td>
                 <Checkbox
-                    onChange={(event) => handleCheckboxOnClick(event, i)}
+                    checked={(
+                        form.values.ccfrCollaborators?.map(x =>
+                            Number(x.centerNumber),
+                        ) || []
+                    ).includes(_ccfrPeople.centerNumber || 0)}
+                    onChange={event => handleCheckboxOnClick(event, i)}
+                    disabled={readOnly}
                 />
             </td>
         </tr>
     ));
 
-    const newData = {
-        sitePIName: '',
-        ccfrSite: '',
-        isChecked: true,
-    }
-
     const addNewData = () => {
         if (formData) {
-            setFormData([...formData, newData])
+            setFormData([
+                ...formData,
+                {
+                    sitePIName: '',
+                    ccfrSite: '',
+                },
+            ]);
         }
-    }
+    };
 
     const removeData = (index: number) => {
         const list = formData && [...formData];
         const updatedList = list?.filter((value, _index) => _index !== index);
 
-        console.log('updatedLst', updatedList)
-        setFormData(updatedList)
+        console.log('updatedLst', updatedList);
+        setFormData(updatedList);
 
-        const allData = updatedList && checkedPeopleInTable && [...checkedPeopleInTable, ...updatedList]
+        const allData = updatedList &&
+            checkedPeopleInTable && [...checkedPeopleInTable, ...updatedList];
 
-        form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
-    }
+        form.setFieldValue('ccfrCollaborators', allData as Collaborator[]);
+    };
 
-    const handleChanges = (subType: string, event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-
+    const handleChanges = (
+        subType: string,
+        event: React.ChangeEvent<HTMLInputElement>,
+        index: number,
+    ) => {
         const { value } = event.target;
         const list = formData && [...formData];
 
-        list[index][subType] = value;
-        setFormData(list)
+        if (subType == 'ccfrSite' || subType == 'sitePIName')
+            list[index][subType] = value;
+        setFormData(list);
 
-        const allData = checkedPeopleInTable && formData && [...checkedPeopleInTable, ...formData]
+        const allData = checkedPeopleInTable &&
+            formData && [...checkedPeopleInTable, ...formData];
 
-        form.setFieldValue('ccfrCollaborators', allData as Collaborator[])
-    }
+        form.setFieldValue('ccfrCollaborators', allData as Collaborator[]);
+    };
 
     return (
         <Box>
@@ -91,49 +138,67 @@ export function Section2(props: { form: UseFormReturnType<Application>; ccfrPeop
                 </thead>
                 <tbody>{rows}</tbody>
             </Table>
-            <Space h="md" />
-            <Button onClick={addNewData}>Add new Collaborators</Button>
-            <Space h="md" />
+            {!readOnly && (
+                <>
+                    <Space h="md" />
+                    <Button onClick={addNewData}>Add new Collaborators</Button>
+                    <Space h="md" />
+                </>
+            )}
 
             {/* Table 2 */}
-            <Table>
-                <thead>
-                    <tr>
-                        <th>Other Collaborating Investigators</th>
-                        <th>Affiliation</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        formData?.map((data, index: number) => (
+            {formData.length > 0 && (
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Other Collaborating Investigators</th>
+                            <th>Affiliation</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {formData?.map((data, index: number) => (
                             <tr key={index}>
-
                                 <td>
                                     <TextInput
-                                        onChange={(event) => { handleChanges('sitePIName', event, index) }}
+                                        required
+                                        onChange={event => {
+                                            handleChanges(
+                                                'sitePIName',
+                                                event,
+                                                index,
+                                            );
+                                        }}
                                         value={data.sitePIName}
+                                        readOnly={readOnly}
                                     />
                                 </td>
                                 <td>
                                     <TextInput
-                                        onChange={(event) => { handleChanges('ccfrSite', event, index) }}
+                                        required
+                                        onChange={event => {
+                                            handleChanges(
+                                                'ccfrSite',
+                                                event,
+                                                index,
+                                            );
+                                        }}
                                         value={data.ccfrSite}
+                                        readOnly={readOnly}
                                     />
                                 </td>
-                                <td>
-                                    <CloseButton
-                                        onClick={() => removeData(index)}
-                                    />
-                                </td>
+                                {!readOnly && (
+                                    <td>
+                                        <CloseButton
+                                            onClick={() => removeData(index)}
+                                        />
+                                    </td>
+                                )}
                             </tr>
-
-                        ))
-                    }
-
-                </tbody>
-            </Table>
-
+                        ))}
+                    </tbody>
+                </Table>
+            )}
         </Box>
     );
 }

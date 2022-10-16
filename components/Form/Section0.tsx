@@ -1,16 +1,25 @@
-import { Box, TextInput } from "@mantine/core";
-import { UseFormReturnType } from "@mantine/form";
-import { Application } from "../../lib/interfaces";
+import { Box, TextInput } from '@mantine/core';
+import { UseFormReturnType } from '@mantine/form';
+import { Application } from '../../lib/interfaces';
 
-
-export function Section0({ form }: { form: UseFormReturnType<Application> }) {
+export function Section0({
+    form,
+    title,
+    readOnly,
+}: {
+    form: UseFormReturnType<Application>;
+    title?: string;
+    readOnly?: boolean;
+}) {
     return (
         <Box>
-            <h1>Application Details</h1>
+            <h1>{title || 'Application Details'}</h1>
             <TextInput
-                withAsterisk
+                withAsterisk={!readOnly}
+                required
                 label="Title of Project"
                 {...form.getInputProps('title')}
+                readOnly={readOnly}
             />
         </Box>
     );

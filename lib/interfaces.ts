@@ -14,7 +14,7 @@ export interface Application {
     address?: Address;
     institutionSecondary?: Institution;
     productCommercialization?: boolean;
-    dateReceiptDeadline?: Date;
+    dataReceiptDeadline?: Date;
     biospecimenReceiptDeadline?: Date;
     ccfrCollaborators?: Collaborator[];
     studyDescription?: StudyDescription;
@@ -67,7 +67,7 @@ export interface StudyDescription {
     selectionCriteria?: string;
 }
 
-interface Request {
+export interface Request {
     name: string,
     type: string,
     quantity?: number,

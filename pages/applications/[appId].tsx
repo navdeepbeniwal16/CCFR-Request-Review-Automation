@@ -17,20 +17,23 @@ import {
     withAuthUserTokenSSR,
     getFirebaseAdmin,
 } from 'next-firebase-auth';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Countdown from 'react-countdown';
 import ApplicationStepper from '../../components/ApplicationStepper';
 import ApplicationTimeLine from '../../components/ApplicationTimeline';
+import ApplicationForm from '../../components/Form';
 import VotingTable from '../../components/VotingTable';
-import { getApplicationById } from '../../lib/application';
-import { Application } from '../../lib/interfaces';
 import {
-    ApplicationStage,
-    ApplicationStatus,
-} from '../../lib/utilities/AppEnums';
+    getApplicationById,
+    getExistingCCFRSiteData,
+} from '../../lib/application';
+import { Application, Collaborator } from '../../lib/interfaces';
+import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
+const Countdown = dynamic(() => import('react-countdown'), { ssr: false });
 
 type ApplicationPageProps = {
     application: Application;
+    ccfrPeople: Collaborator[];
 };
 
 const badge = (
@@ -120,7 +123,10 @@ const votingTimeInfo = (scReview: Application['steeringCommitteeReview']) => {
     );
 };
 
-const ApplicationPage: NextPage<ApplicationPageProps> = ({ application }) => {
+const ApplicationPage: NextPage<ApplicationPageProps> = ({
+    application,
+    ccfrPeople,
+}) => {
     return (
         <Tabs defaultValue="application" style={{ height: '100%' }} mt={-10}>
             <Tabs.List>
@@ -131,7 +137,11 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({ application }) => {
             </Tabs.List>
 
             <Tabs.Panel value="application" pt="xs">
-                Application Form Here
+                <ApplicationForm
+                    application={application}
+                    ccfrPeople={ccfrPeople}
+                    readOnly={true}
+                />
             </Tabs.Panel>
 
             <Tabs.Panel
@@ -179,9 +189,16 @@ export const getServerSideProps = withAuthUserTokenSSR({
     const db = getFirebaseAdmin().firestore();
 
     const application = await getApplicationById(db, appId);
+    const ccfrPeople = await getExistingCCFRSiteData(db);
 
     const _props: ApplicationPageProps = {
-        application: application,
+        application: convertApplicationTimestamp(application),
+        ccfrPeople: ccfrPeople.map(p => ({
+            centerNumber: parseInt(p.centerNumber),
+            ccfrSite: p.siteName,
+            sitePIName: p.pIName,
+            sitePIDegree: p.pIDegree,
+        })),
     };
 
     return {

@@ -15,7 +15,6 @@ import {
     UserRole,
 } from './utilities/AppEnums';
 import { printErrorTrace } from './utilities/errorHandler';
-import * as adminUserModule from '../lib/admin-users';
 
 export const isApplicationEmpty = (application: Application) => {
     return Object.keys(application).length === 0;
@@ -32,7 +31,7 @@ export const saveApplicationAsDraft = async (
             throw new Error('Illegal Arguments : Application object is empty');
         }
     } catch (error) {
-        printErrorTrace(saveAndSubmitApplication, error, false);
+        //printErrorTrace(saveAndSubmitApplication, error, false);
         return isSaved;
     }
 
@@ -97,7 +96,6 @@ export const getApplicationById = async (
         .get()
         .then(doc => {
             if (doc.exists) {
-                console.log(doc.id, ' => ', doc.data());
                 fetchedApplication = <Application>doc.data();
                 fetchedApplication.id = applicationId;
                 return fetchedApplication;
@@ -125,8 +123,8 @@ export const getApplicationByTitle = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 const application = <Application>doc.data();
+                application.id = doc.id;
                 fetchedApplications.push(application);
             });
         })
@@ -149,13 +147,14 @@ export const getAllSubmittedApplications = async (
 
     const docRef = db
         .collection(DBCollections.Applications)
-        .where('stage', '==', ApplicationStage.Submitted);
+        .where('stage', '!=', ApplicationStage.Draft)
+        .limit(10);
     await docRef
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 const application = <Application>doc.data();
+                application.id = doc.id;
                 fetchedApplications.push(application);
             });
         })
@@ -180,8 +179,8 @@ export const getSavedApplicationsByApplicant = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 const application = <Application>doc.data();
+                application.id = doc.id;
                 fetchedApplications.push(application);
             });
         })
@@ -206,8 +205,8 @@ export const getSubmittedApplicationsByApplicant = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 const application = <Application>doc.data();
+                application.id = doc.id;
                 fetchedApplications.push(application);
             });
         })
@@ -231,8 +230,8 @@ export const getApplicationsByStatus = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 const application = <Application>doc.data();
+                application.id = doc.id;
                 fetchedApplications.push(application);
             });
         })
@@ -256,8 +255,8 @@ export const getApplicationsByStage = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 const application = <Application>doc.data();
+                application.id = doc.id;
                 fetchedApplications.push(application);
             });
         })
@@ -360,7 +359,6 @@ export const getAllSteeringCommitteeMembers = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 fetchedSCMembers.push(<SteeringCommitteeUIDs>doc.data());
             });
         })
@@ -381,7 +379,6 @@ export const getExistingCCFRSiteData = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 fetchedSCMembers.push(<ExistingCCFRSiteData>doc.data());
             });
         })
@@ -402,7 +399,6 @@ export const getExistingCCFRBiospecimens = async (
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 fetchedSCMembers.push(<ExistingCCFRBiospecimens>doc.data());
             });
         })
@@ -421,7 +417,6 @@ export const getExistingCCFRData = async (db: FirebaseFirestore.Firestore) => {
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data());
                 fetchedSCMembers.push(<ExistingCCFRData>doc.data());
             });
         })

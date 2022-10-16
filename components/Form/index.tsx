@@ -1,9 +1,4 @@
-import {
-    Button,
-    Group,
-    Box,
-    Stack,
-} from '@mantine/core';
+import { Button, Group, Box, Stack } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { Application, Collaborator } from '../../lib/interfaces';
@@ -13,7 +8,17 @@ import { Section2 } from './Section2';
 import { Section3a } from './Section3a';
 import { Section4 } from './Section4';
 import { Section3b } from './Section3b';
-import { ApplicationStage, ApplicationStatus } from '../../lib/utilities/AppEnums';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import {
+    ApplicationStage,
+    ApplicationStatus,
+} from '../../lib/utilities/AppEnums';
+import { useAuthUser } from 'next-firebase-auth';
+import { useRouter } from 'next/router';
+import { saveApplicationAsDraft } from '../../lib/application';
+import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from 'react';
 
 export type ApplicationFormProps = {
     title?: string;
@@ -24,123 +29,86 @@ export type ApplicationFormProps = {
     bioAvailable?: string[];
 };
 
-export default function ApplicationForm({ title, application, readOnly, ccfrPeople, dataAvailable, bioAvailable}: ApplicationFormProps) {
+export default function ApplicationForm({
+    title,
+    application,
+    readOnly,
+    ccfrPeople,
+    dataAvailable,
+    bioAvailable,
+}: ApplicationFormProps) {
+    const auth = useAuthUser();
+    const router = useRouter();
+    const [db, setDB] = useState<FirebaseFirestore.Firestore>();
     const form = useForm<Application>({
-        initialValues: {
-            id: '',
-            title: '',
-            institutionPrimary: {
-                investigator: '',
-                jobTitle: '',
-                institution: '',
-                department: '',
-            },
-
-            email: '',
-            phoneNumber: undefined,
-            address: {
-                streetName: '',
-                city: '',
-                state: '',
-                zipcode: '',
-                country: '',
-            },
-            institutionSecondary: {
-                investigator: '',
-                jobTitle: '',
-                institution: '',
-                department: '',
-            },
-            productCommercialization: false,
-            dateReceiptDeadline: undefined,
-            biospecimenReceiptDeadline: undefined,
-            studyDescription: {
-                abstract: '',
-                aims: '',
-                backgroundAndSignificance: '',
-                preliminaryData: '',
-                selectionCriteria: '',
-            },
-            status: ApplicationStatus.Inactive,
-            stage: ApplicationStage.Draft,
-            ccfrCollaborators: undefined || [
-                {
-                    centerNumber: undefined,
-                    ccfrSite: '',
-                    sitePIName: '',
-                    sitePIDegree: '',
-                },
-            ],
-            dataRequired: undefined || [
-                {
-                    name: '',
-                    type: '',
-                    quantity: 0,
-                    numSamples: 0,
-                },
-            ],
-            createdAt: new Date(),
-            history: []
-        },
-        validate: values => {
-            if (values.stage === 'Submitted') {
-                return {
-                    email: /^\S+@\S+$/.test(values.email || '')
-                        ? null
-                        : 'Invalid email',
-                };
-            }
-            return {};
-        },
+        initialValues: application
+            ? application
+            : { ...emptyApplication, email: auth.email || '' },
     });
 
-    // draft -> stage
-    /**
-     * save button -> stage: draft
-     * submit button -> stage: submitted
-     *
-     * isStageDraft ?
-     */
-    //console.log('form', form.values.stage);
+    useEffect(
+        () =>
+            setDB(
+                firebase.firestore() as unknown as FirebaseFirestore.Firestore,
+            ),
+        [],
+    );
 
-    const handleSubmit = (values: typeof form.values) => {
-        if(values.stage === 'Submitted'){
+    const onSubmitApplication = async (app: Application) => {
+        if (!db) return false;
+        if (app.stage == ApplicationStage.Draft) {
+            const isSaved = await saveApplicationAsDraft(db, app);
+            if (isSaved) {
+                showNotification({
+                    title: 'Draft Saved',
+                    message:
+                        'You can continue editting this application till submission',
+                });
+            }
+        } else {
             showNotification({
-                color:"green",
+                //color:'green',
                 title: 'Form Submitted',
-                message: 'Great Job!',
-            })
-            
-        }
-        console.log('naruto', values)
-    }
+                message:
+                    "We'll get back to you on the status of your application soon!",
+            });
 
-    const handleError = (errors: typeof form.errors) => {
-        showNotification({
-            color:"red",
-            title: 'Form Error',
-            message: 'Bad Job!',
-        })
-        console.log('naruto2', errors)
-    }
+            //router.push('');
+        }
+    };
+
     return (
         <Box sx={{ maxWidth: 1100 }} mx="auto">
-            <form onSubmit={form.onSubmit(handleSubmit, handleError)}>
+            <form onSubmit={form.onSubmit(onSubmitApplication)}>
                 <Stack spacing="xl">
-                    <Section0 form={form} />
+                    <Section0 form={form} title={title} readOnly={readOnly} />
 
-                    <Section1 form={form} />
+                    <Section1 form={form} readOnly={readOnly} />
 
-                    <Section2 form={form} ccfrPeople={ccfrPeople as Collaborator[]} />
+                    <Section2
+                        form={form}
+                        ccfrPeople={ccfrPeople ? ccfrPeople : []}
+                        readOnly={readOnly}
+                    />
 
-                    <Section3a form={form} />
+                    <Section3a form={form} readOnly={readOnly} />
 
-                    <Section3b form={form} dataOption={dataAvailable} bioOption={bioAvailable}/>
+                    <Section3b
+                        form={form}
+                        readOnly={readOnly}
+                        dataOption={dataAvailable}
+                        bioOption={bioAvailable}
+                    />
 
-                    <Section4 form={form} />
-
-                    <Save form={form} />
-                    <Submit form={form} />
+                    {!readOnly && (
+                        <>
+                            <Section4 form={form} />
+                            <Group position="right">
+                                <Save form={form} />
+                                <Submit form={form} />
+                            </Group>
+                        </>
+                    )}
                 </Stack>
             </form>
         </Box>
@@ -149,16 +117,13 @@ export default function ApplicationForm({ title, application, readOnly, ccfrPeop
 
 function Save({ form }: { form: UseFormReturnType<Application> }) {
     return (
-        <Group position="right" mt="md">
+        <Group mt="md">
             <Button
+                formNoValidate
                 type="submit"
-                onClick={() => {
-                    form.setFieldValue('stage', ApplicationStage.Draft);
-                    showNotification({
-                        title: 'Form Saved',
-                        message: 'See you soon!',
-                    })
-                }}
+                onClick={() =>
+                    form.setFieldValue('stage', ApplicationStage.Draft)
+                }
             >
                 Save
             </Button>
@@ -168,18 +133,12 @@ function Save({ form }: { form: UseFormReturnType<Application> }) {
 
 function Submit({ form }: { form: UseFormReturnType<Application> }) {
     return (
-        <Group position="right" mt="md">
+        <Group mt="md">
             <Button
                 type="submit"
-                onClick={() => {
-                    form.setFieldValue('stage', ApplicationStage.Submitted);
-
-                    // showNotification({
-                    //     title: 'Form Submitted',
-                    //     message: 'Great Job!',
-                    // })
-
-                }}
+                onClick={() =>
+                    form.setFieldValue('stage', ApplicationStage.Submitted)
+                }
             >
                 Submit
             </Button>
@@ -187,31 +146,33 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
     );
 }
 
-// const ccfrPeople: Application['ccfrCollaborators'] = [
-//     {
-//         centerNumber: 13,
-//         ccfrSite: 'Melbourne University',
-//         sitePIName: 'John Louis',
-//         sitePIDegree: 'Phd',
-//     },
-//     {
-//         centerNumber: 15,
-//         ccfrSite: 'RMIT University',
-//         sitePIName: 'Kenneth Barrish',
-//         sitePIDegree: 'Phd',
-
-//     },
-//     {
-//         centerNumber: 21,
-//         ccfrSite: 'RMIT University',
-//         sitePIName: 'Jana Truman',
-//         sitePIDegree: 'Phd',
-//     },
-//     {
-//         centerNumber: 17,
-//         ccfrSite: 'Hustler University',
-//         sitePIName: 'Derrek Legstrong',
-//         sitePIDegree: 'Phd',
-
-//     },
-// ];
+const emptyApplication: Application = {
+    id: uuidv4(),
+    title: '',
+    institutionPrimary: {
+        investigator: '',
+        jobTitle: '',
+        institution: '',
+        department: '',
+    },
+    email: '',
+    address: {
+        streetName: '',
+        city: '',
+        state: '',
+        zipcode: '',
+        country: '',
+    },
+    productCommercialization: false,
+    studyDescription: {
+        abstract: '',
+        aims: '',
+        backgroundAndSignificance: '',
+        preliminaryData: '',
+        selectionCriteria: '',
+    },
+    status: ApplicationStatus.Inactive,
+    stage: ApplicationStage.Draft,
+    createdAt: new Date(),
+    history: [],
+};
