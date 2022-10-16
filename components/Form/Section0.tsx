@@ -15,7 +15,8 @@ export function Section0({
         <Box>
             <h1>{title || 'Application Details'}</h1>
             <TextInput
-                withAsterisk
+                withAsterisk={!readOnly}
+                required
                 label="Title of Project"
                 {...form.getInputProps('title')}
                 readOnly={readOnly}

@@ -161,6 +161,7 @@ export function Section2({
                             <tr key={index}>
                                 <td>
                                     <TextInput
+                                        required
                                         onChange={event => {
                                             handleChanges(
                                                 'sitePIName',
@@ -174,6 +175,7 @@ export function Section2({
                                 </td>
                                 <td>
                                     <TextInput
+                                        required
                                         onChange={event => {
                                             handleChanges(
                                                 'ccfrSite',

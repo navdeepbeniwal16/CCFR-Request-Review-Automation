@@ -15,7 +15,6 @@ import {
     UserRole,
 } from './utilities/AppEnums';
 import { printErrorTrace } from './utilities/errorHandler';
-import * as adminUserModule from '../lib/admin-users';
 
 export const isApplicationEmpty = (application: Application) => {
     return Object.keys(application).length === 0;
@@ -32,7 +31,7 @@ export const saveApplicationAsDraft = async (
             throw new Error('Illegal Arguments : Application object is empty');
         }
     } catch (error) {
-        printErrorTrace(saveAndSubmitApplication, error, false);
+        //printErrorTrace(saveAndSubmitApplication, error, false);
         return isSaved;
     }
 

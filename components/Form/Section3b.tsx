@@ -113,6 +113,7 @@ export function Section3b({
                             <tr key={index}>
                                 <td>
                                     <Textarea
+                                        required
                                         autosize
                                         minRows={2}
                                         value={data.name}
@@ -136,6 +137,7 @@ export function Section3b({
                                         />
                                     ) : (
                                         <Autocomplete
+                                            required
                                             placeholder="Pick one"
                                             data={autocompleteData}
                                             limit={autocompleteData.length}
@@ -162,17 +164,21 @@ export function Section3b({
                                                 index,
                                             );
                                         }}
-                                        value={data.quantity}
+                                        value={data.quantity || ''}
                                         readOnly={readOnly}
                                         styles={tableCellStyle}
                                         disabled={
                                             !bioOption?.includes(data.type) &&
                                             !readOnly
                                         }
+                                        required={bioOption?.includes(
+                                            data.type,
+                                        )}
                                     />
                                 </td>
                                 <td>
                                     <TextInput
+                                        required
                                         type="number"
                                         onChange={event => {
                                             handleChanges(

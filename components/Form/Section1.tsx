@@ -1,15 +1,14 @@
 import {
-    Autocomplete,
     Box,
     Grid,
     Group,
+    NativeSelect,
     Space,
     Switch,
     TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
-import { useAuthUser } from 'next-firebase-auth';
 import { useState } from 'react';
 import { Application } from '../../lib/interfaces';
 
@@ -23,20 +22,21 @@ export function Section1({
     const [checked, setChecked] = useState(
         'institutionSecondary' in form.values,
     );
-    const auth = useAuthUser();
     return (
         <Box>
             <h2>Section 1: Investigator and General Information</h2>
 
             <Group position="center" grow>
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Principal Investigator"
                     {...form.getInputProps('institutionPrimary.investigator')}
                     readOnly={readOnly}
                 />
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Job Title"
                     {...form.getInputProps('institutionPrimary.jobTitle')}
                     readOnly={readOnly}
@@ -45,13 +45,15 @@ export function Section1({
 
             <Group position="center" grow>
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Institution"
                     {...form.getInputProps('institutionPrimary.institution')}
                     readOnly={readOnly}
                 />
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Department"
                     {...form.getInputProps('institutionPrimary.department')}
                     readOnly={readOnly}
@@ -60,22 +62,28 @@ export function Section1({
 
             <Group position="center" grow>
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Email Address"
                     placeholder="your@email.com"
                     {...form.getInputProps('email')}
-                    value={form.values.email || auth.email}
+                    value={form.values.email}
                     readOnly
                 />
                 <TextInput
+                    required
+                    withAsterisk={!readOnly}
+                    type="number"
                     label="Phone Number"
                     {...form.getInputProps('phoneNumber')}
                     readOnly={readOnly}
+                    value={form.values.phoneNumber || ''}
                 />
             </Group>
 
             <TextInput
-                withAsterisk
+                required
+                withAsterisk={!readOnly}
                 label="Address"
                 {...form.getInputProps('address.streetName')}
                 readOnly={readOnly}
@@ -83,13 +91,15 @@ export function Section1({
 
             <Group position="center" grow>
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="City/Suburb"
                     {...form.getInputProps('address.city')}
                     readOnly={readOnly}
                 />
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="State"
                     {...form.getInputProps('address.state')}
                     readOnly={readOnly}
@@ -98,13 +108,15 @@ export function Section1({
 
             <Group position="center" grow>
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Zip/Post Code"
                     {...form.getInputProps('address.zipcode')}
                     readOnly={readOnly}
                 />
                 <TextInput
-                    withAsterisk
+                    required
+                    withAsterisk={!readOnly}
                     label="Country"
                     {...form.getInputProps('address.country')}
                     readOnly={readOnly}
@@ -120,9 +132,20 @@ export function Section1({
                 <Grid.Col span={2}>
                     <Switch
                         checked={checked}
-                        onChange={event =>
-                            setChecked(event.currentTarget.checked)
-                        }
+                        onChange={event => {
+                            setChecked(event.currentTarget.checked);
+                            form.setFieldValue(
+                                'institutionSecondary',
+                                event.currentTarget.checked
+                                    ? {
+                                          investigator: '',
+                                          jobTitle: '',
+                                          institution: '',
+                                          department: '',
+                                      }
+                                    : undefined,
+                            );
+                        }}
                         onLabel="Yes"
                         offLabel="No"
                         size="xl"
@@ -140,10 +163,11 @@ export function Section1({
                             value={form.values.institutionSecondary?.accessType}
                             label="If yes, access to what?"
                             placeholder="Pick one"
-                            readOnly={readOnly}
+                            readOnly
                         />
                     ) : (
-                        <Autocomplete
+                        <NativeSelect
+                            required
                             label="If yes, access to what?"
                             placeholder="Pick one"
                             data={['Data', 'BioSpecimens', 'Both']}
@@ -155,7 +179,8 @@ export function Section1({
                     )}
                     <Group position="center" grow>
                         <TextInput
-                            withAsterisk
+                            required
+                            withAsterisk={!readOnly}
                             label="Principal Investigator"
                             {...form.getInputProps(
                                 'institutionSecondary.investigator',
@@ -163,7 +188,8 @@ export function Section1({
                             readOnly={readOnly}
                         />
                         <TextInput
-                            withAsterisk
+                            required
+                            withAsterisk={!readOnly}
                             label="Job Title"
                             {...form.getInputProps(
                                 'institutionSecondary.jobTitle',
@@ -174,7 +200,8 @@ export function Section1({
 
                     <Group position="center" grow>
                         <TextInput
-                            withAsterisk
+                            required
+                            withAsterisk={!readOnly}
                             label="Institution"
                             {...form.getInputProps(
                                 'institutionSecondary.institution',
@@ -182,7 +209,8 @@ export function Section1({
                             readOnly={readOnly}
                         />
                         <TextInput
-                            withAsterisk
+                            required
+                            withAsterisk={!readOnly}
                             label="Department"
                             {...form.getInputProps(
                                 'institutionSecondary.department',
