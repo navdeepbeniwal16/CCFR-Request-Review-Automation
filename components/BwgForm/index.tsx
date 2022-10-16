@@ -7,15 +7,15 @@ import {
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { Application, Collaborator } from '../../lib/interfaces';
-import { Section0 } from './Section0';
-import { Section1 } from './Section1';
-import { Section2 } from './Section2';
-import { Section3a } from './Section3a';
-import { Section4 } from './Section4';
-import { Section3b } from './Section3b';
+// import { Section0 } from './Section0';
+// import { Section1 } from './Section1';
+// import { Section2 } from './Section2';
+// import { Section3a } from './Section3a';
+// import { Section4 } from './Section4';
+// import { Section3b } from './Section3b';
 import { ApplicationStage, ApplicationStatus } from '../../lib/utilities/AppEnums';
 
-export type ApplicationFormProps = {
+export type BWGApplicationFormProps = {
     title?: string;
     application?: Application;
     readOnly?: boolean;
@@ -24,16 +24,13 @@ export type ApplicationFormProps = {
     bioAvailable?: string[];
 };
 
-export default function ApplicationForm({ title, application, readOnly, ccfrPeople, dataAvailable, bioAvailable}: ApplicationFormProps) {
+export default function BWGApplicationForm({ title, application, readOnly, ccfrPeople, dataAvailable, bioAvailable}: BWGApplicationFormProps) {
     const form = useForm<Application>({
         initialValues: {
             id: '',
             title: '',
             institutionPrimary: {
                 investigator: '',
-                jobTitle: '',
-                institution: '',
-                department: '',
             },
 
             email: '',
@@ -85,9 +82,9 @@ export default function ApplicationForm({ title, application, readOnly, ccfrPeop
         validate: values => {
             if (values.stage === 'Submitted') {
                 return {
-                    email: /^\S+@\S+$/.test(values.email || '')
-                        ? null
-                        : 'Invalid email',
+                    // email: /^\S+@\S+$/.test(values.email || '')
+                    //     ? null
+                    //     : 'Invalid email',
                 };
             }
             return {};
@@ -186,32 +183,3 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
         </Group>
     );
 }
-
-// const ccfrPeople: Application['ccfrCollaborators'] = [
-//     {
-//         centerNumber: 13,
-//         ccfrSite: 'Melbourne University',
-//         sitePIName: 'John Louis',
-//         sitePIDegree: 'Phd',
-//     },
-//     {
-//         centerNumber: 15,
-//         ccfrSite: 'RMIT University',
-//         sitePIName: 'Kenneth Barrish',
-//         sitePIDegree: 'Phd',
-
-//     },
-//     {
-//         centerNumber: 21,
-//         ccfrSite: 'RMIT University',
-//         sitePIName: 'Jana Truman',
-//         sitePIDegree: 'Phd',
-//     },
-//     {
-//         centerNumber: 17,
-//         ccfrSite: 'Hustler University',
-//         sitePIName: 'Derrek Legstrong',
-//         sitePIDegree: 'Phd',
-
-//     },
-// ];
