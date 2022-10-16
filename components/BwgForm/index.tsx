@@ -103,11 +103,6 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
                 onClick={() => {
                     form.setFieldValue('stage', ApplicationStage.Submitted);
 
-                    // showNotification({
-                    //     title: 'Form Submitted',
-                    //     message: 'Great Job!',
-                    // })
-
                 }}
             >
                 Submit
