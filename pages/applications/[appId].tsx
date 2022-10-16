@@ -31,7 +31,7 @@ import {
 } from '../../lib/application';
 import { Application, Collaborator } from '../../lib/interfaces';
 import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
-import { BWGApplicationForm } from '../test';
+import { BWGApplicationForm } from '../../components/BwgForm';
 const Countdown = dynamic(() => import('react-countdown'), { ssr: false });
 
 type ApplicationPageProps = {

@@ -115,23 +115,3 @@ function Submit({ form }: { form: UseFormReturnType<Application> }) {
         </Group>
     );
 }
-
-export const getServerSideProps = withAuthUserTokenSSR({
-    whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ AuthUser, query }) => {
-    const db = getFirebaseAdmin().firestore();
-
-    const _props: ApplicationFormProps = {
-        ...(query.id
-            ? { application: await getApplicationById(db, query.id as string) }
-            : {}),
-    };
-
-    return {
-        props: _props,
-    };
-});
-
-export default withAuthUser<BWGApplicationFormProps>({
-    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(BWGApplicationForm);
