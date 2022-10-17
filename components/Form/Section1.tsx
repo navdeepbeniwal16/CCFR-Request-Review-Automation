@@ -266,12 +266,24 @@ export function Section1({
                         placeholder="Pick date"
                         label="Deadline for receipt of data"
                         {...form.getInputProps('dataReceiptDeadline')}
+                        value={
+                            form.values.dataReceiptDeadline
+                                ? new Date(form.values.dataReceiptDeadline)
+                                : undefined
+                        }
                     />
 
                     <DatePicker
                         placeholder="Pick date"
                         label="Deadline for receipt of biospecimens"
                         {...form.getInputProps('biospecimenReceiptDeadline')}
+                        value={
+                            form.values.biospecimenReceiptDeadline
+                                ? new Date(
+                                      form.values.biospecimenReceiptDeadline,
+                                  )
+                                : undefined
+                        }
                     />
                 </Group>
             )}

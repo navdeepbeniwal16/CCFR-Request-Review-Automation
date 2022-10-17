@@ -16,9 +16,13 @@ import {
 } from '../../lib/utilities/AppEnums';
 import { useAuthUser } from 'next-firebase-auth';
 import { useRouter } from 'next/router';
-import { saveApplicationAsDraft } from '../../lib/application';
+import {
+    saveAndSubmitApplication,
+    saveApplicationAsDraft,
+} from '../../lib/application';
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
+import { convertApplicationDates } from '../../lib/utilities/applicationDateParsers';
 
 export type ApplicationFormProps = {
     title?: string;
@@ -40,6 +44,7 @@ export default function ApplicationForm({
     const auth = useAuthUser();
     const router = useRouter();
     const [db, setDB] = useState<FirebaseFirestore.Firestore>();
+    const [loading, setLoading] = useState('');
     const form = useForm<Application>({
         initialValues: application
             ? application
@@ -57,23 +62,36 @@ export default function ApplicationForm({
     const onSubmitApplication = async (app: Application) => {
         if (!db) return false;
         if (app.stage == ApplicationStage.Draft) {
-            const isSaved = await saveApplicationAsDraft(db, app);
+            setLoading('save');
+            const isSaved = await saveApplicationAsDraft(
+                db,
+                convertApplicationDates(app),
+            );
             if (isSaved) {
                 showNotification({
-                    title: 'Draft Saved',
+                    title: 'Draft Saved!',
+                    color: 'green',
                     message:
                         'You can continue editting this application till submission',
                 });
             }
         } else {
-            showNotification({
-                title: 'Form Submitted',
-                message:
-                    "We'll get back to you on the status of your application soon!",
-            });
-
-            //router.push('');
+            setLoading('submit');
+            const isSubmitted = await saveAndSubmitApplication(
+                db,
+                convertApplicationDates(app),
+            );
+            if (isSubmitted) {
+                showNotification({
+                    title: 'Application Submitted!',
+                    color: 'green',
+                    message:
+                        "We'll get back to you on the status of your application soon!",
+                });
+                router.push('/applications/' + app.id);
+            }
         }
+        setLoading('');
     };
 
     return (
@@ -103,8 +121,8 @@ export default function ApplicationForm({
                         <>
                             <Section4 form={form} />
                             <Group position="right">
-                                <Save form={form} />
-                                <Submit form={form} />
+                                <Save form={form} loading={loading} />
+                                <Submit form={form} loading={loading} />
                             </Group>
                         </>
                     )}
@@ -114,10 +132,18 @@ export default function ApplicationForm({
     );
 }
 
-function Save({ form }: { form: UseFormReturnType<Application> }) {
+function Save({
+    form,
+    loading,
+}: {
+    form: UseFormReturnType<Application>;
+    loading: string;
+}) {
     return (
         <Group mt="md">
             <Button
+                loading={loading == 'save'}
+                disabled={loading != '' && loading != 'save'}
                 formNoValidate
                 type="submit"
                 onClick={() =>
@@ -130,10 +156,18 @@ function Save({ form }: { form: UseFormReturnType<Application> }) {
     );
 }
 
-function Submit({ form }: { form: UseFormReturnType<Application> }) {
+function Submit({
+    form,
+    loading,
+}: {
+    form: UseFormReturnType<Application>;
+    loading: string;
+}) {
     return (
         <Group mt="md">
             <Button
+                loading={loading == 'submit'}
+                disabled={loading != '' && loading != 'submit'}
                 type="submit"
                 onClick={() =>
                     form.setFieldValue('stage', ApplicationStage.Submitted)

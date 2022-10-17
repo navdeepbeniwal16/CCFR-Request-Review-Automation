@@ -11,6 +11,7 @@ import {
     getExistingCCFRData,
     getExistingCCFRSiteData,
 } from '../../lib/application';
+import { convertApplicationTimestamp } from '../../lib/utilities/applicationDateParsers';
 
 const NewApplicationPage = ({
     ccfrPeople,
@@ -47,7 +48,11 @@ export const getServerSideProps = withAuthUserTokenSSR({
         dataAvailable: dta.map(d => d.name),
         bioAvailable: bio.map(b => b.name),
         ...(query.id
-            ? { application: await getApplicationById(db, query.id as string) }
+            ? {
+                  application: convertApplicationTimestamp(
+                      await getApplicationById(db, query.id as string),
+                  ),
+              }
             : {}),
     };
 
