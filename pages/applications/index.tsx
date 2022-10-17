@@ -17,7 +17,7 @@ import {
     getAllSteeringCommitteeMembers,
     getAllSubmittedApplications,
 } from '../../lib/application';
-import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
+import { convertApplicationTimestamp } from '../../lib/utilities/applicationDateParsers';
 
 type ApplicationsPageProps = {
     title: string | null;
