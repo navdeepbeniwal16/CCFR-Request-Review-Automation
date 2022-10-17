@@ -114,7 +114,10 @@ const getStatusCol = (
         stageVO = <Countdown date={voteEndDate} />;
         statusColorVO = 'yellow';
         statusVO =
-            'Voting • ' + steeringCommitteeReview.totalReviewers + '/' + numSC;
+            'Voting • ' +
+            (steeringCommitteeReview.totalReviewers || 0) +
+            '/' +
+            numSC;
     }
 
     return (
