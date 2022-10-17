@@ -240,53 +240,31 @@ export function Section1({
             </Grid>
 
             <Space h="lg" />
-            {readOnly ? (
-                <Group grow>
-                    <TextInput
-                        value={form.values.dataReceiptDeadline
-                            ?.toLocaleString('en-GB')
-                            .slice(0, 10)}
-                        placeholder="Pick date"
-                        label="Deadline for receipt of data"
-                        readOnly={true}
-                    />
+            <Group grow>
+                <DatePicker
+                    disabled={readOnly}
+                    placeholder="Pick date"
+                    label="Deadline for receipt of data"
+                    {...form.getInputProps('dataReceiptDeadline')}
+                    value={
+                        form.values.dataReceiptDeadline
+                            ? new Date(form.values.dataReceiptDeadline)
+                            : undefined
+                    }
+                />
 
-                    <TextInput
-                        value={form.values.biospecimenReceiptDeadline
-                            ?.toLocaleString('en-GB')
-                            .slice(0, 10)}
-                        placeholder="Pick date"
-                        label="Deadline for receipt of biospecimens"
-                        readOnly={true}
-                    />
-                </Group>
-            ) : (
-                <Group grow>
-                    <DatePicker
-                        placeholder="Pick date"
-                        label="Deadline for receipt of data"
-                        {...form.getInputProps('dataReceiptDeadline')}
-                        value={
-                            form.values.dataReceiptDeadline
-                                ? new Date(form.values.dataReceiptDeadline)
-                                : undefined
-                        }
-                    />
-
-                    <DatePicker
-                        placeholder="Pick date"
-                        label="Deadline for receipt of biospecimens"
-                        {...form.getInputProps('biospecimenReceiptDeadline')}
-                        value={
-                            form.values.biospecimenReceiptDeadline
-                                ? new Date(
-                                      form.values.biospecimenReceiptDeadline,
-                                  )
-                                : undefined
-                        }
-                    />
-                </Group>
-            )}
+                <DatePicker
+                    disabled={readOnly}
+                    placeholder="Pick date"
+                    label="Deadline for receipt of biospecimens"
+                    {...form.getInputProps('biospecimenReceiptDeadline')}
+                    value={
+                        form.values.biospecimenReceiptDeadline
+                            ? new Date(form.values.biospecimenReceiptDeadline)
+                            : undefined
+                    }
+                />
+            </Group>
         </Box>
     );
 }
