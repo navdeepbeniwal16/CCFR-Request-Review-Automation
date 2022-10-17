@@ -1,5 +1,15 @@
-import { Badge, Table, Button, Loader, Center, Text } from '@mantine/core';
+import {
+    Badge,
+    Table,
+    Button,
+    Loader,
+    Center,
+    Text,
+    Title,
+    Stack,
+} from '@mantine/core';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TextTruncate from 'react-text-truncate';
@@ -23,6 +33,21 @@ export default function ApplicationTable({
     fetchMoreData,
     numSteeringCommittee,
 }: ApplicationTableProps) {
+    if (applications.length < 1) {
+        return (
+            <Center style={{ height: '90%' }}>
+                <Stack align={'center'}>
+                    <Image
+                        width={256}
+                        height={256}
+                        src="/no_applications_found.jpg"
+                        alt="No Applications Found"
+                    />
+                    <Title color={'dimmed'}>No Applications Found</Title>
+                </Stack>
+            </Center>
+        );
+    }
     return (
         <InfiniteScroll
             dataLength={applications.length}
