@@ -3,7 +3,6 @@ import {
     Box,
     Button,
     CloseButton,
-    Group,
     Space,
     Table,
     Text,
@@ -12,7 +11,10 @@ import {
 } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { useState } from 'react';
-import { Application, Request as AppRequest } from '../../lib/interfaces';
+import {
+    Application,
+    ResourceRequest as AppRequest,
+} from '../../lib/interfaces';
 
 export function Section3b({
     form,
