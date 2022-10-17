@@ -19,6 +19,7 @@ export const registerUser = async (email: string, password: string) => {
         })
         .catch(error => {
             printErrorTrace(registerUser, error, false);
+            return error.message;
         });
 };
 
@@ -32,6 +33,7 @@ export const loginUser = async (email: string, password: string) => {
         .signInWithEmailAndPassword(email, password)
         .catch(error => {
             printErrorTrace(loginUser, error, false);
+            return error.message;
         });
 };
 export const logoutUser = (callback: { (): Promise<boolean>; (): any }) => {
