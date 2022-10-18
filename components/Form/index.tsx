@@ -207,5 +207,4 @@ const emptyApplication: Application = {
     status: ApplicationStatus.Inactive,
     stage: ApplicationStage.Draft,
     createdAt: new Date(),
-    history: [],
 };

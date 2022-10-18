@@ -33,7 +33,6 @@ export interface Application {
     };
     status: ApplicationStatus;
     stage: ApplicationStage;
-    history: HistoryNode[];
 }
 
 export interface Address {
@@ -100,14 +99,6 @@ export interface Clarification {
     };
     BWGGroupConclusions?: string;
     applicantCommentResponse?: string;
-}
-
-export interface HistoryNode {
-    title: string;
-    description: string;
-    timestamp: Date;
-    userID?: string;
-    stage: Application['stage'];
 }
 
 export interface ExistingCCFRSiteData {
