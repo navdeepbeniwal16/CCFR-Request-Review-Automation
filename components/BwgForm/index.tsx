@@ -1,86 +1,110 @@
-import {
-    Button,
-    Group,
-    Box,
-    Stack,
-} from '@mantine/core';
+import { Button, Group, Box, Stack } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
-import { Application, BiospecimenForm} from '../../lib/interfaces';
-import { ApplicationStage} from '../../lib/utilities/AppEnums';
+import { useEffect, useState } from 'react';
+import { addBiospecimenFormInformation } from '../../lib/application';
+import { Application, BiospecimenForm } from '../../lib/interfaces';
 import { Section0 } from './Section0';
 import { Section1 } from './Section1';
 import { Section2 } from './Section2';
 import { Section3 } from './Section3';
 import { Section4 } from './Section4';
+import firebase from 'firebase';
+import 'firebase/firestore';
+import { useRouter } from 'next/router';
 
 export type BWGFormProps = {
     application: Application;
     readOnly?: boolean;
+    setModal: Function;
 };
 
-export function BWGForm({ application, readOnly }: BWGFormProps) {
+export function BWGForm({ application, readOnly, setModal }: BWGFormProps) {
+    const router = useRouter();
+    const [db, setDB] = useState<FirebaseFirestore.Firestore>();
+    const [loading, setLoading] = useState(false);
+
+    useEffect(
+        () =>
+            setDB(
+                firebase.firestore() as unknown as FirebaseFirestore.Firestore,
+            ),
+        [],
+    );
+
     const form = useForm<Application>({
         initialValues: {
             ...application,
-            biospecimenForm: application.biospecimenForm? application.biospecimenForm: emptyBWG
+            biospecimenForm: application.biospecimenForm
+                ? application.biospecimenForm
+                : emptyBWG,
         },
-       
     });
 
-    const handleSubmit = (values: typeof form.values) => {
-        if(values.stage === 'Submitted'){
-            showNotification({
-                title: 'Form Submitted',
-                message: 'Great Job!',
-            })
-            
-        }
-        console.log('naruto', values)
+    function Submit({ form }: { form: UseFormReturnType<Application> }) {
+        return (
+            <Group position="right" mt="md">
+                <Button loading={loading} type="submit">
+                    Submit
+                </Button>
+            </Group>
+        );
     }
+
+    const handleSubmit = (values: typeof form.values) => {
+        setLoading(true);
+        if (db) {
+            addBiospecimenFormInformation(
+                db,
+                application.id,
+                form.values.biospecimenForm || {},
+            ).then(isSuccess => {
+                if (isSuccess) {
+                    showNotification({
+                        title: 'Biospecimen Form Submitted!',
+                        color: 'green',
+                        message: 'You have submitted the biospecimen form',
+                    });
+                    setModal(false);
+                    router.push('/applications/' + application.id);
+                } else {
+                    showNotification({
+                        title: 'Form Submission Failed',
+                        color: 'red',
+                        message:
+                            'An error has occured while submitting the form',
+                    });
+                }
+            });
+        }
+        setLoading(false);
+    };
 
     const handleError = (errors: typeof form.errors) => {
         showNotification({
-            color:"red",
-            title: 'Form Error',
-            message: 'Bad Job!',
-        })
-        console.log('naruto2', errors)
-    }
+            title: 'Form Submission Failed',
+            color: 'red',
+            message: 'An error has occured while submitting the form',
+        });
+    };
     return (
         <Box sx={{ maxWidth: 1100 }} mx="auto">
             <form onSubmit={form.onSubmit(handleSubmit, handleError)}>
                 <Stack spacing="xl">
-                    <Section0 form={form}/>
+                    <Section0 form={form} />
 
-                    <Section1 form={form}/>
+                    <Section1 form={form} />
 
-                    <Section2 form={form} readOnly={readOnly}/>
+                    <Section2 form={form} readOnly={readOnly} />
 
-                    <Section3 form={form} readOnly={readOnly}/>
+                    <Section3 form={form} readOnly={readOnly} />
 
-                    <Section4 form={form} readOnly={readOnly}/>
+                    <Section4 form={form} readOnly={readOnly} />
 
-                    <Submit form={form} />
+                    {!readOnly && <Submit form={form} />}
                 </Stack>
             </form>
         </Box>
-    );
-}
-
-function Submit({ form }: { form: UseFormReturnType<Application> }) {
-    return (
-        <Group position="right" mt="md">
-            <Button
-                type="submit"
-                onClick={() => {
-                    form.setFieldValue('stage', ApplicationStage.Submitted);
-
-                }}
-            >
-                Submit
-            </Button>
-        </Group>
     );
 }
 
@@ -103,4 +127,4 @@ const emptyBWG: BiospecimenForm = {
         applicantCommentResponse: '',
     },
     BWGStatusReview: '',
-}
+};
