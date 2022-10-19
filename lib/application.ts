@@ -701,3 +701,36 @@ export const steeringCommitteeReviewApplication = async (
     }
     return isStatusChanged;
 };
+
+
+export const completedApplciationNotification = async (
+    db: FirebaseFirestore.Firestore
+) => {
+    let fetchedApplications: Application[] = [];
+
+    let docRef;
+    docRef = db
+        .collection(DBCollections.Applications)
+        .where('stage', '==', ApplicationStage.SCReview)
+
+
+    await docRef
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                const application = <Application>doc.data();
+                application.id = doc.id;
+                fetchedApplications.push(application);
+            });
+        })
+        .catch(error => {
+            printErrorTrace(getAllSubmittedApplications, error, false);
+        });
+    let listOfReviewedApplciations = fetchedApplications.map(element => {
+        if (element!.steeringCommitteeReview!.reviewStartDate! <= new Date(Date.now() - 1209600000)) // The number 1209600000 is the number of milliseconds in 2 weeks. It is used to check reviews started over 2 weeks ago
+            return element.id;
+    });
+    return listOfReviewedApplciations;
+};
+
+
