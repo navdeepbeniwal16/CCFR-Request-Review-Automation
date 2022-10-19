@@ -137,6 +137,8 @@ function getCategory(
 ): [category: string, categoryColor: string] {
     if (application.biospecimenRequired && application.dataRequired) {
         return ['Biospec & Data', 'violet'];
+    } else if (application.biospecimenRequired && !application.dataRequired) {
+        return ['Biospec Only', 'pink'];
     } else {
         return ['Data Only', 'orange'];
     }
