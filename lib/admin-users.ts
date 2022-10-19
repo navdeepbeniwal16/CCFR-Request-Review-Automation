@@ -1,15 +1,16 @@
-import { getAuth, UserIdentifier, UserRecord } from 'firebase-admin/auth';
-import { AdminApp } from './AdminApp';
+import { Auth, UserRecord } from 'firebase-admin/auth';
+import { getFirebaseAdmin } from 'next-firebase-auth'
 import { printErrorTrace } from './utilities/errorHandler';
 import { UserRole } from './utilities/AppEnums';
+import initAuth from './initAuth';
 
-// NOTE: MODULE ONLY TO BE USED FOR ADMIN OPERATIONS
-AdminApp.initialize();
+initAuth();
+let adminAuth: Auth = getFirebaseAdmin().auth();
 
 export const getUser = async (email: string): Promise<any> => {
     let user = null;
 
-    const result = await getAuth()
+    const result = await adminAuth
         .getUserByEmail(email)
         .then(userRecord => {
             if (userRecord) user = userRecord;
@@ -24,7 +25,7 @@ export const getUser = async (email: string): Promise<any> => {
 export const getAllUsers = async (nextPageToken?: string) => {
     const users: UserRecord[] = [];
 
-    await getAuth()
+    await adminAuth
         .listUsers(1000, nextPageToken) // 1000 is the maximum number of users that can be fetched from firebase in single request
         .then(async listUsersResult => {
             listUsersResult.users.forEach(userRecord => {
@@ -64,7 +65,7 @@ export const deleteUser = async (email: string) => {
     const user = await getUser(email);
     let isDeleted = false;
     if (user !== undefined && user !== null) {
-        await getAuth()
+        await adminAuth
             .deleteUser(user.uid)
             .then(() => {
                 console.log('Successfully deleted user');
@@ -95,7 +96,7 @@ export const setUserRole = async (
 
     const user: UserRecord = await getUser(email);
     if (user) {
-        await getAuth().setCustomUserClaims(user.uid, { role: role });
+        await adminAuth.setCustomUserClaims(user.uid, { role: role });
         isUpdated = true;
     }
 
@@ -108,7 +109,7 @@ export const removeUserRole = async (email: string): Promise<any> => {
 
     const user: UserRecord = await getUser(email);
     if (user) {
-        await getAuth().setCustomUserClaims(user.uid, {}); // updating with an empty claim
+        await adminAuth.setCustomUserClaims(user.uid, {}); // updating with an empty claim
         isRemoved = true;
     }
 
