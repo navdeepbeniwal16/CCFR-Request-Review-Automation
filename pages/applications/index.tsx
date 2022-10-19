@@ -9,32 +9,56 @@ import Head from 'next/head';
 import ApplicationTable from '../../components/ApplicationTable';
 import { IconSearch } from '@tabler/icons';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Application } from '../../lib/interfaces';
 import {
     getAllSteeringCommitteeMembers,
     getAllSubmittedApplications,
+    getApplicationsByApplicant,
+    getApplicationsByStatus,
 } from '../../lib/application';
 import { convertApplicationTimestamp } from '../../lib/utilities/applicationDateParsers';
+import firebase from 'firebase';
+import 'firebase/firestore';
+import { ApplicationStatus, UserRole } from '../../lib/utilities/AppEnums';
 
 type ApplicationsPageProps = {
     title: string | null;
     applications: Application[];
-    numSteeringCommittee: number;
+    userRole: UserRole;
+    userEmail: string;
 };
+
+const PAGE_SIZE = 10;
 
 const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
     title,
     applications,
-    numSteeringCommittee,
+    userRole,
+    userEmail,
 }) => {
     const router = useRouter();
     const [apps, setApps] = useState(applications);
-    const pageTitle =
-        (title ? title.charAt(0).toUpperCase() + title.slice(1) : 'All') +
-        ' Applications';
+    const [last, setLast] = useState<FirebaseFirestore.QueryDocumentSnapshot>();
+    const [db, setDB] = useState<FirebaseFirestore.Firestore>();
+    const pageTitle = (title ? title : 'All') + ' Applications';
+
+    useEffect(() => {
+        const tempDB =
+            firebase.firestore() as unknown as FirebaseFirestore.Firestore;
+        setDB(tempDB);
+    }, []);
+
+    useEffect(() => {
+        if (db) {
+            getApplications(title || '', userEmail || '', db, undefined).then(
+                data => setLast(data.lastApplication),
+            );
+            setApps(applications);
+        }
+    }, [applications]);
 
     return (
         <Container m="md" p="md" mt="0" fluid>
@@ -68,30 +92,71 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
             </Grid>
             <ApplicationTable
                 applications={apps}
-                numSteeringCommittee={numSteeringCommittee}
-                fetchMoreData={() => {
-                    setTimeout(() => {
-                        // TODO: add pagination here
-                    }, 1500);
+                fetchMoreData={async () => {
+                    if (db) {
+                        const newApps = await getApplications(
+                            userRole,
+                            userEmail,
+                            db,
+                            last,
+                        );
+                        setApps([
+                            ...apps,
+                            ...newApps.applications.map(a =>
+                                convertApplicationTimestamp(a),
+                            ),
+                        ]);
+                        setLast(newApps.lastApplication);
+                    }
                 }}
             />
         </Container>
     );
 };
 
+const getApplications = (
+    type: string,
+    email: string,
+    db: FirebaseFirestore.Firestore,
+    last?: FirebaseFirestore.QueryDocumentSnapshot,
+) => {
+    let f = () => getAllSubmittedApplications(db, PAGE_SIZE, last);
+    if (Object.keys(ApplicationStatus).includes(type)) {
+        f = () =>
+            getApplicationsByStatus(
+                db,
+                type as ApplicationStatus,
+                PAGE_SIZE,
+                last,
+            );
+    } else if (type == 'My') {
+        f = () => getApplicationsByApplicant(db, email, PAGE_SIZE, last);
+    }
+    return f();
+};
+
 export const getServerSideProps = withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, query }) => {
-    const appType: ApplicationsPageProps['title'] =
-        query.type?.toString() || null;
+    const appType: ApplicationsPageProps['title'] = query.type
+        ? query.type?.toString().charAt(0).toUpperCase() + query.type?.slice(1)
+        : '';
     const db = getFirebaseAdmin().firestore();
-    const data = await getAllSubmittedApplications(db);
+    const data = await getApplications(
+        appType,
+        AuthUser.email || '',
+        db,
+        undefined,
+    );
     const steeringCommittee = await getAllSteeringCommitteeMembers(db);
 
     const _props: ApplicationsPageProps = {
         title: appType,
-        applications: data.map(a => convertApplicationTimestamp(a)),
-        numSteeringCommittee: steeringCommittee.length,
+        applications: data.applications.map(a =>
+            convertApplicationTimestamp(a),
+        ),
+        userRole: AuthUser.claims.role as UserRole,
+        userEmail: AuthUser.email || '',
     };
 
     return {

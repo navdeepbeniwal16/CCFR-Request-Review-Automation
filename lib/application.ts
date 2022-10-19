@@ -14,7 +14,7 @@ import {
     ApplicationReviewStatus,
     UserRole,
 } from './utilities/AppEnums';
-import * as userModule from './user';
+import {getUsersByRoleAsAdmin} from './user';
 import { printErrorTrace } from './utilities/errorHandler';
 import { createNotificationForUser } from './notification';
 
@@ -62,7 +62,7 @@ export const saveAndSubmitApplication = async (
     application.stage = ApplicationStage.PMReview;
     application.status = ApplicationStatus.Active;
     application.programManagerReview = <Review>{};
-    const progMgr = await userModule.getUsersByRoleAsAdmin(
+    const progMgr = await getUsersByRoleAsAdmin(
         UserRole.PROGRAM_MANAGER,
     );
     if (progMgr.length < 1) {
@@ -184,6 +184,50 @@ export const getAllSubmittedApplications = async (
         lastApplication: last! ? last : undefined
     }
 };
+
+export const getApplicationsByApplicant = async (
+    db: FirebaseFirestore.Firestore,
+    applicantEmail: string,
+    limit: number,
+    last?: FirebaseFirestore.QueryDocumentSnapshot
+) => {
+    let fetchedApplications: Application[] = [];
+
+    let docRef;
+    if (last) {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('email', '==', applicantEmail)
+            .startAfter(last)
+            .limit(limit);
+    } else {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('email', '==', applicantEmail)
+            .limit(limit);
+    }
+    await docRef
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                const application = <Application>doc.data();
+                application.id = doc.id;
+                fetchedApplications.push(application);
+            });
+
+            last = querySnapshot.docs[querySnapshot.docs.length - 1];
+        })
+        .catch(error => {
+            printErrorTrace(getSavedApplicationsByApplicant, error, false);
+        });
+
+    return {
+        applications: fetchedApplications,
+        lastApplication: last! ? last : undefined
+    }
+};
+
+
 
 export const getSavedApplicationsByApplicant = async (
     db: FirebaseFirestore.Firestore,
@@ -536,7 +580,7 @@ export const programManagerReviewApplication = async (
                     ApplicationReviewStatus.Approved;
                 if (application.biospecimenRequired) {
                     application.stage = ApplicationStage.BWGReview;
-                    const bwgChairs = await userModule.getUsersByRoleAsAdmin(
+                    const bwgChairs = await getUsersByRoleAsAdmin(
                         UserRole.BGW_CHAIR,
                     );
                     if (bwgChairs.length < 1) {
@@ -634,7 +678,7 @@ export const instantiateSteeringCommitteeReviewProcess = async (
     // application = <Application>application;
     application.stage = ApplicationStage.SCReview;
     let isStatusChanged = false;
-    let scReviewers = await getAllSteeringCommitteeMembers(db);
+    let scReviewers = await getUsersByRoleAsAdmin(UserRole.SC_MEMBER);
     application.steeringCommitteeReview = {};
     application.steeringCommitteeReview.reviewStartDate = new Date();
     application.steeringCommitteeReview.numberOfReviewersAccepted = 0;
@@ -642,7 +686,8 @@ export const instantiateSteeringCommitteeReviewProcess = async (
     application.steeringCommitteeReview.totalReviewers = scReviewers.length;
     for (let i = 0; i < scReviewers.length; i++) {
         let scReviewerObj = <Review>{};
-        scReviewerObj.name = scReviewers[i].name;
+        scReviewerObj.name = scReviewers[i].displayName || scReviewers[i].email || '';
+        scReviewerObj.email = scReviewers[i].email || '';
         scReviewerObj.status = ApplicationReviewStatus.In_Review;
         application.steeringCommitteeReview.reviewers.push(scReviewerObj);
     }
@@ -668,10 +713,10 @@ export const instantiateSteeringCommitteeReviewProcess = async (
 export const steeringCommitteeReviewApplication = async (
     db: FirebaseFirestore.Firestore,
     applicationId: string,
-    status: ApplicationReviewStatus,
-    steeringCommitteeMemberName: string,
+    review: Review
 ) => {
     let application = await getApplicationById(db, applicationId);
+    let memberFound = false
     let isStatusChanged = false;
     if (!isApplicationEmpty(application)) {
         for (
@@ -680,12 +725,16 @@ export const steeringCommitteeReviewApplication = async (
             i++
         ) {
             if (
-                application.steeringCommitteeReview!.reviewers![i].name ==
-                steeringCommitteeMemberName
+                application.steeringCommitteeReview!.reviewers![i].email ==
+                review.email
             ) {
                 application.steeringCommitteeReview!.reviewers![i].status =
-                    status;
+                    review.status;
+                memberFound = true;
             }
+        }
+        if (!memberFound) {
+            application.steeringCommitteeReview!.reviewers!.push(review)
         }
         await db
             .collection(DBCollections.Applications)
