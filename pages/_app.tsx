@@ -6,6 +6,7 @@ import RouterTransition from '../components/RouterTransition';
 import initAuth from '../lib/initAuth';
 import { styleCache } from '../lib/styleCache';
 import favicon from '../public/favicon.ico';
+import { NotificationsProvider } from '@mantine/notifications';
 
 initAuth();
 
@@ -38,13 +39,15 @@ function MyApp({ Component, pageProps, ...appProps }: AppProps) {
                 primaryColor: "ccfr-dark-blue"
             }}
         >
-            <RouterTransition />
-            <Head>
-                <title>CCFR Portal</title>
-                <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-                <link rel="shortcut icon" href={favicon.src} type="image/x-icon" />
-            </Head>
-            {getContent()}
+             <NotificationsProvider>
+                <RouterTransition />
+                <Head>
+                    <title>CCFR Portal</title>
+                    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+                    <link rel="shortcut icon" href={favicon.src} type="image/x-icon" />
+                </Head>
+                {getContent()}
+             </NotificationsProvider>
         </MantineProvider>
     );
 }
