@@ -14,24 +14,25 @@ import Link from 'next/link';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TextTruncate from 'react-text-truncate';
 import { Application } from '../lib/interfaces';
-import { ApplicationStage, ApplicationStatus } from '../lib/utilities/AppEnums';
+import {
+    ApplicationReviewStatus,
+    ApplicationStage,
+    ApplicationStatus,
+} from '../lib/utilities/AppEnums';
 const Countdown = dynamic(() => import('react-countdown'), { ssr: false });
 
 type ApplicationTableProps = {
     applications: Application[];
     fetchMoreData: () => void;
-    numSteeringCommittee: number;
 };
 
 type ApplicationRowProps = {
     application: Application;
-    numSteeringCommittee: number;
 };
 
 export default function ApplicationTable({
     applications,
     fetchMoreData,
-    numSteeringCommittee,
 }: ApplicationTableProps) {
     if (applications.length < 1) {
         return (
@@ -52,13 +53,12 @@ export default function ApplicationTable({
         <InfiniteScroll
             dataLength={applications.length}
             next={fetchMoreData}
-            hasMore={true}
+            hasMore={applications.length > 10}
             loader={
                 <Center>
                     <Loader variant="dots" size="lg" />
                 </Center>
             }
-            endMessage={<p>End of list</p>}
         >
             <Table verticalSpacing="lg">
                 <thead>
@@ -77,7 +77,6 @@ export default function ApplicationTable({
                         <ApplicationRow
                             key={application.id + Math.random().toString()}
                             application={application}
-                            numSteeringCommittee={numSteeringCommittee}
                         />
                     ))}
                 </tbody>
@@ -86,10 +85,11 @@ export default function ApplicationTable({
     );
 }
 
-const getStatusCol = (
-    { status, stage, steeringCommitteeReview }: Application,
-    numSC: number,
-) => {
+const getStatusCol = ({
+    status,
+    stage,
+    steeringCommitteeReview,
+}: Application) => {
     const statusColor: Map<Application['status'], string> = new Map([
         [ApplicationStatus.Accepted, 'green'],
         [ApplicationStatus.Rejected, 'red'],
@@ -97,7 +97,7 @@ const getStatusCol = (
     ]);
 
     let statusVO = status.toString();
-    let stageVO = <>{stage.toString()}</>;
+    let stageVO = <>{stage ? stage.toString() : ''}</>;
     let statusColorVO = statusColor.get(status);
 
     if (stage == 'Draft') {
@@ -115,9 +115,11 @@ const getStatusCol = (
         statusColorVO = 'yellow';
         statusVO =
             'Voting • ' +
-            (steeringCommitteeReview.totalReviewers || 0) +
+            (steeringCommitteeReview.reviewers?.filter(
+                review => review.status != ApplicationReviewStatus.In_Review,
+            ).length || 0) +
             '/' +
-            numSC;
+            (steeringCommitteeReview.reviewers?.length || 0);
     }
 
     return (
@@ -144,10 +146,7 @@ function getCategory(
     }
 }
 
-function ApplicationRow({
-    application,
-    numSteeringCommittee,
-}: ApplicationRowProps) {
+function ApplicationRow({ application }: ApplicationRowProps) {
     return (
         <tr>
             <td>
@@ -170,9 +169,7 @@ function ApplicationRow({
                     .toLocaleString('en-GB')
                     .slice(0, 10)}
             </td>
-            <td style={{ textAlign: 'center' }}>
-                {getStatusCol(application, numSteeringCommittee)}
-            </td>
+            <td style={{ textAlign: 'center' }}>{getStatusCol(application)}</td>
             <td>
                 <Link
                     href={

@@ -75,6 +75,7 @@ export interface ResourceRequest {
 
 export interface Review {
     name: string;
+    email: string;
     status: ApplicationReviewStatus;
 }
 

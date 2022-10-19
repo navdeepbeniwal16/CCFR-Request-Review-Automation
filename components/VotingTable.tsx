@@ -1,50 +1,18 @@
 import { Badge, Table, Text } from '@mantine/core';
-import { Application } from '../lib/interfaces';
+import { Application, Review } from '../lib/interfaces';
+import { ApplicationReviewStatus } from '../lib/utilities/AppEnums';
 
 type VotingTableProps = {
-    //voteData: Application['steeringCommitteeReview'];
+    voteData: Review[];
 };
 
-const data = [
-    {
-        name: 'Cameron Hogan',
-        email: 'cameronh@email.com',
-        vote: 'Pending',
-        voteColor: 'gray',
-    },
-    {
-        name: 'Craig Williams',
-        email: 'cwilliams@email.com',
-        vote: 'Approve',
-        voteColor: 'green',
-    },
-    {
-        name: 'Jane Doe',
-        email: 'jane.doe@email.com',
-        vote: 'Approve',
-        voteColor: 'green',
-    },
-    {
-        name: 'John Smith',
-        email: 'john.smith@email.com',
-        vote: 'Pending',
-        voteColor: 'gray',
-    },
-    {
-        name: 'Alexander Crocker',
-        email: 'acrock@email.com',
-        vote: 'Pending',
-        voteColor: 'gray',
-    },
-    {
-        name: 'Samuel Mackenzie',
-        email: 'sam.mack@gmail.com',
-        vote: 'Reject',
-        voteColor: 'red',
-    },
-];
+const voteColors: Map<ApplicationReviewStatus, string> = new Map([
+    [ApplicationReviewStatus.Approved, 'green'],
+    [ApplicationReviewStatus.Rejected, 'red'],
+    [ApplicationReviewStatus.In_Review, 'gray'],
+]);
 
-export default function VotingTable({}: VotingTableProps) {
+export default function VotingTable({ voteData }: VotingTableProps) {
     return (
         <Table verticalSpacing="lg">
             <thead>
@@ -63,7 +31,7 @@ export default function VotingTable({}: VotingTableProps) {
                 </tr>
             </thead>
             <tbody>
-                {data.map(vote => (
+                {voteData.map(vote => (
                     <tr key={vote.name}>
                         <td>
                             <Text size={'lg'}>{vote.name}</Text>
@@ -73,11 +41,11 @@ export default function VotingTable({}: VotingTableProps) {
                         </td>
                         <td style={{ textAlign: 'center' }}>
                             <Badge
-                                color={vote.voteColor}
+                                color={voteColors.get(vote.status)}
                                 size="xl"
                                 radius={'xs'}
                             >
-                                {vote.vote}
+                                {vote.status}
                             </Badge>
                         </td>
                     </tr>
