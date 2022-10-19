@@ -125,8 +125,8 @@ export default function CCFRNavbar() {
                               notif: 3,
                           },
                           {
-                              link: '?type=approved',
-                              label: 'Approved Applications',
+                              link: '?type=accepted',
+                              label: 'Accepted Applications',
                           },
                           {
                               link: '?type=rejected',
