@@ -2,13 +2,19 @@ import firebase from 'firebase';
 import { Notification } from './interfaces';
 import { DBCollections } from './utilities/AppEnums';
 import { printErrorTrace } from './utilities/errorHandler';
-import * as adminUserModule from './admin-users';
-import { emailSender } from './emailService';
+import * as userModule from './user';
+import axios from 'axios';
+import { resolve } from 'path';
+
+const HOST = process.env.APP_HOST ? process.env.APP_HOST : 'http://localhost';
+const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;
+const URL = HOST + ':' + PORT;
 
 export const createNotificationForUser = async (
     receiverEmail: string,
     text: string,
     emailRequired: boolean,
+    emailType: string,
 ) => {
     let isCreated = false;
 
@@ -26,9 +32,10 @@ export const createNotificationForUser = async (
             );
         }
 
-        const isUserExisting = await adminUserModule.userExists(receiverEmail);
+        console.log('Searching for user ' + receiverEmail);
+        const isUserExisting = await userModule.getUserAsAdmin(receiverEmail);
         if (!isUserExisting) {
-            throw new Error('Illegal Arguments: username doesn not exist');
+            throw new Error('Illegal Arguments: username does not not exist');
         }
     } catch (error) {
         printErrorTrace(createNotificationForUser, error, false);
@@ -59,10 +66,20 @@ export const createNotificationForUser = async (
             isCreated = false;
         });
 
+    // If notification requires email
     if(emailRequired) {
-        const response = await fetch('http://localhost:3000/api/emailService.ts', {
-          });
-        console.log('Email notification sent!')
+        await axios.get(URL + '/api/emailService/', { 
+            params: { email: receiverEmail,
+                        emailText: text,
+                        emailType: emailType } 
+        }).then(response => {
+            response.status = 200
+            console.log('Email notification sent!')
+            return response.status;
+        }).catch(error => {
+            printErrorTrace(createNotificationForUser, error, false);
+            return error;
+        })
     }
 
     return isCreated;
@@ -84,7 +101,7 @@ export const getAllNotificationsForUser = async (
             );
         }
 
-        const isExistingUser = await adminUserModule.userExists(receiverEmail);
+        const isExistingUser = await userModule.getUserAsAdmin(receiverEmail);
         if (!isExistingUser) {
             throw new Error('Illegal Arguments: user doesn not exist');
         }
@@ -135,8 +152,8 @@ export const getNotificationForUser = async (
                 'Illegal Arguments : user email or notification id is empty',
             );
 
-        const isUserExisting = await adminUserModule.userExists(userEmail);
-        if (!isUserExisting) {
+        const isExistingUser = await userModule.getUserAsAdmin(userEmail);
+        if (!isExistingUser) {
             throw new Error('Invalid Arguments : user does not exist');
         }
     } catch (error) {

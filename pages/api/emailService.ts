@@ -1,16 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { resolve } from 'path';
 
 const nodemailer = require('nodemailer');
 
-// Email types
-const emailTypes = [
-	{ type: 'Status Update' },
-	{ type: 'Reset' },
-];
 
+// Each request must have:
+// email: email of the reciever
+// emailText: the body text of the email
+// emailType: either 'StatusUpdate' or 'ApplicationVerdicts'
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-	const email = req.body.email;
-	const type = req.body.emailType;
+	const query = req.query;
+	const {email, emailText, emailType} = query;
 
 	console.log(email);
 
@@ -22,62 +22,60 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		  pass: "3cc57a37c5fef3"
 		}
 	  });
+
+	return new Promise((response) => {
+		if(emailType == 'StatusUpdate') {
+
+			let mailDetails = {
+				from: 'CCFR',
+				to: email,
+				subject: 'Application Update',
+				text: emailText
+			}
+	
+			transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
+				if (error) {
+				  console.log(error);
+				  return res.status(400).json({
+					status: 400,
+					message: 'Bad Request.'
+					})
 		
-	if (type == 'Reset') {
-		let mailDetails = {
-			from: 'CCFR',
-			to: 'michael.p.hannon@gmail.com',
-			subject: 'Reset Your password',
-			text: 'You are receiving this email if you have forgotten your password to ' +
-			'your CCFR Portal account. Please click the link below to reset your password This link expires in 10 minutes from the time you recieved this email.'
-		}
-
-		transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
-			if (error) {
-			  console.log(error);
-			  return res.status(400).json({
-				status: 400,
-				message: 'Bad Request.'
-				})
+				} else {
+				  console.log('Email sent: ' + info.response);
+				  return res.status(200).json({
+					status: 200,
+					message: 'Email sent.'
+					})
+				}
+			  });
 	
-			} else {
-			  console.log('Email sent: ' + info.response);
-			  return res.status(200).json({
-				status: 200,
-				message: 'Email sent.'
-				})
+		} else if(emailType == 'ApplicationVerdicts') {
+			let mailDetails = {
+				from: 'CCFR',
+				to: email,
+				subject: 'Application Verdicts',
+				text: emailText
 			}
-		  });
-	} else if (type == 'Update Status') {
-		let mailDetails = {
-			from: 'CCFR',
-			to: 'michael.p.hannon@gmail.com',
-			subject: 'Application Status Update',
-			text: 'Update Status Email ' 		
-		}
-
-		transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
-			if (error) {
-			  console.log(error);
-			  return res.status(400).json({
-				status: 400,
-				message: 'Bad Request.'
-				})
 	
-			} else {
-			  console.log('Email sent: ' + info.response);
-			  return res.status(200).json({
-				status: 200,
-				message: 'Email sent.'
-				})
-			}
-		  });
-	} else {
-		return res.status(400).json({
-			status:400,
-			message: 'No Email type.'
-		})
-	}
+			try {
+				transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
+					console.log('Email sent: ' + info.response);
+					return res.status(201).json({
+						status: 200,
+						message: 'Email sent.'
+					})
+				  });
+			} catch (error) {
+				console.log(error);
+				return res.status(400).json({
+				  status: 400,
+				  message: 'Bad Request.'
+				  })
+			} 
+		}
+	})
+	
 };
 
 export default handler;
