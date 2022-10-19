@@ -16,6 +16,7 @@ import {
 } from './utilities/AppEnums';
 import * as userModule from './user';
 import { printErrorTrace } from './utilities/errorHandler';
+import { createNotificationForUser } from './notification';
 
 export const isApplicationEmpty = (application: Application) => {
     return Object.keys(application).length === 0;
@@ -704,7 +705,8 @@ export const steeringCommitteeReviewApplication = async (
 
 
 export const completedApplciationNotification = async (
-    db: FirebaseFirestore.Firestore
+    db: FirebaseFirestore.Firestore,
+    email: string
 ) => {
     let fetchedApplications: Application[] = [];
 
@@ -730,6 +732,12 @@ export const completedApplciationNotification = async (
         if (element!.steeringCommitteeReview!.reviewStartDate! <= new Date(Date.now() - 1209600000)) // The number 1209600000 is the number of milliseconds in 2 weeks. It is used to check reviews started over 2 weeks ago
             return element.id;
     });
+
+    const emailBody = JSON.stringify(listOfReviewedApplciations);
+
+    // Send email notification
+    createNotificationForUser(email, emailBody, true, 'ApplicationVerdicts');
+
     return listOfReviewedApplciations;
 };
 

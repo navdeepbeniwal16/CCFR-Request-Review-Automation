@@ -4,7 +4,6 @@ import { DBCollections } from './utilities/AppEnums';
 import { printErrorTrace } from './utilities/errorHandler';
 import * as userModule from './user';
 import axios from 'axios';
-import { resolve } from 'path';
 
 const HOST = process.env.APP_HOST ? process.env.APP_HOST : 'http://localhost';
 const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;

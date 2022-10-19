@@ -25,8 +25,8 @@ beforeAll(async () => {
     db = firestore.firestore(app);
 
     const currentUserCredential = await userModule.loginUser(
-        'bob@test.com',
-        'password',
+        'bwg-test-user@123.com',
+        'strongPass',
     );
 
     // console.log('App is initalised? : ' + app.name);
@@ -36,14 +36,17 @@ beforeAll(async () => {
 });
 
 describe('Notification Module Test Suite', () => {
-    // test('test createNotificationForUser() : ', async () => {
-    //     const result = await notificationModule.createNotificationForUser(
-    //         'bob@test.com',
-    //         'A third notification test',
-    //     );
-    //     console.log('Is Notification Created ? : ' + result);
-    //     expect(result).toBeTruthy();
-    // });
+    test('test createNotificationForUser() : ', async () => {
+
+        const result = await notificationModule.createNotificationForUser(
+            'bob@test.com',
+            'A third notification test',
+            true,
+            'ApplicationVerdicts'
+        );
+        console.log('Is Notification Created ? : ' + result);
+        expect(result).toBeTruthy();
+    });
     // test('test getAllNotificationsForUser() : ', async () => {
     //     const result = await notificationModule.getAllNotificationsForUser(
     //         'bob@test.com',

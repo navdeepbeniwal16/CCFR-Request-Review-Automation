@@ -198,6 +198,10 @@ describe('application apis test suite', () => {
     //     expect(result);
     // });
     // TODO: Test steering committee memeber review
+    // test('test completedApplicationNotifcation', async () => {
+    //     const result = await ApplicationModule.completedApplciationNotification(db, 'bob@test.com');
+    //     expect(result);
+    // });
 });
 
 // Utlity functions to be used while development
