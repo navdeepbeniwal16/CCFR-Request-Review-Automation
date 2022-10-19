@@ -8,6 +8,7 @@ import {
     Divider,
     Box,
     LoadingOverlay,
+    Modal,
 } from '@mantine/core';
 import { IconFile, IconHistory, IconMessageCircle } from '@tabler/icons';
 import { NextPage } from 'next';
@@ -19,6 +20,7 @@ import {
 } from 'next-firebase-auth';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { Dispatch, SetStateAction, useState } from 'react';
 import ApplicationStepper from '../../components/ApplicationStepper';
 import ApplicationTimeLine from '../../components/ApplicationTimeline';
 import ApplicationForm from '../../components/Form';
@@ -29,6 +31,7 @@ import {
 } from '../../lib/application';
 import { Application, Collaborator } from '../../lib/interfaces';
 import convertApplicationTimestamp from '../../lib/utilities/convertApplicationTimestamp';
+import { BWGForm } from '../../components/BwgForm';
 const Countdown = dynamic(() => import('react-countdown'), { ssr: false });
 
 type ApplicationPageProps = {
@@ -58,7 +61,7 @@ const tabGroups = (
     </Group>
 );
 
-const getActionButtons = (role: string) => {
+const getActionButtons = (role: string, setModalOpen: () => void) => {
     if (role == 'pi') {
         return (
             <Link href="/applications/new" passHref>
@@ -84,13 +87,14 @@ const getActionButtons = (role: string) => {
                 <Button component="a" size="md" color={'red'}>
                     Reject
                 </Button>
-                <Button component="a" size="md" color={'green'}>
+                <Button component="a" size="md" color={'green'} onClick={setModalOpen}>
                     Submit BWG Form
                 </Button>
             </Group>
         );
     }
 };
+
 
 const votingTimeInfo = (scReview: Application['steeringCommitteeReview']) => {
     const voteStartDate = new Date(scReview?.reviewStartDate || '');
@@ -127,21 +131,49 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
     application,
     ccfrPeople,
 }) => {
+    const [isModalOpen, setIsModalOpened] = useState(false)
+    const handleSetModalOpen = () => {
+        setIsModalOpened(true);
+    }
+
     return (
         <Tabs defaultValue="application" style={{ height: '100%' }} mt={-10}>
             <Tabs.List>
                 <Group grow style={{ width: '100%' }}>
                     {tabGroups}
-                    {getActionButtons('bwg')}
+                    {getActionButtons('bwg', handleSetModalOpen)}
                 </Group>
             </Tabs.List>
 
             <Tabs.Panel value="application" pt="xs">
+                <Modal
+                    title={<h1>BWG Form</h1>}
+                    size="75%"
+                    opened={isModalOpen}
+                    onClose={() => setIsModalOpened(false)}
+                >
+                    <BWGForm 
+                        application={application}
+                        readOnly={false}
+                    />
+                </Modal>
                 <ApplicationForm
                     application={application}
                     ccfrPeople={ccfrPeople}
                     readOnly={true}
                 />
+                
+                {application.biospecimenForm && 
+                    <>
+                        <h1>BWG Form</h1>
+                        <BWGForm 
+                            application={application}
+                            readOnly={true}
+                        />
+                    </>
+
+                }
+
             </Tabs.Panel>
 
             <Tabs.Panel
