@@ -3,10 +3,12 @@ import { Notification } from './interfaces';
 import { DBCollections } from './utilities/AppEnums';
 import { printErrorTrace } from './utilities/errorHandler';
 import * as adminUserModule from './admin-users';
+import { emailSender } from './emailService';
 
 export const createNotificationForUser = async (
     receiverEmail: string,
     text: string,
+    emailRequired: boolean,
 ) => {
     let isCreated = false;
 
@@ -56,6 +58,12 @@ export const createNotificationForUser = async (
             printErrorTrace(createNotificationForUser, error, false);
             isCreated = false;
         });
+
+    if(emailRequired) {
+        const response = await fetch('http://localhost:3000/api/emailService.ts', {
+          });
+        console.log('Email notification sent!')
+    }
 
     return isCreated;
 };
