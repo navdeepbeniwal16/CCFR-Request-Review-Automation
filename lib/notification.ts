@@ -2,7 +2,7 @@ import firebase from 'firebase';
 import { Notification } from './interfaces';
 import { DBCollections } from './utilities/AppEnums';
 import { printErrorTrace } from './utilities/errorHandler';
-import * as adminUserModule from './admin-users';
+import * as userModule from './user';
 
 export const createNotificationForUser = async (
     receiverEmail: string,
@@ -24,7 +24,7 @@ export const createNotificationForUser = async (
             );
         }
 
-        const isUserExisting = await adminUserModule.userExists(receiverEmail);
+        const isUserExisting = await userModule.getUserAsAdmin(receiverEmail);
         if (!isUserExisting) {
             throw new Error('Illegal Arguments: username doesn not exist');
         }
@@ -76,7 +76,7 @@ export const getAllNotificationsForUser = async (
             );
         }
 
-        const isExistingUser = await adminUserModule.userExists(receiverEmail);
+        const isExistingUser = await userModule.getUserAsAdmin(receiverEmail);
         if (!isExistingUser) {
             throw new Error('Illegal Arguments: user doesn not exist');
         }
@@ -127,8 +127,8 @@ export const getNotificationForUser = async (
                 'Illegal Arguments : user email or notification id is empty',
             );
 
-        const isUserExisting = await adminUserModule.userExists(userEmail);
-        if (!isUserExisting) {
+        const isExistingUser = await userModule.getUserAsAdmin(userEmail);
+        if (!isExistingUser) {
             throw new Error('Invalid Arguments : user does not exist');
         }
     } catch (error) {
