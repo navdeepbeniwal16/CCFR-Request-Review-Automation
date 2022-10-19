@@ -143,13 +143,26 @@ export const getApplicationByTitle = async (
 
 export const getAllSubmittedApplications = async (
     db: FirebaseFirestore.Firestore,
+    limit: number,
+    last?: FirebaseFirestore.QueryDocumentSnapshot
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = db
-        .collection(DBCollections.Applications)
-        .where('stage', '!=', ApplicationStage.Draft)
-        .limit(10);
+    let docRef;
+    if (last) {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('stage', '!=', ApplicationStage.Draft)
+            .startAfter(last)
+            .limit(limit);
+
+    } else {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('stage', '!=', ApplicationStage.Draft)
+            .limit(limit);
+    }
+
     await docRef
         .get()
         .then(querySnapshot => {
@@ -158,24 +171,42 @@ export const getAllSubmittedApplications = async (
                 application.id = doc.id;
                 fetchedApplications.push(application);
             });
+
+            last = querySnapshot.docs[querySnapshot.docs.length - 1];
         })
         .catch(error => {
             printErrorTrace(getAllSubmittedApplications, error, false);
         });
 
-    return fetchedApplications;
+    return {
+        applications: fetchedApplications,
+        lastApplication: last! ? last : undefined
+    }
 };
 
 export const getSavedApplicationsByApplicant = async (
     db: FirebaseFirestore.Firestore,
     applicantEmail: string,
+    limit: number,
+    last?: FirebaseFirestore.QueryDocumentSnapshot
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = db
-        .collection(DBCollections.Applications)
-        .where('email', '==', applicantEmail)
-        .where('stage', '==', ApplicationStage.Draft);
+    let docRef;
+    if (last) {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('email', '==', applicantEmail)
+            .where('stage', '==', ApplicationStage.Draft)
+            .startAfter(last)
+            .limit(limit);
+    } else {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('email', '==', applicantEmail)
+            .where('stage', '==', ApplicationStage.Draft)
+            .limit(limit);
+    }
     await docRef
         .get()
         .then(querySnapshot => {
@@ -184,24 +215,43 @@ export const getSavedApplicationsByApplicant = async (
                 application.id = doc.id;
                 fetchedApplications.push(application);
             });
+
+            last = querySnapshot.docs[querySnapshot.docs.length - 1];
         })
         .catch(error => {
             printErrorTrace(getSavedApplicationsByApplicant, error, false);
         });
 
-    return fetchedApplications;
+    return {
+        applications: fetchedApplications,
+        lastApplication: last! ? last : undefined
+    }
 };
 
 export const getSubmittedApplicationsByApplicant = async (
     db: FirebaseFirestore.Firestore,
     applicantEmail: string,
+    limit: number,
+    last?: FirebaseFirestore.QueryDocumentSnapshot
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = db
-        .collection(DBCollections.Applications)
-        .where('email', '==', applicantEmail)
-        .where('stage', '==', ApplicationStage.Submitted);
+    let docRef;
+    if (last) {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('email', '==', applicantEmail)
+            .where('stage', '==', ApplicationStage.Submitted)
+            .startAfter(last)
+            .limit(limit);
+    } else {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('email', '==', applicantEmail)
+            .where('stage', '==', ApplicationStage.Submitted)
+            .limit(limit);
+    }
+
     await docRef
         .get()
         .then(querySnapshot => {
@@ -210,23 +260,41 @@ export const getSubmittedApplicationsByApplicant = async (
                 application.id = doc.id;
                 fetchedApplications.push(application);
             });
+
+            last = querySnapshot.docs[querySnapshot.docs.length - 1];
         })
         .catch(error => {
             printErrorTrace(getSubmittedApplicationsByApplicant, error, false);
         });
 
-    return fetchedApplications;
+    return {
+        applications: fetchedApplications,
+        lastApplication: last! ? last : undefined
+    }
 };
 
 export const getApplicationsByStatus = async (
     db: FirebaseFirestore.Firestore,
     status: ApplicationStatus,
+    limit: number,
+    last?: FirebaseFirestore.QueryDocumentSnapshot
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = db
-        .collection(DBCollections.Applications)
-        .where('status', '==', status);
+    let docRef;
+    if (last) {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('status', '==', status)
+            .startAfter(last)
+            .limit(limit);
+    } else {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('status', '==', status)
+            .limit(limit);
+    }
+
     await docRef
         .get()
         .then(querySnapshot => {
@@ -235,23 +303,41 @@ export const getApplicationsByStatus = async (
                 application.id = doc.id;
                 fetchedApplications.push(application);
             });
+
+            last = querySnapshot.docs[querySnapshot.docs.length - 1];
         })
         .catch(error => {
             printErrorTrace(getApplicationsByStatus, error, false);
         });
 
-    return fetchedApplications;
+    return {
+        applications: fetchedApplications,
+        lastApplication: last! ? last : undefined
+    }
 };
 
 export const getApplicationsByStage = async (
     db: FirebaseFirestore.Firestore,
     stage: ApplicationStage,
+    limit: number,
+    last?: FirebaseFirestore.QueryDocumentSnapshot
 ) => {
     let fetchedApplications: Application[] = [];
 
-    const docRef = db
-        .collection(DBCollections.Applications)
-        .where('stage', '==', stage);
+    let docRef;
+    if (last) {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('stage', '==', stage)
+            .startAfter(last)
+            .limit(limit);
+    } else {
+        docRef = db
+            .collection(DBCollections.Applications)
+            .where('stage', '==', stage)
+            .limit(limit);
+    }
+
     await docRef
         .get()
         .then(querySnapshot => {
@@ -260,12 +346,17 @@ export const getApplicationsByStage = async (
                 application.id = doc.id;
                 fetchedApplications.push(application);
             });
+
+            last = querySnapshot.docs[querySnapshot.docs.length - 1];
         })
         .catch(error => {
             printErrorTrace(getApplicationsByStage, error, false);
         });
 
-    return fetchedApplications;
+    return {
+        applications: fetchedApplications,
+        lastApplication: last! ? last : undefined
+    }
 };
 
 export const withdrawApplication = async (

@@ -29,7 +29,8 @@ const firebaseConfig = {
 
 let app: firebase.app.App;
 let authorization: auth.auth.Auth;
-let db: firestore.firestore.Firestore;
+// let db: FirebaseFirestore.Firestore;
+let db: any;
 
 beforeAll(async () => {
     app = firebase.initializeApp(firebaseConfig);
@@ -86,10 +87,23 @@ describe('application apis test suite', () => {
     //     expect(result);
     // });
     // test('test getAllSubmittedApplications', async () => {
-    //     const result: Application[] =
-    //         await ApplicationModule.getAllSubmittedApplications();
-    //     console.log('Submitted applications : ' + result.length);
-    //     expect(result);
+    //     let result =
+    //         await ApplicationModule.getAllSubmittedApplications(db, 5);
+    //     let applications = result.applications;
+    //     let lastApplication = result.lastApplication;
+    //     console.log('Submitted applications : ' + applications.length);
+
+    //     while (lastApplication) {
+    //         result = await ApplicationModule.getAllSubmittedApplications(db, 5, lastApplication);
+    //         applications = result.applications;
+    //         console.log('Submitted applications (subsequent call) : ' + applications.length);
+    //         if (result.lastApplication) {
+    //             lastApplication = result.lastApplication;
+    //         } else {
+    //             lastApplication = undefined;
+    //         }
+    //     }
+    //     expect(applications);
     // });
     // test('test getSavedApplicationsByApplicant', async () => {
     //     const result: Application[] =
