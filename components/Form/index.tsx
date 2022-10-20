@@ -23,6 +23,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
 import { convertApplicationDates } from '../../lib/utilities/applicationDateParsers';
+import { updateUserProfile } from '../../lib/user';
 
 export type ApplicationFormProps = {
     title?: string;
@@ -45,10 +46,39 @@ export default function ApplicationForm({
     const router = useRouter();
     const [db, setDB] = useState<FirebaseFirestore.Firestore>();
     const [loading, setLoading] = useState('');
+
+    const emptyApplication: Application = {
+        id: uuidv4(),
+        title: '',
+        institutionPrimary: {
+            investigator: auth.displayName || '',
+            jobTitle: '',
+            institution: '',
+            department: '',
+        },
+        email: auth.email || '',
+        address: {
+            streetName: '',
+            city: '',
+            state: '',
+            zipcode: '',
+            country: '',
+        },
+        productCommercialization: false,
+        studyDescription: {
+            abstract: '',
+            aims: '',
+            backgroundAndSignificance: '',
+            preliminaryData: '',
+            selectionCriteria: '',
+        },
+        status: ApplicationStatus.Inactive,
+        stage: ApplicationStage.Draft,
+        createdAt: new Date(),
+    };
+
     const form = useForm<Application>({
-        initialValues: application
-            ? application
-            : { ...emptyApplication, email: auth.email || '' },
+        initialValues: application ? application : emptyApplication,
     });
 
     useEffect(
@@ -77,6 +107,10 @@ export default function ApplicationForm({
             }
         } else {
             setLoading('submit');
+            app.createdAt = new Date();
+            await updateUserProfile({
+                displayName: app.institutionPrimary.investigator,
+            });
             const isSubmitted = await saveAndSubmitApplication(
                 db,
                 convertApplicationDates(app),
@@ -178,33 +212,3 @@ function Submit({
         </Group>
     );
 }
-
-const emptyApplication: Application = {
-    id: uuidv4(),
-    title: '',
-    institutionPrimary: {
-        investigator: '',
-        jobTitle: '',
-        institution: '',
-        department: '',
-    },
-    email: '',
-    address: {
-        streetName: '',
-        city: '',
-        state: '',
-        zipcode: '',
-        country: '',
-    },
-    productCommercialization: false,
-    studyDescription: {
-        abstract: '',
-        aims: '',
-        backgroundAndSignificance: '',
-        preliminaryData: '',
-        selectionCriteria: '',
-    },
-    status: ApplicationStatus.Inactive,
-    stage: ApplicationStage.Draft,
-    createdAt: new Date(),
-};

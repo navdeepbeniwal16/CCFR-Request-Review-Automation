@@ -1,4 +1,3 @@
-import { UserRecord } from 'firebase-admin/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { getAllUsers, getUsersByRole } from '../../../lib/admin-users'
@@ -8,11 +7,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         let users = [];
         if (req.query.role) {
-            const role = parseUserRole(req);
-            if (role === UserRole.ADMIN ||
-                role === UserRole.PROGRAM_MANAGER ||
-                role === UserRole.SC_MEMBER ||
-                role === UserRole.BGW_CHAIR) {
+            const role = parseUserRole(req) as UserRole;
+            if (Object.values(UserRole).includes(role)) {
                 users = await getUsersByRole(role);
             } else {
                 return res.status(400).json({ success: false, message: 'Illegal Arguments : User role is incorrect' });

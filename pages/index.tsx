@@ -12,7 +12,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ApplicationTable from '../components/ApplicationTable';
 import {
-    getAllSteeringCommitteeMembers,
     getAllSubmittedApplications,
     getApplicationsByApplicant,
     getApplicationsByStages,
@@ -129,10 +128,9 @@ export const getServerSideProps = withAuthUserTokenSSR({
     }
 
     const db = getFirebaseAdmin().firestore();
-    const steeringCommittee = await getAllSteeringCommitteeMembers(db);
 
     const data = await getApplications(
-        AuthUser.claims.role.toString(),
+        (AuthUser.claims.role || UserRole.APPLICANT).toString(),
         AuthUser.email,
         db,
         undefined,
@@ -142,7 +140,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
         applications: data.applications.map(a =>
             convertApplicationTimestamp(a),
         ),
-        userRole: AuthUser.claims.role as UserRole,
+        userRole: (AuthUser.claims.role as UserRole) || UserRole.APPLICANT,
     };
 
     return {

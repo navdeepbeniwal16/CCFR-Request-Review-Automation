@@ -47,4 +47,5 @@ export enum UserRole {
     BGW_CHAIR = 'BWG_Chair',
     PROGRAM_MANAGER = 'Program_Manager',
     ADMIN = 'Portal_Administrator',
+    INTERNAL_USER = 'Internal_User'
 }

@@ -69,7 +69,7 @@ export const saveAndSubmitApplication = async (
         throw new Error('Program manager not found');
     }
     const programManager = progMgr[0];
-    application.programManagerReview.name = programManager.displayName!;
+    application.programManagerReview.name = programManager.displayName || programManager.email!;
     application.programManagerReview.status = ApplicationReviewStatus.In_Review;
 
     await db

@@ -10,7 +10,7 @@ const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;
 const URL = HOST + ':' + PORT;
 
 export const registerUser = async (email: string, password: string) => {
-    return firebase
+    const user = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(userCredential => {
@@ -21,6 +21,12 @@ export const registerUser = async (email: string, password: string) => {
             printErrorTrace(registerUser, error, false);
             return error.message;
         });
+    const success = await setUserRoleAsAdmin(user.email, UserRole.APPLICANT);
+    if (success) {
+        firebase.auth().onAuthStateChanged((x) => {
+            if (x) return x.getIdToken(true).then(() => user);
+        })
+    }
 };
 
 export const getCurrentUser = () => {
@@ -60,6 +66,10 @@ export const updateUserProfile = async (userProfile: UserProfile) => {
 
     return isUpdated;
 };
+
+export const sendPasswordResetLink = async (email: string) => {
+    return firebase.auth().sendPasswordResetEmail(email);
+}
 
 export const deleteUser = async () => {
     const user = firebase.auth().currentUser;

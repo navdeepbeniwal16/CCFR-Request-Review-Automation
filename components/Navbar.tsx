@@ -1,4 +1,4 @@
-import { createStyles, Navbar, Group, NavLink } from '@mantine/core';
+import { createStyles, Navbar, Group, NavLink, Drawer } from '@mantine/core';
 import {
     IconHome,
     IconUserCircle,
@@ -15,6 +15,8 @@ import { logoutUser } from '../lib/user';
 import { UserRole } from '../lib/utilities/AppEnums';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import Profile from './Profile';
+import { useAuthUser } from 'next-firebase-auth';
 
 const useStyles = createStyles(theme => {
     return {
@@ -92,11 +94,14 @@ export default function CCFRNavbar() {
     const { classes, cx } = useStyles();
     const router = useRouter();
     const [expanded, setExpanded] = useState('');
+    const [profileVisible, setProfileVisible] = useState(false);
+    const [user, setUser] = useState<firebase.User>();
     const [role, setRole] = useState<UserRole>(UserRole.APPLICANT);
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
+                setUser(user);
                 user.getIdTokenResult().then(tokenId =>
                     setRole(tokenId.claims.role),
                 );
@@ -150,7 +155,7 @@ export default function CCFRNavbar() {
                               link: '?type=committee',
                               label: 'Streeing Committee',
                           },
-                          { link: '?type=admin', label: 'Admins' },
+                          { link: '?type=pm', label: 'Program Manager' },
                           { link: '?type=bwg', label: 'BWG Chair' },
                       ],
                   },
@@ -204,49 +209,63 @@ export default function CCFRNavbar() {
     ));
 
     return (
-        <Navbar
-            height="100%"
-            width={{ sm: 300 }}
-            p="md"
-            className={classes.navbar}
-        >
-            <Navbar.Section grow>
-                <Group className={classes.header}>
-                    <Image
-                        width={64}
-                        height={64}
-                        src="/ccfr_logo.png"
-                        alt="CCFR Logo"
-                    />
-                    <div>
-                        <h3>
-                            Colon Cancer <br /> Family Registry
-                        </h3>
-                        <p>Application Portal</p>
-                    </div>
-                </Group>
-                {links}
-            </Navbar.Section>
+        <>
+            <Drawer
+                opened={profileVisible}
+                onClose={() => setProfileVisible(false)}
+                title="Edit Profile"
+                padding="xl"
+                size="md"
+            >
+                <Profile
+                    displayName={user?.displayName || ''}
+                    email={user?.email || ''}
+                    role={role}
+                />
+            </Drawer>
+            <Navbar
+                height="100%"
+                width={{ sm: 300 }}
+                p="md"
+                className={classes.navbar}
+            >
+                <Navbar.Section grow>
+                    <Group className={classes.header}>
+                        <Image
+                            width={64}
+                            height={64}
+                            src="/ccfr_logo.png"
+                            alt="CCFR Logo"
+                        />
+                        <div>
+                            <h3>
+                                Colon Cancer <br /> Family Registry
+                            </h3>
+                            <p>Application Portal</p>
+                        </div>
+                    </Group>
+                    {links}
+                </Navbar.Section>
 
-            <Navbar.Section className={classes.footer}>
-                <Link href="/profile" passHref>
+                <Navbar.Section className={classes.footer}>
                     <NavLink
+                        onClick={() => setProfileVisible(true)}
                         classNames={{ root: classes.navLink }}
                         icon={<IconUserCircle stroke={1.5} />}
                         component="a"
                         label="Edit Profile"
                         color="white"
                     />
-                </Link>
-                <NavLink
-                    onClick={() => logoutUser(() => router.push('/login'))}
-                    classNames={{ root: classes.navLink }}
-                    icon={<IconLogout stroke={1.5} />}
-                    component="a"
-                    label="Logout"
-                    color="white"
-                />
-            </Navbar.Section>
-        </Navbar>
+                    <NavLink
+                        onClick={() => logoutUser(() => router.push('/login'))}
+                        classNames={{ root: classes.navLink }}
+                        icon={<IconLogout stroke={1.5} />}
+                        component="a"
+                        label="Logout"
+                        color="white"
+                    />
+                </Navbar.Section>
+            </Navbar>
+        </>
     );
 }

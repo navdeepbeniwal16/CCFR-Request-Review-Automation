@@ -14,10 +14,11 @@ import {
     Box,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { loginUser, registerUser } from '../lib/user';
+import { loginUser, registerUser, sendPasswordResetLink } from '../lib/user';
 import { IconAlertCircle, IconArrowLeft } from '@tabler/icons';
 import Head from 'next/head';
 import Image from 'next/image';
+import { showNotification } from '@mantine/notifications';
 
 type AuthContainerProps = {
     toggleRegister?: (x: boolean) => void;
@@ -188,6 +189,7 @@ const LoginContainer = ({
 const ForgotPasswordContainer = ({
     toggleForgotPassword,
 }: AuthContainerProps) => {
+    const [email, setEmail] = useState('');
     const [sent, setSent] = useState(false);
 
     return (
@@ -199,6 +201,7 @@ const ForgotPasswordContainer = ({
 
             <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
                 <TextInput
+                    onChange={e => setEmail(e.target.value)}
                     label="Your email"
                     placeholder="Your email"
                     required
@@ -216,7 +219,14 @@ const ForgotPasswordContainer = ({
                             <Box ml={5}>Back to login page</Box>
                         </Center>
                     </Anchor>
-                    <Button disabled={sent} onClick={() => setSent(true)}>
+                    <Button
+                        disabled={sent}
+                        onClick={() => {
+                            sendPasswordResetLink(email).then(() => {
+                                setSent(true);
+                            });
+                        }}
+                    >
                         {sent ? 'Email sent' : 'Reset password'}
                     </Button>
                 </Group>
