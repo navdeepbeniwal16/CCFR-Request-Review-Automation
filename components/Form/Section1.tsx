@@ -181,7 +181,7 @@ export function Section1({
                         <TextInput
                             required
                             withAsterisk={!readOnly}
-                            label="Principal Investigator"
+                            label="Secondary Investigator"
                             {...form.getInputProps(
                                 'institutionSecondary.investigator',
                             )}
