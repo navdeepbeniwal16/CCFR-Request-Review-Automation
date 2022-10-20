@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const HOST = process.env.APP_HOST ? process.env.APP_HOST : 'http://localhost';
 const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;
-const URL = HOST + ':' + PORT;
+const URL = HOST + (PORT ? ':' : '') + PORT;
 
 export const createNotificationForUser = async (
     receiverEmail: string,

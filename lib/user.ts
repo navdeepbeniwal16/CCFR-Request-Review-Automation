@@ -7,7 +7,7 @@ import { printErrorTrace } from './utilities/errorHandler';
 
 const HOST = process.env.APP_HOST ? process.env.APP_HOST : 'http://localhost';
 const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;
-const URL = HOST + ':' + PORT;
+const URL = HOST + (PORT ? ':' : '') + PORT;
 
 export const registerUser = async (email: string, password: string) => {
     const user = await firebase
