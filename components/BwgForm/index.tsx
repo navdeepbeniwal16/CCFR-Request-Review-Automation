@@ -37,7 +37,16 @@ export function BWGForm({ application, readOnly, setModal }: BWGFormProps) {
             ...application,
             biospecimenForm: application.biospecimenForm
                 ? application.biospecimenForm
-                : emptyBWG,
+                : {
+                      ...emptyBWG,
+                      amountRequired: application.biospecimenRequired?.reduce(
+                          (total, request) => {
+                              if (!total.numSamples) total.numSamples = 0;
+                              total.numSamples += request.numSamples || 0;
+                              return total;
+                          },
+                      ).numSamples,
+                  },
         },
     });
 

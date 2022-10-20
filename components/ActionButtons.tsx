@@ -6,13 +6,16 @@ import { useState } from 'react';
 import {
     programManagerReviewApplication,
     steeringCommitteeReviewApplication,
+    updateApplication,
     withdrawApplication,
 } from '../lib/application';
 import { Application } from '../lib/interfaces';
 import {
     ApplicationReviewStatus,
+    ApplicationStage,
     ApplicationStatus,
 } from '../lib/utilities/AppEnums';
+import { convertApplicationDates } from '../lib/utilities/applicationDateParsers';
 
 type ActionButtonProps = {
     db: FirebaseFirestore.Firestore;
@@ -90,20 +93,34 @@ export const PMActionButton = ({
     router,
 }: ActionButtonProps) => {
     const [loading, setLoading] = useState('');
-    const review = (status: ApplicationReviewStatus) => {
-        programManagerReviewApplication(db, application.id, status).then(
-            isSuccess =>
-                actionCallback(
-                    isSuccess,
-                    'Application ' + status.toLocaleLowerCase(),
-                    'Application has been successfully ' +
-                        status.toLocaleLowerCase(),
-                    '/applications/' + application.id,
-                    router,
-                    'Application reviewal failed',
-                    'An error occured while trying to process review',
-                    setLoading,
-                ),
+    const review = async (status: ApplicationReviewStatus) => {
+        let isSuccess = false;
+        if (application.stage == ApplicationStage.PMReview) {
+            isSuccess = await programManagerReviewApplication(
+                db,
+                application.id,
+                status,
+            );
+        } else {
+            const status = ApplicationReviewStatus.Approved
+                ? ApplicationStatus.Accepted
+                : ApplicationStatus.Rejected;
+            application.status = status;
+            application.stage = ApplicationStage.Complete;
+            isSuccess = await updateApplication(
+                db,
+                convertApplicationDates(application),
+            );
+        }
+        actionCallback(
+            isSuccess,
+            'Application ' + status.toLocaleLowerCase(),
+            'Application has been successfully ' + status.toLocaleLowerCase(),
+            '/applications/' + application.id,
+            router,
+            'Application reviewal failed',
+            'An error occured while trying to process review',
+            setLoading,
         );
     };
     return (

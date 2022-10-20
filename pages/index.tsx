@@ -15,7 +15,7 @@ import {
     getAllSteeringCommitteeMembers,
     getAllSubmittedApplications,
     getApplicationsByApplicant,
-    getApplicationsByStage,
+    getApplicationsByStages,
 } from '../lib/application';
 import { Application } from '../lib/interfaces';
 import { ApplicationStage, UserRole } from '../lib/utilities/AppEnums';
@@ -93,25 +93,25 @@ const getApplications = (
         f = () => getAllSubmittedApplications(db, PAGE_SIZE, last);
     } else if (role == UserRole.PROGRAM_MANAGER) {
         f = () =>
-            getApplicationsByStage(
+            getApplicationsByStages(
                 db,
-                ApplicationStage.PMReview,
+                [ApplicationStage.PMReview, ApplicationStage.SCReview],
                 PAGE_SIZE,
                 last,
             );
     } else if (role == UserRole.BGW_CHAIR) {
         f = () =>
-            getApplicationsByStage(
+            getApplicationsByStages(
                 db,
-                ApplicationStage.BWGReview,
+                [ApplicationStage.BWGReview],
                 PAGE_SIZE,
                 last,
             );
     } else if (role == UserRole.SC_MEMBER) {
         f = () =>
-            getApplicationsByStage(
+            getApplicationsByStages(
                 db,
-                ApplicationStage.SCReview,
+                [ApplicationStage.SCReview],
                 PAGE_SIZE,
                 last,
             );

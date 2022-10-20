@@ -22,14 +22,13 @@ export default function ApplicationStepper({
             : 'Result',
     ];
 
-    const appStageNumber =
-        Object.keys(ApplicationStage)
-            .filter(
-                stage =>
-                    stage != ApplicationStage.BWGReview ||
-                    application.biospecimenRequired,
-            )
-            .indexOf(application.stage) - 1;
+    const stages = Object.keys(ApplicationStage).filter(
+        stage =>
+            stage != ApplicationStage.BWGReview ||
+            application.biospecimenRequired,
+    );
+    let appStageNumber = stages.indexOf(application.stage) - 1;
+    if (appStageNumber == stages.length - 2) appStageNumber += 1;
 
     return (
         <Stepper size="sm" active={appStageNumber}>

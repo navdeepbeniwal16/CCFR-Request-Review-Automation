@@ -361,9 +361,9 @@ export const getApplicationsByStatus = async (
     }
 };
 
-export const getApplicationsByStage = async (
+export const getApplicationsByStages = async (
     db: FirebaseFirestore.Firestore,
-    stage: ApplicationStage,
+    stages: ApplicationStage[],
     limit: number,
     last?: FirebaseFirestore.QueryDocumentSnapshot
 ) => {
@@ -373,13 +373,13 @@ export const getApplicationsByStage = async (
     if (last) {
         docRef = db
             .collection(DBCollections.Applications)
-            .where('stage', '==', stage)
+            .where('stage', 'in', stages)
             .startAfter(last)
             .limit(limit);
     } else {
         docRef = db
             .collection(DBCollections.Applications)
-            .where('stage', '==', stage)
+            .where('stage', 'in', stages)
             .limit(limit);
     }
 
@@ -395,7 +395,7 @@ export const getApplicationsByStage = async (
             last = querySnapshot.docs[querySnapshot.docs.length - 1];
         })
         .catch(error => {
-            printErrorTrace(getApplicationsByStage, error, false);
+            printErrorTrace(getApplicationsByStages, error, false);
         });
 
     return {

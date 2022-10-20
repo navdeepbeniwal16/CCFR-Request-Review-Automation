@@ -123,7 +123,8 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
             ActionButton = PIActionButton;
         } else if (
             role == UserRole.PROGRAM_MANAGER &&
-            application.stage == ApplicationStage.PMReview
+            (application.stage == ApplicationStage.PMReview ||
+                application.stage == ApplicationStage.SCReview)
         ) {
             ActionButton = PMActionButton;
         } else if (
