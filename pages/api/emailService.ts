@@ -11,17 +11,26 @@ const nodemailer = require('nodemailer');
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const query = req.query;
 	const {email, emailText, emailType} = query;
+	var message = "<p> " + emailText + " </p>";
 
 	console.log(email);
 
 	var transport = nodemailer.createTransport({
-		host: "smtp.mailtrap.io",
-		port: 2525,
+		service: 'gmail',
 		auth: {
-		  user: "fbf7a66f0cad4b",
-		  pass: "3cc57a37c5fef3"
+			user: process.env.GMAIL_LOGIN,
+			pass: process.env.GMAIL_PWORD
 		}
 	  });
+
+	// var transport = nodemailer.createTransport({
+	// 	host: "smtp.mailtrap.io",
+	// 	port: 2525,
+	// 	auth: {
+	// 	  user: "fbf7a66f0cad4b",
+	// 	  pass: "3cc57a37c5fef3"
+	// 	}
+	//   });
 
 	return new Promise((response) => {
 		if(emailType == 'StatusUpdate') {
@@ -30,8 +39,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				from: 'CCFR',
 				to: email,
 				subject: 'Application Update',
-				text: emailText
-			}
+				text: emailText,
+				html: message
+				}
 	
 			transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
 				if (error) {
@@ -55,8 +65,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				from: 'CCFR',
 				to: email,
 				subject: 'Application Verdicts',
-				text: emailText
-			}
+				text: emailText,
+				html: message
+				}
 	
 			try {
 				transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
