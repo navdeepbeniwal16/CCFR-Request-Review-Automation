@@ -16,7 +16,6 @@ import { UserRole } from '../lib/utilities/AppEnums';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import Profile from './Profile';
-import { useAuthUser } from 'next-firebase-auth';
 
 const useStyles = createStyles(theme => {
     return {
@@ -161,7 +160,7 @@ export default function CCFRNavbar() {
                   },
               ]
             : []),
-        {
+        /*{
             link: '/notifications',
             label: 'Notifications',
             icon: IconMessages,
@@ -169,7 +168,7 @@ export default function CCFRNavbar() {
                 { link: '?status=unread', label: 'Unread Notifications' },
                 { link: '', label: 'All Notifications' },
             ],
-        },
+        },*/
     ];
 
     const links = data.map(item => (

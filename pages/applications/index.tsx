@@ -68,7 +68,7 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
             <Grid justify="space-between" align="center">
                 <h1>{pageTitle}</h1>
                 <Group>
-                    <TextInput
+                    {/*<TextInput
                         icon={<IconSearch size={18} stroke={1.5} />}
                         size="md"
                         placeholder="Search for applications"
@@ -82,7 +82,7 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
                                   )
                                 : null
                         }
-                    />
+                    />*/}
                     <Link href="/applications/new" passHref>
                         <Button component="a" size="md">
                             Create New
@@ -148,7 +148,6 @@ export const getServerSideProps = withAuthUserTokenSSR({
         db,
         undefined,
     );
-    const steeringCommittee = await getAllSteeringCommitteeMembers(db);
 
     const _props: ApplicationsPageProps = {
         title: appType,

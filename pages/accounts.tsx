@@ -7,6 +7,8 @@ import {
     Button,
     Container,
     Drawer,
+    TextInput,
+    Grid,
 } from '@mantine/core';
 import { UserRecord } from 'firebase-admin/auth';
 import {
@@ -28,6 +30,8 @@ import Profile, {
 } from '../components/Profile';
 import { useState } from 'react';
 import { showNotification } from '@mantine/notifications';
+import { IconSearch } from '@tabler/icons';
+import { xor } from 'lodash';
 
 interface UsersTableProps {
     data: UserRecord[];
@@ -35,63 +39,85 @@ interface UsersTableProps {
 
 export function UsersRolesTable({ data }: UsersTableProps) {
     const [visibleUser, setVisibleUser] = useState<UserRecord>();
+    const [search, setSearch] = useState('');
 
-    const rows = data.map(item => (
-        <tr key={item.displayName || item.email}>
-            <td>
-                <Group spacing="sm">
-                    <Avatar color={randomColor(item.email || '')} radius="xl">
-                        {getInitials(item.displayName || '')}
-                    </Avatar>
-                    <Text size="sm" weight={500}>
-                        {item.displayName || item.email}
-                    </Text>
-                </Group>
-            </td>
-            <td>{item.email}</td>
-            <td>
-                <Select
-                    data={rolesData}
-                    defaultValue={item.customClaims?.role || UserRole.APPLICANT}
-                    variant="unstyled"
-                    onChange={newRole => {
-                        if (item.email && newRole) {
-                            setUserRoleAsAdmin(
-                                item.email,
-                                newRole as UserRole,
-                            ).then(isSuccess => {
-                                if (isSuccess) {
-                                    showNotification({
-                                        title:
-                                            'Updated role to ' +
-                                            getRoleName(newRole as UserRole),
-                                        color: 'green',
-                                        message:
-                                            'Successfully updated role of ' +
-                                            item.email +
-                                            ' to ' +
-                                            getRoleName(newRole as UserRole),
-                                    });
-                                } else {
-                                    showNotification({
-                                        title: 'Update profile failed',
-                                        color: 'red',
-                                        message:
-                                            'An error occured while updating your profile',
-                                    });
-                                }
-                            });
+    const rows = data
+        .filter(
+            x =>
+                !search ||
+                x.displayName
+                    ?.toLocaleLowerCase()
+                    .includes(search.toLowerCase()) ||
+                x.email?.toLocaleLowerCase().includes(search.toLowerCase()),
+        )
+        .map(item => (
+            <tr key={item.displayName || item.email}>
+                <td>
+                    <Group spacing="sm">
+                        <Avatar
+                            color={randomColor(item.email || '')}
+                            radius="xl"
+                        >
+                            {getInitials(item.displayName || '')}
+                        </Avatar>
+                        <Text size="sm" weight={500}>
+                            {item.displayName || item.email}
+                        </Text>
+                    </Group>
+                </td>
+                <td>{item.email}</td>
+                <td>
+                    <Select
+                        data={rolesData}
+                        defaultValue={
+                            item.customClaims?.role || UserRole.APPLICANT
                         }
-                    }}
-                />
-            </td>
-            <td>
-                <Button onClick={() => setVisibleUser(item)} variant="subtle">
-                    View Profile
-                </Button>
-            </td>
-        </tr>
-    ));
+                        variant="unstyled"
+                        onChange={newRole => {
+                            if (item.email && newRole) {
+                                setUserRoleAsAdmin(
+                                    item.email,
+                                    newRole as UserRole,
+                                ).then(isSuccess => {
+                                    if (isSuccess) {
+                                        showNotification({
+                                            title:
+                                                'Updated role to ' +
+                                                getRoleName(
+                                                    newRole as UserRole,
+                                                ),
+                                            color: 'green',
+                                            message:
+                                                'Successfully updated role of ' +
+                                                item.email +
+                                                ' to ' +
+                                                getRoleName(
+                                                    newRole as UserRole,
+                                                ),
+                                        });
+                                    } else {
+                                        showNotification({
+                                            title: 'Update profile failed',
+                                            color: 'red',
+                                            message:
+                                                'An error occured while updating your profile',
+                                        });
+                                    }
+                                });
+                            }
+                        }}
+                    />
+                </td>
+                <td>
+                    <Button
+                        onClick={() => setVisibleUser(item)}
+                        variant="subtle"
+                    >
+                        View Profile
+                    </Button>
+                </td>
+            </tr>
+        ));
 
     return (
         <>
@@ -111,7 +137,16 @@ export function UsersRolesTable({ data }: UsersTableProps) {
                 />
             </Drawer>
             <Container m="md" p="md" mt="0" fluid>
-                <h1>All Accounts</h1>
+                <Grid justify="space-between" align="center">
+                    <h1>All Accounts</h1>
+                    <TextInput
+                        onChange={e => setSearch(e.target.value)}
+                        icon={<IconSearch size={18} stroke={1.5} />}
+                        size="md"
+                        placeholder="Search for users"
+                        rightSectionWidth={42}
+                    />
+                </Grid>
                 <Table sx={{ minWidth: 800 }} verticalSpacing="sm">
                     <thead>
                         <tr>
