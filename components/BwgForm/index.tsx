@@ -121,12 +121,12 @@ const emptyBWG: BiospecimenForm = {
     amountRequired: 0,
     proposedTestingMethodlogy: '',
     clarifications: {
-        additionalDispatchRequirement: undefined,
-        fluoroscentDyeQuantificationRequired: undefined,
-        LCLDerivedDNAAcceptable: undefined,
-        salivaAcceptable: undefined,
-        depletedDNASampleRequest: undefined,
-        depletedFFPE: undefined,
+        additionalDispatchRequirement: 'TBD',
+        fluoroscentDyeQuantificationRequired: 'TBD',
+        LCLDerivedDNAAcceptable: 'TBD',
+        salivaAcceptable: 'TBD',
+        depletedDNASampleRequest: 'TBD',
+        depletedFFPE: 'Exclude Sample(s)',
         neoplasticCellularity: {
             minNC: '',
             minVolume: '',

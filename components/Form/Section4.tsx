@@ -22,7 +22,7 @@ export function Section4({ form }: { form: UseFormReturnType<Application> }) {
                 />
                 <Checkbox
                     required
-                    label=" agree to adhere to the CCFR Policy on Publications and notify the CCFR of planned publications that make use of CCFR data and/or biospecimens and to:
+                    label="I agree to adhere to the CCFR Policy on Publications and notify the CCFR of planned publications that make use of CCFR data and/or biospecimens and to:
                     1) Register publications with the CCFR early in the planning process;
                     2) Submit publications to the CFR for administrative review prior to submission to a journal; and,
                     3) Acknowledge the contributions (financial and otherwise) of the NCI and CCFR. The CCFR Policy on Publications, Manuscript Registration Form and Review

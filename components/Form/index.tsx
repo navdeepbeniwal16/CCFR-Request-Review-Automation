@@ -108,6 +108,12 @@ export default function ApplicationForm({
         } else {
             setLoading('submit');
             app.createdAt = new Date();
+            if (app.biospecimenRequired?.length == 0) {
+                delete app.biospecimenRequired;
+            }
+            if (app.dataRequired?.length == 0) {
+                delete app.dataRequired;
+            }
             await updateUserProfile({
                 displayName: app.institutionPrimary.investigator,
             });
