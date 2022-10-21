@@ -1,4 +1,4 @@
-import { Container, Grid, TextInput, Group, Button } from '@mantine/core';
+import { Container, Grid, Group, Button } from '@mantine/core';
 import {
     withAuthUser,
     AuthAction,
@@ -7,14 +7,11 @@ import {
 } from 'next-firebase-auth';
 import Head from 'next/head';
 import ApplicationTable from '../../components/ApplicationTable';
-import { IconSearch } from '@tabler/icons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Application } from '../../lib/interfaces';
 import {
-    getAllSteeringCommitteeMembers,
     getAllSubmittedApplications,
     getApplicationsByApplicant,
     getApplicationsByStatus,
@@ -39,7 +36,6 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
     userRole,
     userEmail,
 }) => {
-    const router = useRouter();
     const [apps, setApps] = useState(applications);
     const [last, setLast] = useState<FirebaseFirestore.QueryDocumentSnapshot>();
     const [db, setDB] = useState<FirebaseFirestore.Firestore>();
@@ -68,7 +64,9 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
             <Grid justify="space-between" align="center">
                 <h1>{pageTitle}</h1>
                 <Group>
-                    {/*<TextInput
+                    {/*
+                    Uncomment to add search in the future
+                    <TextInput
                         icon={<IconSearch size={18} stroke={1.5} />}
                         size="md"
                         placeholder="Search for applications"
@@ -82,7 +80,8 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
                                   )
                                 : null
                         }
-                    />*/}
+                    />
+                    */}
                     <Link href="/applications/new" passHref>
                         <Button component="a" size="md">
                             Create New

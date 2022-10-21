@@ -176,7 +176,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                     readOnly={true}
                 />
 
-                {application.biospecimenForm && (
+                {application.biospecimenForm && userRole != UserRole.APPLICANT && (
                     <Box sx={{ maxWidth: 1100 }} mx="auto">
                         <h1>BWG Form</h1>
                         <BWGForm

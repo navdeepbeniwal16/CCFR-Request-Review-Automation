@@ -113,17 +113,19 @@ export const PMActionButton = ({
                 convertApplicationDates(application),
             );
             if (isSuccess) {
+                const appURL = URL + '/applications/' + application.id;
                 await createNotificationForUser(
                     application.email,
                     'Your application for "' +
                         application.title +
                         '" has been ' +
                         status.toLocaleLowerCase() +
-                        '. You can review the outcome of your application <a href="' +
-                        URL +
-                        '/applications/' +
-                        application.id +
-                        '">here</a>.',
+                        '. You can review the outcome of your application by copying the link <a href="' +
+                        appURL +
+                        '">here</a> and pasting it in a new tab/window. If you can\'t see the hyperlink, ' +
+                        'copy the following link instead: ' +
+                        appURL +
+                        '.',
                     true,
                     'ApplicationVerdicts',
                 );

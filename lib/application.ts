@@ -89,11 +89,16 @@ export const saveAndSubmitApplication = async (
         });
 
     if (programManager.email) {
+        const appURL = URL + '/applications/' + application.id;
         await createNotificationForUser(
             programManager.email, 
             'A new application for "' + application.title + '" has been submitted by ' +
-            application.institutionPrimary.investigator +'. You can review the application <a href="' 
-            + URL + "/applications/" + application.id + '">here</a>.', 
+            application.institutionPrimary.investigator +'. You can review the application by copying the link <a href="' +
+            appURL +
+            '">here</a> and pasting it in a new tab/window. If you can\'t see the hyperlink, ' +
+            'copy the following link instead: ' +
+            appURL +
+            '.',
             true, 
             'StatusUpdate')
     }
@@ -612,11 +617,16 @@ export const programManagerReviewApplication = async (
                         );
                     }
                     if (bwgChair.email) {
+                        const appURL = URL + '/applications/' + application.id;
                         await createNotificationForUser(
                             bwgChair.email, 
                             'An application for "' + application.title 
-                            + '" requesting biospecimen samples is ready for your review. You can review the application <a href="' 
-                            + URL + "/applications/" + application.id + '">here</a>.', 
+                            + '" requesting biospecimen samples is ready for your review. You can review the application by copying the link <a href="' +
+                            appURL +
+                            '">here</a> and pasting it in a new tab/window. If you can\'t see the hyperlink, ' +
+                            'copy the following link instead: ' +
+                            appURL +
+                            '.',
                             true, 
                             'StatusUpdate')
                     }
@@ -715,11 +725,16 @@ export const instantiateSteeringCommitteeReviewProcess = async (
         scReviewerObj.status = ApplicationReviewStatus.In_Review;
         application.steeringCommitteeReview.reviewers.push(scReviewerObj);
         if (scReviewerObj.email) {
+            const appURL = URL + '/applications/' + application.id;
             await createNotificationForUser(
                 scReviewerObj.email, 
                 'An application for "' + application.title 
-                + '" is now ready for you to vote on. You can vote on the application <a href="' 
-                + URL + "/applications/" + application.id + '">here</a>.', 
+                + '" is now ready for you to vote on. You can vote on the application by copying the link <a href="' +
+                appURL +
+                '">here</a> and pasting it in a new tab/window. If you can\'t see the hyperlink, ' +
+                'copy the following link instead: ' +
+                appURL +
+                '.',
                 true, 
                 'StatusUpdate')
         }
