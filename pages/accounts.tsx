@@ -31,7 +31,6 @@ import Profile, {
 import { useState } from 'react';
 import { showNotification } from '@mantine/notifications';
 import { IconSearch } from '@tabler/icons';
-import { xor } from 'lodash';
 
 interface UsersTableProps {
     data: UserRecord[];

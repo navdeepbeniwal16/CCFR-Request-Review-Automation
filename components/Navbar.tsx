@@ -5,7 +5,6 @@ import {
     IconLogout,
     IconUsers,
     IconFiles,
-    IconMessages,
 } from '@tabler/icons';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -90,7 +89,7 @@ const useStyles = createStyles(theme => {
 });
 
 export default function CCFRNavbar() {
-    const { classes, cx } = useStyles();
+    const { classes } = useStyles();
     const router = useRouter();
     const [expanded, setExpanded] = useState('');
     const [profileVisible, setProfileVisible] = useState(false);

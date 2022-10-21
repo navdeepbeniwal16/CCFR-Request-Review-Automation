@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { resolve } from 'path';
 
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 
 // Each request must have:
@@ -21,8 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			user: process.env.GMAIL_LOGIN,
 			pass: process.env.GMAIL_PWORD
 		}
-	  });
-
+	});
 	// var transport = nodemailer.createTransport({
 	// 	host: "smtp.mailtrap.io",
 	// 	port: 2525,
@@ -44,21 +42,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				}
 	
 			transport.sendMail(mailDetails, function(error: any, info: { response: string; }){
-				if (error) {
-				  console.log(error);
-				  return res.status(400).json({
-					status: 400,
-					message: 'Bad Request.'
-					})
-		
-				} else {
-				  console.log('Email sent: ' + info.response);
-				  return res.status(200).json({
-					status: 200,
-					message: 'Email sent.'
-					})
-				}
-			  });
+                if (error) {
+                    console.log(error);
+                    return res.status(400).json({
+                    status: 400,
+                    message: 'Bad Request.'
+                    })
+        
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    return res.status(200).json({
+                    status: 200,
+                    message: 'Email sent.'
+                    })
+                }
+            });
 	
 		} else if(emailType == 'ApplicationVerdicts') {
 			let mailDetails = {

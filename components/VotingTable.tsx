@@ -1,5 +1,5 @@
 import { Badge, Table, Text } from '@mantine/core';
-import { Application, Review } from '../lib/interfaces';
+import { Review } from '../lib/interfaces';
 import { ApplicationReviewStatus } from '../lib/utilities/AppEnums';
 
 type VotingTableProps = {

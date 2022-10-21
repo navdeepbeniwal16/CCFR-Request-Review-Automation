@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Stack, TextInput, Box } from '@mantine/core';
+import { Avatar, Badge, Button, Stack, TextInput } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { useState } from 'react';
 import { sendPasswordResetLink, updateUserProfile } from '../lib/user';

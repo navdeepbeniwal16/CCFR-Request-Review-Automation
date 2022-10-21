@@ -10,7 +10,7 @@ let adminAuth: Auth = getFirebaseAdmin().auth();
 export const getUser = async (email: string): Promise<any> => {
     let user = null;
 
-    const result = await adminAuth
+    await adminAuth
         .getUserByEmail(email)
         .then(userRecord => {
             if (userRecord) user = userRecord;
