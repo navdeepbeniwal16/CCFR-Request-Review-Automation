@@ -115,7 +115,9 @@ export const PMActionButton = ({
             if (isSuccess) {
                 await createNotificationForUser(
                     application.email,
-                    'Your application has been ' +
+                    'Your application for "' +
+                        application.title +
+                        '" has been ' +
                         status.toLocaleLowerCase() +
                         '. You can review the outcome of your application <a href="' +
                         URL +

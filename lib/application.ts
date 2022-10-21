@@ -18,6 +18,10 @@ import {getUsersByRoleAsAdmin} from './user';
 import { printErrorTrace } from './utilities/errorHandler';
 import { createNotificationForUser } from './notification';
 
+const HOST = process.env.APP_HOST ? process.env.APP_HOST : 'http://localhost';
+const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;
+const URL = HOST + (PORT ? ':' : '') + PORT;
+
 export const isApplicationEmpty = (application: Application) => {
     return Object.keys(application).length === 0;
 };
@@ -83,6 +87,17 @@ export const saveAndSubmitApplication = async (
             printErrorTrace(saveAndSubmitApplication, error, false);
             return false;
         });
+
+    if (programManager.email) {
+        await createNotificationForUser(
+            programManager.email, 
+            'A new application for "' + application.title + '" has been submitted by ' +
+            application.institutionPrimary.investigator +'. You can review the application <a href="' 
+            + URL + "/applications/" + application.id + '">here</a>.', 
+            true, 
+            'StatusUpdate')
+    }
+    
 
     return true;
 };
@@ -596,6 +611,15 @@ export const programManagerReviewApplication = async (
                             'Data Error: Bwg chair display name is either undefined, null or empty',
                         );
                     }
+                    if (bwgChair.email) {
+                        await createNotificationForUser(
+                            bwgChair.email, 
+                            'An application for "' + application.title 
+                            + '" requesting biospecimen samples is ready for your review. You can review the application <a href="' 
+                            + URL + "/applications/" + application.id + '">here</a>.', 
+                            true, 
+                            'StatusUpdate')
+                    }
 
                     application.BWGChairReview = <Review>{};
                     application.BWGChairReview!.name = bwgChair.displayName!;
@@ -690,6 +714,15 @@ export const instantiateSteeringCommitteeReviewProcess = async (
         scReviewerObj.email = scReviewers[i].email || '';
         scReviewerObj.status = ApplicationReviewStatus.In_Review;
         application.steeringCommitteeReview.reviewers.push(scReviewerObj);
+        if (scReviewerObj.email) {
+            await createNotificationForUser(
+                scReviewerObj.email, 
+                'An application for "' + application.title 
+                + '" is now ready for you to vote on. You can vote on the application <a href="' 
+                + URL + "/applications/" + application.id + '">here</a>.', 
+                true, 
+                'StatusUpdate')
+        }
     }
     await db
         .collection(DBCollections.Applications)
