@@ -99,9 +99,6 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
     ccfrPeople,
 }) => {
     const [isModalOpen, setIsModalOpened] = useState(false);
-    const handleSetModalOpen = () => {
-        setIsModalOpened(true);
-    };
     const user = useAuthUser();
     const router = useRouter();
     const [db, setDB] = useState<FirebaseFirestore.Firestore>();
@@ -156,7 +153,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
             <Tabs.List>
                 <Group grow style={{ width: '100%' }}>
                     {tabGroups}
-                    {getActionButtons(userRole, handleSetModalOpen)}
+                    {getActionButtons(userRole, setIsModalOpened)}
                 </Group>
             </Tabs.List>
 
@@ -170,7 +167,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                     <BWGForm
                         application={application}
                         readOnly={false}
-                        setModal={handleSetModalOpen}
+                        setModal={setIsModalOpened}
                     />
                 </Modal>
                 <ApplicationForm
@@ -185,7 +182,7 @@ const ApplicationPage: NextPage<ApplicationPageProps> = ({
                         <BWGForm
                             application={application}
                             readOnly={true}
-                            setModal={handleSetModalOpen}
+                            setModal={setIsModalOpened}
                         />
                     </Box>
                 )}

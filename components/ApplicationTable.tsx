@@ -53,7 +53,7 @@ export default function ApplicationTable({
         <InfiniteScroll
             dataLength={applications.length}
             next={fetchMoreData}
-            hasMore={applications.length > 10}
+            hasMore={applications.length > 9}
             loader={
                 <Center>
                     <Loader variant="dots" size="lg" />
@@ -92,6 +92,7 @@ const getStatusCol = ({
 }: Application) => {
     const statusColor: Map<Application['status'], string> = new Map([
         [ApplicationStatus.Accepted, 'green'],
+        ['Approved' as ApplicationStatus, 'green'],
         [ApplicationStatus.Rejected, 'red'],
         [ApplicationStatus.Active, 'blue'],
     ]);

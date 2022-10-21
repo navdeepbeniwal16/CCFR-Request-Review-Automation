@@ -84,9 +84,9 @@ export function BWGForm({ application, readOnly, setModal }: BWGFormProps) {
                             'An error has occured while submitting the form',
                     });
                 }
+                setLoading(false);
             });
         }
-        setLoading(false);
     };
 
     const handleError = (errors: typeof form.errors) => {
@@ -121,11 +121,11 @@ const emptyBWG: BiospecimenForm = {
     amountRequired: 0,
     proposedTestingMethodlogy: '',
     clarifications: {
-        additionalDispatchRequirement: 'TBD',
-        fluoroscentDyeQuantificationRequired: 'TBD',
-        LCLDerivedDNAAcceptable: 'TBD',
-        salivaAcceptable: 'TBD',
-        depletedDNASampleRequest: 'TBD',
+        additionalDispatchRequirement: 'No',
+        fluoroscentDyeQuantificationRequired: 'No',
+        LCLDerivedDNAAcceptable: 'No',
+        salivaAcceptable: 'No',
+        depletedDNASampleRequest: 'Exclude Sample(s)',
         depletedFFPE: 'Exclude Sample(s)',
         neoplasticCellularity: {
             minNC: '',

@@ -10,6 +10,7 @@ import {
     withdrawApplication,
 } from '../lib/application';
 import { Application } from '../lib/interfaces';
+import { createNotificationForUser } from '../lib/notification';
 import {
     ApplicationReviewStatus,
     ApplicationStage,
@@ -111,6 +112,20 @@ export const PMActionButton = ({
                 db,
                 convertApplicationDates(application),
             );
+            if (isSuccess) {
+                await createNotificationForUser(
+                    application.email,
+                    'Your application has been ' +
+                        status.toLocaleLowerCase() +
+                        '. You can review the outcome of your application <a href="' +
+                        URL +
+                        '/applications/' +
+                        application.id +
+                        '">here</a>.',
+                    true,
+                    'ApplicationVerdicts',
+                );
+            }
         }
         actionCallback(
             isSuccess,
@@ -234,7 +249,10 @@ export const CompletedActionButton = ({
     application,
     router,
 }: ActionButtonProps) => {
-    if (application.status == ApplicationStatus.Accepted) {
+    if (
+        application.status == ApplicationStatus.Accepted ||
+        application.status == ('Approved' as ApplicationStatus)
+    ) {
         return (
             <Button color={'green'} size="md" variant="outline">
                 Accepted
