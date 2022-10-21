@@ -18,9 +18,9 @@ import {getUsersByRoleAsAdmin} from './user';
 import { printErrorTrace } from './utilities/errorHandler';
 import { createNotificationForUser } from './notification';
 
-const HOST = process.env.APP_HOST ? process.env.APP_HOST : 'http://localhost';
-const PORT = process.env.APP_PORT ? process.env.APP_PORT : 3000;
-const URL = HOST + (PORT ? ':' : '') + PORT;
+const HOST = process.env.NEXT_PUBLIC_APP_HOST ? process.env.NEXT_PUBLIC_APP_HOST : 'http://localhost';
+const PORT = process.env.NEXT_PUBLIC_APP_PORT ? process.env.NEXT_PUBLIC_APP_PORT : 3000;
+const URL = HOST + (process.env.NEXT_PUBLIC_APP_PORT ? ':' + PORT : '');
 
 export const isApplicationEmpty = (application: Application) => {
     return Object.keys(application).length === 0;
