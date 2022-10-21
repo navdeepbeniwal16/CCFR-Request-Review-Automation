@@ -54,7 +54,7 @@ const ApplicationsPage: NextPage<ApplicationsPageProps> = ({
             );
             setApps(applications);
         }
-    }, [applications]);
+    }, [applications, title, userEmail, db]);
 
     return (
         <Container m="md" p="md" mt="0" fluid>

@@ -3,5 +3,9 @@
         "next/core-web-vitals",
         "prettier",
         "eslint:recommended"
-    ]
+    ],
+    "rules": {
+        "no-unused-vars": "off",
+        "no-undef": "off"
+    }
 }

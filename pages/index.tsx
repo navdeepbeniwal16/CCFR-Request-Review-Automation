@@ -42,7 +42,7 @@ const HomePage: NextPage<HomePageProps> = ({ applications, userRole }) => {
         getApplications(userRole, user.email || '', tempDB, undefined).then(
             data => setLast(data.lastApplication),
         );
-    }, []);
+    }, [user.email, userRole]);
 
     return (
         <Container m="md" p="md" mt="0" fluid style={{ height: '100%' }}>

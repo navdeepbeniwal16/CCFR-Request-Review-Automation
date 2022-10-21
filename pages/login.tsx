@@ -79,7 +79,6 @@ const RegisterContainer = ({ toggleRegister }: AuthContainerProps) => {
                         onClick={() => {
                             setLoading(true);
                             registerUser(email, password).then(error => {
-                                console.log(error);
                                 if (error) {
                                     setError(error);
                                 }
@@ -171,7 +170,6 @@ const LoginContainer = ({
                     onClick={() => {
                         setLoading(true);
                         loginUser(email, password).then(error => {
-                            console.log(error);
                             if (error) {
                                 setError(error);
                             }

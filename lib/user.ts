@@ -22,11 +22,12 @@ export const registerUser = async (email: string, password: string) => {
             return error.message;
         });
     const success = await setUserRoleAsAdmin(user.email, UserRole.APPLICANT);
-    if (success) {
+    if (!success) return user.error.message;
+    /*if (success) {
         firebase.auth().onAuthStateChanged((x) => {
             if (x) return x.getIdToken(true).then(() => user);
         })
-    }
+    }*/
 };
 
 export const getCurrentUser = () => {

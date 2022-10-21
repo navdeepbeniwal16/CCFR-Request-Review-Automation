@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import nodemailer from 'nodemailer';
+import { MailOptions } from 'nodemailer/lib/json-transport';
 
 
 // Each request must have:
@@ -33,11 +34,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	return new Promise((response) => {
 		if(emailType == 'StatusUpdate') {
 
-			let mailDetails = {
+			let mailDetails: MailOptions = {
 				from: 'CCFR',
 				to: email,
 				subject: 'Application Update',
-				text: emailText,
+				text: emailText as string,
 				html: message
 				}
 	
@@ -59,11 +60,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             });
 	
 		} else if(emailType == 'ApplicationVerdicts') {
-			let mailDetails = {
+			let mailDetails: MailOptions = {
 				from: 'CCFR',
 				to: email,
 				subject: 'Application Verdicts',
-				text: emailText,
+				text: emailText as string,
 				html: message
 				}
 	
@@ -74,13 +75,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 						status: 200,
 						message: 'Email sent.'
 					})
-				  });
+				});
 			} catch (error) {
 				console.log(error);
 				return res.status(400).json({
-				  status: 400,
-				  message: 'Bad Request.'
-				  })
+                    status: 400,
+                    message: 'Bad Request.'
+				})
 			} 
 		}
 	})

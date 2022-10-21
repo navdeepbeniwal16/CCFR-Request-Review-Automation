@@ -35,7 +35,7 @@ export function Section2({
             ...(checkedPeopleInTable as Collaborator[]),
             ...(formData as Collaborator[]),
         ]);
-    }, [checkedPeopleInTable]);
+    }, [checkedPeopleInTable, form, formData]);
 
     const handleCheckboxOnClick = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -97,7 +97,6 @@ export function Section2({
         const list = formData && [...formData];
         const updatedList = list?.filter((value, _index) => _index !== index);
 
-        console.log('updatedLst', updatedList);
         setFormData(updatedList);
 
         const allData = updatedList &&
