@@ -15,21 +15,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	console.log(email);
 
-	var transport = nodemailer.createTransport({
+	var transport = process.env.GMAIL_LOGIN ? nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
 			user: process.env.GMAIL_LOGIN,
 			pass: process.env.GMAIL_PWORD
 		}
+	}) : nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || "2525"),
+        auth: {
+		    user: process.env.SMTP_LOGIN,
+		    pass: process.env.SMTP_PWORD,
+        }
 	});
-	// var transport = nodemailer.createTransport({
-	// 	host: "smtp.mailtrap.io",
-	// 	port: 2525,
-	// 	auth: {
-	// 	  user: "fbf7a66f0cad4b",
-	// 	  pass: "3cc57a37c5fef3"
-	// 	}
-	//   });
 
 	return new Promise((response) => {
 		if(emailType == 'StatusUpdate') {
