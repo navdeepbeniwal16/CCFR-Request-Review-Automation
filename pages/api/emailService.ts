@@ -25,8 +25,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT || "2525"),
         auth: {
-		    user: process.env.SMTP_LOGIN,
-		    pass: process.env.SMTP_PWORD,
+            user: process.env.SMTP_LOGIN,
+            pass: process.env.SMTP_PWORD,
         }
 	});
 
