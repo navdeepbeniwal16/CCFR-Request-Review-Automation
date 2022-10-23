@@ -18,10 +18,31 @@ The application will facilitate growth in collaboration requests and ease worklo
 ## Authors
 - [Irgio Basrewan](https://github.com/irgiob) - Scrum Master
 - [Dimitri Sadikin](https://github.com/dimitrisad) - Design Lead
-- [Navdeep Beniwal](https://github.com/navdeepbeniwal16) - Architecture Lead
+- [Navdeep Beniwal](https://github.com/navdeepbeniwal16) - Solution Architect
 - [Mohammad Saood Abbasi](https://github.com/MohammadSaoodAbbasi) - Product Owner
-- [Michael Hannon](https://github.com/mhannon11) - Quality Assurance Lead
+- [Michael Hannon](https://github.com/mhannon11) - Quality Assurance Manager
 
+## Our Product
+![login](screenshots/login.png)
+*Login Page*
+
+![newapp](screenshots/newapp.png)
+*Creating a new application*
+
+![tracking](screenshots/tracking.png)
+*Tracking an application*
+
+![bwg](screenshots/bwgform.png)
+*Submit a BWG Form*
+
+![voting](screenshots/voting.png)
+*Application Voting in Progress*
+
+![admin](screenshots/admin.png)
+*Admin User Management*
+
+![edit](screenshots/editprof.png)
+*Edit Profile*
 
 ## Tech Stack
 
