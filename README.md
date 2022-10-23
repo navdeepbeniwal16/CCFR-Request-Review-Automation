@@ -13,16 +13,27 @@ The application will facilitate growth in collaboration requests and ease worklo
 
 - Automated workflows and task assignment.
 
-- In-built messaging/notification system integrating communications between CCFR team and the researcher.
+- Notification feature that sends emails to CCFR team and researchers.
 
 ## Authors
-- [Dimitri Sadikin](https://github.com/dimitrisad)
-- [Navdeep Beniwal](https://github.com/navdeepbeniwal16)
-- [Irgio Basrewan](https://github.com/irgiob)
-- [Michael Hannon](https://github.com/mhannon11)
-- [Mohammad Saood Abbasi](https://github.com/MohammadSaoodAbbasi)
+- [Irgio Basrewan](https://github.com/irgiob) - Scrum Master
+- [Dimitri Sadikin](https://github.com/dimitrisad) - Design Lead
+- [Navdeep Beniwal](https://github.com/navdeepbeniwal16) - Architecture Lead
+- [Mohammad Saood Abbasi](https://github.com/MohammadSaoodAbbasi) - Product Owner
+- [Michael Hannon](https://github.com/mhannon11) - Quality Assurance Lead
 
-## Deployment
+
+## Tech Stack
+
+**Application Development Platform:** Firebase
+
+**Front End Framework:** React.js, Next.js, Mantine
+
+**Back End Framework:** Node.js, next-firebase-auth
+
+**Email Service Engine:** Nodemailer
+
+## Running on Development
 Set up instructions
 ```bash
   npm install
@@ -34,7 +45,7 @@ npm install -legacy-peer-deps
 ```
 The instruction above will install the dependencies for the libraries used for this project
 
-To deploy this project run:
+To run this project on your local machine:
 
 ```bash
   npm run dev
@@ -48,9 +59,16 @@ Followed by (only necessary when using "npm build")
 ```bash
   npm start
 ```
-As the regitration functionality has not been complicated, please refer to the following user profile to test other functionalities including authentication:
+For testing, run:
+
+```bash
+  npm test
+```
+
+
+Please refer to the following user profile to test several functionalities including authentication:
 
 
 | User              | Password             |
 | ----------------- | -------------------- |
-| testuser@test.com | password1            |
+| derrick@test.com | password              |
