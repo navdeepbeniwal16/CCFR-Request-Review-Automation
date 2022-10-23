@@ -17,9 +17,9 @@ The application will facilitate growth in collaboration requests and ease worklo
 
 ## Authors
 - [Dimitri Sadikin](https://github.com/dimitrisad)
-- Navdeep Beniwal
+- [Navdeep Beniwal](https://github.com/navdeepbeniwal16)
 - [Irgio Basrewan](https://github.com/irgiob)
-- Michael Hannon
+- [Michael Hannon](https://github.com/mhannon11)
 - [Mohammad Saood Abbasi](https://github.com/MohammadSaoodAbbasi)
 
 ## Deployment
@@ -41,6 +41,10 @@ To deploy this project run:
 ```
 or 
 
+```bash
+  npm build
+```
+Followed by (only necessary when using "npm build")
 ```bash
   npm start
 ```
