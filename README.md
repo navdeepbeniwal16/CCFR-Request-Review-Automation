@@ -117,3 +117,8 @@ Please refer to the following user profile to test several functionalities inclu
 | User              | Password             |
 | ----------------- | -------------------- |
 | derrick@test.com | password              |
+
+## Related Links
+- [Confluence Page](https://confluence.cis.unimelb.edu.au:8443/pages/viewpage.action?pageId=108757954)
+Warning: Need to request access to view confluence
+- [Deployed Page](https://ccfr-portal.vercel.app/) - https://ccfr-portal.vercel.app/
