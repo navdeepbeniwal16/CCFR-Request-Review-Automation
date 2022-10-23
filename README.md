@@ -65,7 +65,7 @@ The application will facilitate growth in collaboration requests and ease worklo
 
 **Front End Framework:** React.js, Next.js, Mantine
 
-**Back End Framework:** Node.js, next-firebase-auth
+**Back End Framework:** Node.js, next-firebase-auth, Axios
 
 **Email Service Engine:** Nodemailer
 
