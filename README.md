@@ -22,6 +22,21 @@ The application will facilitate growth in collaboration requests and ease worklo
 - [Mohammad Saood Abbasi](https://github.com/MohammadSaoodAbbasi) - Product Owner
 - [Michael Hannon](https://github.com/mhannon11) - Quality Assurance Manager
 
+## Product Feature
+- Login functionality alongside authentication
+- Create Application 
+  - Save and Submit Application
+- Submit BWG Form
+- Automated tracking system for the applications
+- Voting capabilities to approve or reject applications
+- Navigation bar that allows user to view their applications and for admin to view all applications and users
+  - Admin can also filter accouns depending on their role and applications depending on their status
+  - Search bar for accounts
+- Edit Profile 
+  - Editted profile will display different icons compared to accounts which have not registered their first and last name
+- Notification feature that sends emails to CCFR team and researchers.
+- Different roles contatining different privileges within the system
+
 ## Our Product
 ![login](screenshots/login.png)
 *Login Page*
@@ -53,6 +68,15 @@ The application will facilitate growth in collaboration requests and ease worklo
 **Back End Framework:** Node.js, next-firebase-auth
 
 **Email Service Engine:** Nodemailer
+
+**Deployment Platform:** Vercel
+
+**Quality Assurance:** Jest, Babel, React Testing Library
+
+**Scheduling:** Cron Jobs
+
+**Coding Standard Enforcement:** ESlint, Prettier
+
 
 ## Running on Development
 Set up instructions
